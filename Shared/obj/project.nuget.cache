@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8fZcUhZsw+/fyQc/2NRuE3X96DvriABP/AsWsLFHKd1R34du2NFMWeAvQg/uCS7oPFc9fv9zDKXYQ2PjwNjZag==",
+  "dgSpecHash": "a4lAKBgKhca/p2AzmgLzWM1mcWifDnvEwEUXxlheOyKW60HddgdXZj/UooVPVyTBqB4cTVGMMurMnrKkvU/nag==",
   "success": true,
-  "projectFilePath": "C:\\Git\\NordicDoor\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
+  "projectFilePath": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

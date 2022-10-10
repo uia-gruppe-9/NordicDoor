@@ -1,0 +1,12 @@
+C:\Git\Nordic Door\Shared\bin\Debug\net6.0\Nordic Door.Shared.deps.json
+C:\Git\Nordic Door\Shared\bin\Debug\net6.0\Nordic Door.Shared.dll
+C:\Git\Nordic Door\Shared\bin\Debug\net6.0\Nordic Door.Shared.pdb
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.csproj.AssemblyReference.cache
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.AssemblyInfoInputs.cache
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.AssemblyInfo.cs
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.csproj.CoreCompileInputs.cache
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.dll
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\refint\Nordic Door.Shared.dll
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\Nordic Door.Shared.pdb
+C:\Git\Nordic Door\Shared\obj\Debug\net6.0\ref\Nordic Door.Shared.dll

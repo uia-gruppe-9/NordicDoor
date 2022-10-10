@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Git\\NordicDoor\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
+      "projectUniqueName": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
       "projectName": "Nordic Door.Shared",
-      "projectPath": "C:\\Git\\NordicDoor\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
+      "projectPath": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
       "packagesPath": "C:\\Users\\ntitokr\\.nuget\\packages\\",
-      "outputPath": "C:\\Git\\NordicDoor\\Nordic Door\\Shared\\obj\\",
+      "outputPath": "C:\\Git\\Nordic Door\\Shared\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ntitokr\\AppData\\Roaming\\NuGet\\NuGet.Config",
