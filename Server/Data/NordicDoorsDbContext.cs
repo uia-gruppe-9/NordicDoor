@@ -11,13 +11,13 @@ namespace Nordic_Door.Server.Data
     }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserTeams>().HasNoKey();
+            modelBuilder.Entity<UserTeam>().HasNoKey();
         }
 
-        public DbSet<Suggestions> Suggestions{ get; set; }
-        public DbSet<Employees> Employees{ get; set; }
-        public DbSet<Teams> Teams { get; set; }
-        public DbSet<UserTeams> UserTeams{ get; set; }
+        public DbSet<Suggestion> Suggestions{ get; set; }
+        public DbSet<Employee> Employees{ get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<UserTeam> UserTeams{ get; set; }
 
     }
 }

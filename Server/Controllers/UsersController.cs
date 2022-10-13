@@ -42,11 +42,11 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/All/{name:String}")]
-        public async Task<IActionResult> GetAllUsersByName([FromRoute] string name)
+        [Route("{name}")]
+        public async Task<IActionResult> GetFirstUserByName([FromRoute] string name)
         {
 
-            var user = await dbContext.Employees.SingleAsync(employee => employee.Name == name);
+            var user = await dbContext.Employees.FirstAsync(employee => employee.Name == name);
 
             if (user == null)
             {
@@ -55,22 +55,22 @@ namespace Nordic_Door.Server.Controllers
 
             return Ok(user);
         }
-        
 
-        //[HttpGet]
-        //[Route("{name:string}")]
-        //public async Task<IActionResult> GetUserByName([FromRoute] string name)
-        //{
-            
-        //    var user = await dbContext.Employees.AllAsync(employee => employee.Name == name);
 
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpGet]
+        [Route("/Search/All/{name}")]
+        public async Task<IActionResult> GetAllUsersByName([FromRoute] string name)
+        {
 
-        //    return Ok(user);
-        //}
+            var user = await dbContext.Employees.Where(employee => employee.Name == name).ToListAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
 
 
         [HttpPut]
@@ -98,7 +98,7 @@ namespace Nordic_Door.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
-            var user = new Employees()
+            var user = new Employee()
             {
 
                 Id = addUserRequest.Id,
