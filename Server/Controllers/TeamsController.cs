@@ -57,7 +57,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpGet]
-        [Route("/Search/All/{name}")]
+        [Route("/Search/All/{names}")]
         public async Task<IActionResult> GetAllTeamsByName([FromRoute] string name)
         {
 
