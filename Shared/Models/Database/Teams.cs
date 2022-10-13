@@ -17,8 +17,7 @@ namespace Nordic_Door.Shared.Models.Database
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public Role Role { get; set; }
+        
 
     }
 }

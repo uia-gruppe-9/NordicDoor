@@ -8,13 +8,13 @@ build_property.PlatformNeutralAssembly =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Nordic Door.Server
 build_property.RootNamespace = Nordic Door.Server
-build_property.ProjectDir = C:\Git\Nordic Door\Server\
+build_property.ProjectDir = /Users/fredrik/UiaGruppe9/NordicDoor/Server/
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Git\Nordic Door\Server
+build_property.MSBuildProjectDirectory = /Users/fredrik/UiaGruppe9/NordicDoor/Server
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Git/Nordic Door/Server/Pages/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+[/Users/fredrik/UiaGruppe9/NordicDoor/Server/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

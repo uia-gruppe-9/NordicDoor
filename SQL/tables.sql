@@ -19,7 +19,7 @@ CREATE TABLE Employees (
                          Name varchar (60) NOT NULL,
                          Email varchar (60),
                          Password varchar (60) NOT NULL,
-                         Role varchar (30) NOT NULL,
+                         Role int NOT NULL,
                          PRIMARY KEY (Employee_ID),
                          FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID)
 );
@@ -99,7 +99,7 @@ insert INTO Employees values (
                             'Ogundleif Rollgangvolden',
                             'ogro@nordicdoors.no',
                             '1234',
-                            'Ansatt'
+                            0
                            );
 
 insert INTO Employees values (
@@ -108,7 +108,7 @@ insert INTO Employees values (
                                'Gertrude Huggunbunden',
                                'gehu@nordicdoors.no',
                                '1234',
-                               'Ansatt'
+                               0
                            );
 insert INTO Employees values (
                                3,
@@ -116,7 +116,7 @@ insert INTO Employees values (
                                'Berthilde Furminken',
                                'befi@nordicdoors.no',
                                '1234',
-                               'Leder'
+                               1
                            );
 insert INTO Employees values (
                                4,
@@ -124,15 +124,15 @@ insert INTO Employees values (
                                'Bertram',
                                'bert@nordicdoors.no',
                                '1234',
-                               'Ansatt'
+                               0
                            );
 insert INTO Employees values (
                                5,
                                2,
                                'Martin Hommeland Monsen',
-                               'martinhomo@nordicdoors.no',
+                               'martinhmo@nordicdoors.no',
                                '1234',
-                               'Ansatt'
+                               0
                            );
 insert INTO Employees values (
                                6,
@@ -140,7 +140,7 @@ insert INTO Employees values (
                                'Jon Karlsson von Schmetterling',
                                'jonsch@nordicdoors.no',
                                '1234',
-                               'Ansatt'
+                               0
                            );
 insert INTO Employees values (
                                7,
@@ -148,5 +148,5 @@ insert INTO Employees values (
                                'Jèsus Hernández García Sánchez',
                                'jesus@nordicdoors.no',
                                '1234',
-                               'Leder'
+                               1
                            );

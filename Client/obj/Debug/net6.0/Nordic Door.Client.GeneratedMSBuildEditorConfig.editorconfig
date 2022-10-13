@@ -11,25 +11,25 @@ build_property.EnableTrimAnalyzer = true
 build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = Nordic_Door.Client
 build_property.RootNamespace = Nordic_Door.Client
-build_property.ProjectDir = C:\Git\Nordic Door\Client\
+build_property.ProjectDir = /Users/fredrik/UiaGruppe9/NordicDoor/Client/
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Git\Nordic Door\Client
+build_property.MSBuildProjectDirectory = /Users/fredrik/UiaGruppe9/NordicDoor/Client
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Git/Nordic Door/Client/App.razor]
+[/Users/fredrik/UiaGruppe9/NordicDoor/Client/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Git/Nordic Door/Client/Pages/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+[/Users/fredrik/UiaGruppe9/NordicDoor/Client/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Git/Nordic Door/Client/_Imports.razor]
+[/Users/fredrik/UiaGruppe9/NordicDoor/Client/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Git/Nordic Door/Client/Shared/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-06fu4d2pb5
+[/Users/fredrik/UiaGruppe9/NordicDoor/Client/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-9bydow11h2
