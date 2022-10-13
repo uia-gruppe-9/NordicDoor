@@ -10,7 +10,7 @@ namespace Nordic_Door.Shared.Models.Database
 {
 
     // These are composite keys which are specified in OnDbModelCreating in NordicDoorsDbContext
-    public class UserTeams
+    public class UserTeam
     {
         [Required]
         [Column("Employee_ID")]

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Nordic_Door.Shared.Models.Database
 {
-    public class Employees
+    public class Employee
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("Employee_ID")]

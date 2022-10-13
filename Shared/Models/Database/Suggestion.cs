@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Nordic_Door.Shared.Models.Database
 {
-    public class Suggestions
+    public class Suggestion
     {
         [Required]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
