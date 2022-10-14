@@ -197,15 +197,15 @@
       "mscorlib.dll": "sha256-MnMyZHtcymf0sLxXeFBbQZVsdNdxT0GXJaa9t3ZdSek=",
       "netstandard.dll": "sha256-+SGdnDhVMiZ9hq0EsYwJ+mcK0odf3bAtXnSKLorGDCs=",
       "System.Private.CoreLib.dll": "sha256-mqfalNg3wC8XHlyA+j5ioNcnc0kt4prNudKdyJoaYaU=",
-      "Nordic Door.Shared.dll": "sha256-3fmnsR2HX0hD4qykxdrXuLG3tdcxrq76ZjO7zHhgHV4=",
-      "Nordic_Door.Client.dll": "sha256-X8R9VL6gg0AoXQM2SpsRvajMoBkqyf20LKYfC1wxxS8="
+      "Nordic Door.Shared.dll": "sha256-uUPWbMcAE5zWB2tHjnrD1VAAydnb1cNiaCWTLI5deh4=",
+      "Nordic_Door.Client.dll": "sha256-aNXLtG80S7F6ec50kI2GnKhlRYqJoe8u9qxFSdorw1s="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "Nordic Door.Shared.pdb": "sha256-6QBzBcN1VRAatvPz8nkOL7nGuprU3Rd\/pWkzOTN6Ev0=",
-      "Nordic_Door.Client.pdb": "sha256-1w2FIXTakV7Urpzn4b7nAS75QmuLD67PvFZjugwBpJ8="
+      "Nordic Door.Shared.pdb": "sha256-PINt+EvtiN6SxeMBeqFZ0Sfc1XG8kFx7phnbkELcM2c=",
+      "Nordic_Door.Client.pdb": "sha256-1HIsE\/5sbNzCFlGUnWWZrggR31AiPxxoqG8w2a5Lk7w="
     },
     "runtime": {
       "dotnet.6.0.9.w1yl2rxjdx.js": "sha256-Azk5sbYFVo84h8NpIst9roIPGLH2y8ewQ9SY\/sUHvgs=",

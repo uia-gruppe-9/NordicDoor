@@ -11,6 +11,7 @@ CREATE TABLE Teams (
                        Leader_ID int,
                        Name varchar (60) NOT NULL,
                        PRIMARY KEY (Team_ID)
+
 );
 
 CREATE TABLE Employees (
@@ -150,3 +151,10 @@ insert INTO Employees values (
                                '1234',
                                1
                            );
+UPDATE LOW_PRIORITY Teams
+SET Leader_ID = 6
+WHERE Team_ID = 1;
+
+UPDATE LOW_PRIORITY Teams
+SET Leader_ID = 7
+WHERE Team_ID = 2;

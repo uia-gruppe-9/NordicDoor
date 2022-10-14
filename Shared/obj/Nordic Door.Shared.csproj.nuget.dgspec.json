@@ -1,27 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj": {}
+    "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj": {}
   },
   "projects": {
-    "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj": {
+    "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
+        "projectUniqueName": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj",
         "projectName": "Nordic Door.Shared",
-        "projectPath": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
-        "packagesPath": "C:\\Users\\ntitokr\\.nuget\\packages\\",
-        "outputPath": "C:\\Git\\Nordic Door\\Shared\\obj\\",
+        "projectPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj",
+        "packagesPath": "/Users/fredrik/.nuget/packages/",
+        "outputPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ntitokr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/fredrik/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -55,7 +54,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.401/RuntimeIdentifierGraph.json"
         }
       }
     }

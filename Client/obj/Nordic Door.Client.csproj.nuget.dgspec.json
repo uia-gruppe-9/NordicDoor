@@ -1,35 +1,34 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Git\\Nordic Door\\Client\\Nordic Door.Client.csproj": {}
+    "/Users/fredrik/UiaGruppe9/NordicDoor/Client/Nordic Door.Client.csproj": {}
   },
   "projects": {
-    "C:\\Git\\Nordic Door\\Client\\Nordic Door.Client.csproj": {
+    "/Users/fredrik/UiaGruppe9/NordicDoor/Client/Nordic Door.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Git\\Nordic Door\\Client\\Nordic Door.Client.csproj",
+        "projectUniqueName": "/Users/fredrik/UiaGruppe9/NordicDoor/Client/Nordic Door.Client.csproj",
         "projectName": "Nordic_Door.Client",
-        "projectPath": "C:\\Git\\Nordic Door\\Client\\Nordic Door.Client.csproj",
-        "packagesPath": "C:\\Users\\ntitokr\\.nuget\\packages\\",
-        "outputPath": "C:\\Git\\Nordic Door\\Client\\obj\\",
+        "projectPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Client/Nordic Door.Client.csproj",
+        "packagesPath": "/Users/fredrik/.nuget/packages/",
+        "outputPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Client/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ntitokr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/fredrik/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj": {
-                "projectPath": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj"
+              "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj": {
+                "projectPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj"
               }
             }
           }
@@ -72,7 +71,7 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-              "version": "[6.0.8, 6.0.8]"
+              "version": "[6.0.9, 6.0.9]"
             }
           ],
           "frameworkReferences": {
@@ -80,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.401/RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
@@ -89,24 +88,23 @@
         }
       }
     },
-    "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj": {
+    "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
+        "projectUniqueName": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj",
         "projectName": "Nordic Door.Shared",
-        "projectPath": "C:\\Git\\Nordic Door\\Shared\\Nordic Door.Shared.csproj",
-        "packagesPath": "C:\\Users\\ntitokr\\.nuget\\packages\\",
-        "outputPath": "C:\\Git\\Nordic Door\\Shared\\obj\\",
+        "projectPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/Nordic Door.Shared.csproj",
+        "packagesPath": "/Users/fredrik/.nuget/packages/",
+        "outputPath": "/Users/fredrik/UiaGruppe9/NordicDoor/Shared/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ntitokr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/fredrik/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -140,7 +138,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.401/RuntimeIdentifierGraph.json"
         }
       }
     }

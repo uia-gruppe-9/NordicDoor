@@ -10,7 +10,7 @@ namespace Nordic_Door.Server.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : Controller
-{
+    {
 
         public NordicDoorsDbContext dbContext { get; set; }
 
@@ -58,7 +58,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpGet]
-        [Route("/Search/All/{name}")]
+        [Route("/Search/All/User/{name}")]
         public async Task<IActionResult> GetAllUsersByName([FromRoute] string name)
         {
 
@@ -74,7 +74,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("/Update/User/{id:int}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateUserRequest updateUserRequest)
         {
             var user = await dbContext.Employees.FindAsync(id);
@@ -96,6 +96,7 @@ namespace Nordic_Door.Server.Controllers
         
 
         [HttpPost]
+        [Route("/Add/User")]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
             var user = new Employee()
@@ -124,7 +125,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:int}")]
+        [Route("/Delete/User/{id:int}")]
         public async Task<IActionResult> DeleteUserById([FromRoute] int id)
         {
             var user = await dbContext.Employees.FindAsync(id);

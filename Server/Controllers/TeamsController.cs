@@ -20,6 +20,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
+        [Route("/Search/All/teams")]
         public async Task<IActionResult> GetTeams()
         {
             var team = await dbContext.Teams.ToListAsync();
@@ -27,7 +28,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("/Search/TeamById/{id:int}")]
         public async Task<IActionResult> GetTeamById([FromRoute] int id)
         {
             var team = await dbContext.Teams.FindAsync(id);
@@ -41,7 +42,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("{name}")]
+        [Route("/Search/First/Team/{name}")]
         public async Task<IActionResult> GetFirstTeamByName([FromRoute] string name)
         {
 
@@ -57,11 +58,11 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpGet]
-        [Route("/Search/All/{name}")]
+        [Route("/Search/All/Team/teamname{name}")]
         public async Task<IActionResult> GetAllTeamsByName([FromRoute] string name)
         {
 
-            var team = await dbContext.Teams.Where(employee => employee.Name == name).ToListAsync();
+            var team = await dbContext.Teams.Where(Team => Team.Name == name).ToListAsync();
 
             if (team == null)
             {
@@ -71,9 +72,21 @@ namespace Nordic_Door.Server.Controllers
             return Ok(team);
         }
 
+        [HttpGet]
+        [Route("/Search/All/Team/leaderid{leader_id}")]
+        public async Task<IActionResult> GetAllTeamsByLeader_Id([FromRoute] int leader_id)
+        {
+            var team = await dbContext.Teams.Where(team => team.LeaderId == leader_id).ToListAsync();
+            if (team == null)
+            {
+                return NotFound();
+            }
+            return Ok(team);
+        }
+
 
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("/Update/Team/{id:int}")]
         public async Task<IActionResult> UpdateTeam([FromRoute] int id, UpdateTeamRequest updateTeamRequest)
         {
             var team = await dbContext.Teams.FindAsync(id);
@@ -93,6 +106,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPost]
+        [Route("/Add/Team")]
         public async Task<IActionResult> AddTeam(AddTeamRequest addTeamRequest)
         {
             var team = new Team()
@@ -119,7 +133,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:int}")]
+        [Route("/Delete/Team/{id:int}")]
         public async Task<IActionResult> DeleteTeamById([FromRoute] int id)
         {
             var team = await dbContext.Teams.FindAsync(id);
