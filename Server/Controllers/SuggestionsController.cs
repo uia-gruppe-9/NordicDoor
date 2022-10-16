@@ -86,6 +86,7 @@ namespace Nordic_Door.Server.Controllers
                 suggestion.ResponsibleTeam = updateSuggestionRequest.ResponsibleTeam;
                 suggestion.Title = updateSuggestionRequest.Title;
                 suggestion.DeadLine = updateSuggestionRequest.DeadLine;
+                suggestion.Status = updateSuggestionRequest.Status;
                 suggestion.Phase = updateSuggestionRequest.Phase;
                 suggestion.Description = updateSuggestionRequest.Description;
 
@@ -110,6 +111,7 @@ namespace Nordic_Door.Server.Controllers
                 ResponsibleTeam = addSuggestionRequest.ResponsibleTeam,
                 Title = addSuggestionRequest.Title,
                 DeadLine = addSuggestionRequest.DeadLine,
+                Status = addSuggestionRequest.Status,
                 Phase = addSuggestionRequest.Phase,
                 Description = addSuggestionRequest.Description,
             };
