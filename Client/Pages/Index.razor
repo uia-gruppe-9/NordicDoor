@@ -1,7 +1,19 @@
 ﻿@page "/"
+@using Nordic_Door.Shared.Models.Database;
+@inject HttpClient httpClient
 
 <PageTitle>Index</PageTitle>
 
 <MudContainer Style="width: 100%; border: 1px red solid;">
-    <p>Hey</p>
+
+
 </MudContainer>
+
+
+@code {
+    private List<Suggestion> suggestions = new List<Suggestion>();
+
+    protected override async Task OnInitializeAsync() {
+        suggestions = httpClient.GetFromJsonAsync<List<Suggestion>>("api/suggestions")
+    }
+}
