@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
-using static MudBlazor.Colors;
 
 namespace Nordic_Door.Server.Controllers
 {
@@ -32,12 +31,30 @@ namespace Nordic_Door.Server.Controllers
         {
             var suggestion = await dbContext.Suggestions.FindAsync(id);
 
+
             if (suggestion == null)
             {
                 return NotFound();
             }
 
             return Ok(suggestion);
+        }
+
+        [HttpGet]
+        [Route("/Search/Suggestion/ResponsibleEmployeeName{id:int}")]
+        public async Task<IActionResult> GetSuggestionResponsibleEmployeeName([FromRoute] int id)
+        {
+            var suggestionId = await dbContext.Suggestions.FindAsync(id);
+            if (suggestionId != null)
+            {
+                var responsibleEmployee = await dbContext.Employees.FindAsync(suggestionId.ResponsibleEmployee);
+
+            if (responsibleEmployee != null)
+                        {
+                            return Ok(responsibleEmployee.Name);
+                        }
+            }
+                return NotFound();
         }
 
         [HttpGet]
