@@ -158,3 +158,29 @@ WHERE Team_ID = 1;
 UPDATE LOW_PRIORITY Teams
 SET Leader_ID = 7
 WHERE Team_ID = 2;
+
+insert into Suggestions values ( default,
+                                1,
+                                1,
+                                1,
+                                'titel',
+                                current_timestamp,
+                                1,
+                                current_timestamp,
+                                current_timestamp,
+                                'test',
+                                'phase',
+                                'description');
+
+insert into Suggestions values ( default,
+                                 2,
+                                 2,
+                                 2,
+                                 'titel',
+                                 current_timestamp,
+                                 2,
+                                 current_timestamp,
+                                 current_timestamp,
+                                 'test',
+                                 'phase',
+                                 'description');
