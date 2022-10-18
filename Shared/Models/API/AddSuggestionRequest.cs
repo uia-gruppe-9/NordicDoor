@@ -22,7 +22,9 @@ namespace Nordic_Door.Shared.Models.API
 
         public DateTime? DeadLine { get; set; }
 
-        public DateTime? LastUpdatedAt { get; }
+        public DateTime? LastUpdatedAt { get; } // gir null verdig atm, kan hende det skal være med en set.
+
+        public string? Status { get; set; }
 
         public string? Phase { get; set; }
 

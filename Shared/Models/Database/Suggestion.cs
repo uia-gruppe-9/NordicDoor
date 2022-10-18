@@ -44,6 +44,8 @@ namespace Nordic_Door.Shared.Models.Database
 
         public DateTime? LastUpdatedAt { get; set; }
 
+        public string? Status { get; set; }
+
         public string? Phase { get; set; }
 
         public string? Description { get; set; }
