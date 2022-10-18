@@ -1,8 +1,4 @@
 .vs
-/Client/obj/*/
-/Client/bin/*/
-/Server/obj/*/
-/Server/bin/*/
-/Shared/bin/*/
-/Shared/obj/*/
+**/bin/*
+**/obj/*
 .idea
