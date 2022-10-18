@@ -20,7 +20,6 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/Search/All/Suggestion")]
         public async Task<IActionResult> GetSuggestions()
         {
             var suggestion = await dbContext.Suggestions.ToListAsync();
