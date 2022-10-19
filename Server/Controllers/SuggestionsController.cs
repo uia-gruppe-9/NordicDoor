@@ -1,10 +1,10 @@
-﻿using System.Xml.Linq;
+﻿using System.Net.NetworkInformation;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
-using static MudBlazor.Colors;
 
 namespace Nordic_Door.Server.Controllers
 {
@@ -22,22 +22,85 @@ namespace Nordic_Door.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSuggestions()
         {
-            var suggestion = await dbContext.Suggestions.ToListAsync();
-            return Ok(suggestion);
+            var suggestions = await dbContext.Suggestions.ToListAsync();
+
+            var updateSuggestions = new List<GetSuggestionRequest>();
+
+            foreach (var suggestion in suggestions)
+            {
+                var team = await dbContext.Teams.FindAsync(suggestion.TeamId);
+                var resposibleEmployee = await dbContext.Employees.FindAsync(suggestion.ResponsibleEmployee);
+                var responsibleTeam = await dbContext.Teams.FindAsync(suggestion.ResponsibleTeam);
+                var createByEmployee = await dbContext.Employees.FindAsync(suggestion.CreatedBy);
+
+                if (team == null || createByEmployee == null)
+                {
+                    continue;
+                }
+
+                updateSuggestions.Add(new GetSuggestionRequest()
+                {
+                    
+                    Team = team,
+                    ResponsibleEmployee = resposibleEmployee,
+                    ResponsibleTeam = responsibleTeam,
+                    CreatedBy = createByEmployee,
+
+                    Id = suggestion.Id,
+                    Title = suggestion.Title,
+                    CreatedAt = suggestion.CreatedAt,
+                    DeadLine = suggestion.DeadLine,
+                    LastUpdatedAt = suggestion.LastUpdatedAt,
+                    Status = suggestion.Status,
+                    Phase = suggestion.Phase,
+                    Description = suggestion.Description,
+                }
+                    );
+            }
+
+            return Ok(updateSuggestions);
         }
 
         [HttpGet]
         [Route("/Search/SuggestionById{id:int}")]
         public async Task<IActionResult> GetSuggestionById([FromRoute] int id)
         {
+            
             var suggestion = await dbContext.Suggestions.FindAsync(id);
-
+            
             if (suggestion == null)
             {
                 return NotFound();
             }
+            var team = await dbContext.Teams.FindAsync(suggestion.TeamId);
+            var resposibleEmployee = await dbContext.Employees.FindAsync(suggestion.ResponsibleEmployee);
+            var responsibleTeam = await dbContext.Teams.FindAsync(suggestion.ResponsibleTeam);
+            var createByEmployee = await dbContext.Employees.FindAsync(suggestion.CreatedBy);
 
-            return Ok(suggestion);
+
+            if (team == null || createByEmployee == null)
+            {
+                return StatusCode(500);
+            }
+            var suggestionResponse = new GetSuggestionRequest()
+            {
+
+                Team = team,
+                ResponsibleEmployee = resposibleEmployee,
+                ResponsibleTeam = responsibleTeam,
+                CreatedBy = createByEmployee,
+
+                Id = suggestion.Id,
+                Title = suggestion.Title,
+                CreatedAt = suggestion.CreatedAt,
+                DeadLine = suggestion.DeadLine,
+                LastUpdatedAt = suggestion.LastUpdatedAt,
+                Status = suggestion.Status,
+                Phase = suggestion.Phase,
+                Description = suggestion.Description,
+            };
+
+            return Ok(suggestionResponse);
         }
 
         [HttpGet]
@@ -71,6 +134,7 @@ namespace Nordic_Door.Server.Controllers
             return Ok(suggestion);
         }
 
+        
 
         [HttpPut]
         [Route("/Update/Suggestion/{id:int}")]
