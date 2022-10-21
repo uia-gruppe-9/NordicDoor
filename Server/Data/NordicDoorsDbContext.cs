@@ -17,7 +17,7 @@ namespace Nordic_Door.Server.Data
         public DbSet<Suggestion> Suggestions{ get; set; }
         public DbSet<Employee> Employees{ get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<UserTeam> UserTeams{ get; set; }
+        public DbSet<UserTeam> UserTeam{ get; set; }
 
     }
 }
