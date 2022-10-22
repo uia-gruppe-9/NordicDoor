@@ -137,7 +137,7 @@ namespace Nordic_Door.Server.Controllers
         
 
         [HttpPut]
-        [Route("/Update/Suggestion/{id:int}")]
+        [Route("/Update/{id:int}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateSuggestionRequest updateSuggestionRequest)
         {
             var suggestion = await dbContext.Suggestions.FindAsync(id);
@@ -162,7 +162,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPost]
-        [Route("/Add/Suggestion")]
+        [Route("/Add")]
         public async Task<IActionResult> AddSuggestion(AddSuggestionRequest addSuggestionRequest)
         {
             var suggestion = new Suggestion()
@@ -187,7 +187,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpDelete]
-        [Route("/Delete/Suggestion/{id:int}")]
+        [Route("/Delete/{id:int}")]
         public async Task<IActionResult> DeleteSuggestionById([FromRoute] int id)
         {
             var suggestion = await dbContext.Suggestions.FindAsync(id);

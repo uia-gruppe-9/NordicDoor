@@ -81,11 +81,9 @@ namespace Nordic_Door.Server.Controllers
 
             if (user != null)
             {
-                user.TeamId = updateUserRequest.TeamId;
                 user.Name = updateUserRequest.Name;
                 user.Email = updateUserRequest.Email;
                 user.Password = updateUserRequest.Password;
-                user.Role = updateUserRequest.Role;
 
                 await dbContext.SaveChangesAsync();
 
@@ -103,11 +101,9 @@ namespace Nordic_Door.Server.Controllers
             {
 
                 Id = addUserRequest.Id,
-                TeamId = addUserRequest.TeamId,
                 Name = addUserRequest.Name,
                 Email = addUserRequest.Email,
                 Password = addUserRequest.Password,
-                Role = addUserRequest.Role,
             };
 
             try
