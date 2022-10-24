@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
+using Nordic_Door.Shared.Models;
 using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
 
@@ -49,6 +50,29 @@ namespace Nordic_Door.Server.Controllers
                     );
             }
             return Ok(updateUserTeams);
+        }
+
+        [HttpPut]
+        
+        public async Task<IActionResult> UpdateRole( int eId, int tId, UpdateUserTeamRequest updateRole)
+        {
+            
+
+
+            var role = await dbContext.UserTeam.FindAsync(eId, tId);
+
+
+            if (role != null)
+            {
+                role.Role = updateRole.Role;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(role);
+            }
+
+            return NotFound();
+
         }
 
 
