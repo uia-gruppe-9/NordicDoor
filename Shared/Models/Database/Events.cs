@@ -17,20 +17,18 @@ namespace Nordic_Door.Shared.Models.Database
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("History")]
-        [Column("History_ID")]
-        public int HistoryId { get; set; }
-
-
-        [Required]
         [ForeignKey("Employees")]
         [Column("Employee_ID")]
-
         public int EmployeeId { get; set; }
-        [Required]
 
+        [Required]
+        [ForeignKey("Suggestion")]
+        [Column("Suggestion_ID")]
+        public int SuggestionId { get; set; }
+
+        [Required]
         // Hvis error se på Description
-        public string Description { get; set; }
+        public string? Description { get; set; }
         [Required]
         public DateTime Timestamp { get; set; }
 

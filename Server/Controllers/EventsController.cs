@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
-using static MudBlazor.Colors;
+
 
 
 namespace Nordic_Door.Server.Controllers
@@ -20,8 +20,6 @@ namespace Nordic_Door.Server.Controllers
         {
             dbContext = ctx;
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> GetEvents()
@@ -46,9 +44,48 @@ namespace Nordic_Door.Server.Controllers
             return Ok(events);
         }
 
+        //Lag funksjon som henter ut et event objekt
+
+        [HttpGet]
+        [Route("/Get/EventObject")]
+
+        public async Task<IActionResult> GetEventRequest()
+        {
+            var events = await dbContext.Events.ToListAsync();
+            var updateEvents = new List<GetEventRequest>();
+
+            foreach (var _event in events)
+
+            {
+                var employee = await dbContext.Employees.FindAsync(_event.EmployeeId);
+                var suggestion = await dbContext.Suggestions.FindAsync(_event.SuggestionId);
+
+                if (employee == null || suggestion == null)
+                {
+                    continue;
+                }
+           
+                updateEvents.Add(new GetEventRequest()
+                {
+                    Id = _event.Id,
+                    Employee = employee,
+                    Suggestion = suggestion,
+
+                    Description = _event.Description,
+                    Timestamp = _event.Timestamp,
+                }
+                    );
+
+
+
+            }
+            return Ok(updateEvents);
+
+        }
+
         //Funksjon som lager nye events(HttpPut)
 
-
+        
 
     }
 }
