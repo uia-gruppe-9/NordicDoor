@@ -85,7 +85,23 @@ namespace Nordic_Door.Server.Controllers
 
         //Funksjon som lager nye events(HttpPut)
 
-        
+        [HttpPost]
+        [Route("/Add/Event")]
+
+        public async Task<IActionResult> AddEvent(AddEventRequest addEventRequest)
+        {
+            var _event = new Event()
+            {
+                Id = addEventRequest.Id,
+                EmployeeId = addEventRequest.EmployeeId,
+                SuggestionId = addEventRequest.SuggestionId,
+                Description = addEventRequest.Description,
+                Timestamp = addEventRequest.Timestamp,
+            };
+            await dbContext.Events.AddAsync(_event);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
 
     }
 }
