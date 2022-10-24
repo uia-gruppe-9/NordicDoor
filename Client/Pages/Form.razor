@@ -3,6 +3,8 @@
 @inject HttpClient httpClient
 @using System.ComponentModel.DataAnnotations
 
+@using System.ComponentModel.DataAnnotations
+
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
 <MudGrid>
@@ -11,10 +13,19 @@
             <MudCardContent>
                 <MudTextField Label="Title" HelperText="Max. 25 characters"
                               @bind-Value="model.Title" For="@(() => model.Title)"/>
-                <MudTextField Label="Email" Class="mt-3"
-                              @bind-Value="model.Email" For="@(() => model.Email)"/>
-                <MudTextField Label="Description" HelperText="Describe your suggestion" Class="mt-3"
-                              @bind-Value="model.Description" For="@(() => model.Description)" />
+
+                <MudTextField Label="Employee" HelperText= "Write your full name" Class="mt-3"
+                              @bind-Value="model.Employee" For="@(() => model.Employee)"/>
+
+                <MudTextField Label="Problem" HelperText="Describe the Problem" Class="mt-3"
+                              @bind-Value="model.Problem" For="@(() => model.Problem)" />
+
+                <MudTextField Label="Cause" HelperText="Describe the Cause of the Problem" Class="mt-3"
+                              @bind-Value="model.Cause" For="@(() => model.Cause)" />
+
+                <MudTextField Label="Solution" HelperText="How should the problem be solved?" Class="mt-3"
+                              @bind-Value="model.Solution" For="@(() => model.Solution)" />
+                
                 
             </MudCardContent>
             <MudCardActions>
@@ -57,13 +68,17 @@
         public string Title { get; set; }
 
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Employee { get; set; }
 
         [Required]
         [StringLength(250, ErrorMessage = "Description must be at least 25 characters long.", MinimumLength = 25)]
-        public string Description { get; set; }
+        public string Problem { get; set; }
 
+        [Required]
+        public string Cause { get; set; }
+
+        [Required]
+        public string Solution { get; set; }
 
     }
 
