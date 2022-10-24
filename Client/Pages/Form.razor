@@ -1,3 +1,4 @@
+@*
 @page "/"
 @using Nordic_Door.Shared.Models.Database;
 @inject HttpClient httpClient
@@ -20,8 +21,8 @@
 
                 <MudTextField Label="Løsning" HelperText="Hvordan skal problemet løses?" Class="mt-3"
                               @bind-Value="model.Løsning" For="@(() => model.Løsning)" />
-                
-                
+
+
             </MudCardContent>
             <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
@@ -31,16 +32,16 @@
     <MudItem xs="12" sm="5">
         <MudPaper Class="pa-4 mud-height-full">
             <MudText Typo="Typo.subtitle2">Status på forslag</MudText>
-            @if (success)
-            {
-                <MudText Color="Color.Success">Forslaget ditt har blitt registrert</MudText>
-            }
-            else
-            {
-                <MudText Color="@Color.Error">
-                    <ValidationSummary />
-                </MudText>
-            }
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Forslaget ditt har blitt registrert</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
         </MudPaper>
     </MudItem>
     <MudItem xs="12">
@@ -80,4 +81,4 @@
         StateHasChanged();
     }
 
-}
+} *@
