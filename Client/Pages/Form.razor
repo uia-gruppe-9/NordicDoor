@@ -5,26 +5,25 @@
 
 @using System.ComponentModel.DataAnnotations
 
+@using System.ComponentModel.DataAnnotations
+
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
 <MudGrid>
     <MudItem xs="12" sm="7">
         <MudCard>
             <MudCardContent>
-                <MudTextField Label="Title" HelperText="Max. 25 characters"
-                              @bind-Value="model.Title" For="@(() => model.Title)"/>
+                <MudTextField Label="Tittel"
+                              @bind-Value="model.Tittel" For="@(() => model.Tittel)"/>
 
-                <MudTextField Label="Employee" HelperText= "Write your full name" Class="mt-3"
-                              @bind-Value="model.Employee" For="@(() => model.Employee)"/>
-
-                <MudTextField Label="Problem" HelperText="Describe the Problem" Class="mt-3"
+                <MudTextField Label="Problem" HelperText= "Beskriv problemet" Class="mt-3"
                               @bind-Value="model.Problem" For="@(() => model.Problem)" />
 
-                <MudTextField Label="Cause" HelperText="Describe the Cause of the Problem" Class="mt-3"
-                              @bind-Value="model.Cause" For="@(() => model.Cause)" />
+                <MudTextField Label="Årsak" HelperText="Hva er rotårsaken til problemet?" Class="mt-3"
+                              @bind-Value="model.Årsak" For="@(() => model.Årsak)" />
 
-                <MudTextField Label="Solution" HelperText="How should the problem be solved?" Class="mt-3"
-                              @bind-Value="model.Solution" For="@(() => model.Solution)" />
+                <MudTextField Label="Løsning" HelperText="Hvordan skal problemet løses?" Class="mt-3"
+                              @bind-Value="model.Løsning" For="@(() => model.Løsning)" />
                 
                 
             </MudCardContent>
@@ -35,10 +34,10 @@
     </MudItem>
     <MudItem xs="12" sm="5">
         <MudPaper Class="pa-4 mud-height-full">
-            <MudText Typo="Typo.subtitle2">suggestion status</MudText>
+            <MudText Typo="Typo.subtitle2">Status på forslag</MudText>
             @if (success)
             {
-                <MudText Color="Color.Success">Your suggestion has been forwarded</MudText>
+                <MudText Color="Color.Success">Forslaget ditt har blitt registrert</MudText>
             }
             else
             {
@@ -50,7 +49,7 @@
     </MudItem>
     <MudItem xs="12">
         <MudText Typo="Typo.body2" Align="Align.Center">
-            Fill out the form correctly to see send in your suggestion.
+            Fyll ut skjemaet for å sende inn ditt forslag.
         </MudText>
     </MudItem>
 </MudGrid>
@@ -64,21 +63,18 @@
     public class RegisterAccountForm
     {
         [Required]
-        [StringLength(25, ErrorMessage = "Title length can't be more than 25.")]
-        public string Title { get; set; }
+        [StringLength(25, ErrorMessage = "Tittel kan ikke være lenger enn 25 tegn.")]
+        public string Tittel { get; set; }
 
         [Required]
-        public string Employee { get; set; }
-
-        [Required]
-        [StringLength(250, ErrorMessage = "Description must be at least 25 characters long.", MinimumLength = 25)]
+        [StringLength(250, ErrorMessage = "Beskrivelse må ikke overstride 250 tegn.")]
         public string Problem { get; set; }
 
         [Required]
-        public string Cause { get; set; }
+        public string Årsak { get; set; }
 
         [Required]
-        public string Solution { get; set; }
+        public string Løsning { get; set; }
 
     }
 
