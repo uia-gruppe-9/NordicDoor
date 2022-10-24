@@ -11,10 +11,6 @@ namespace Nordic_Door.Shared.Models.Database
         public int Id { get; set; }
 
         [Required]
-        [Column("Leader_ID")]
-        public int LeaderId { get; set; }
-
-        [Required]
         public string Name { get; set; }
 
         

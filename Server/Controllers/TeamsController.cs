@@ -72,19 +72,6 @@ namespace Nordic_Door.Server.Controllers
             return Ok(team);
         }
 
-        [HttpGet]
-        [Route("/Search/All/Team/leaderid{leader_id}")]
-        public async Task<IActionResult> GetAllTeamsByLeader_Id([FromRoute] int leader_id)
-        {
-            var team = await dbContext.Teams.Where(team => team.LeaderId == leader_id).ToListAsync();
-            if (team == null)
-            {
-                return NotFound();
-            }
-            return Ok(team);
-        }
-
-
         [HttpPut]
         [Route("/Update/Team/{id:int}")]
         public async Task<IActionResult> UpdateTeam([FromRoute] int id, UpdateTeamRequest updateTeamRequest)
@@ -93,9 +80,7 @@ namespace Nordic_Door.Server.Controllers
 
             if (team != null)
             {
-                team.LeaderId = updateTeamRequest.LeaderId;
                 team.Name = updateTeamRequest.Name;
-
 
                 await dbContext.SaveChangesAsync();
 
@@ -113,7 +98,6 @@ namespace Nordic_Door.Server.Controllers
             {
 
                 Id = addTeamRequest.Id,
-                LeaderId = addTeamRequest.LeaderId,
                 Name = addTeamRequest.Name,
 
             };

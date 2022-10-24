@@ -21,5 +21,8 @@ namespace Nordic_Door.Shared.Models.Database
         [Column("Team_ID")]
         [ForeignKey("Teams")]
         public int TeamId { get; set; }
+
+        [Required]
+        public Role Role { get; set; }
     }
 }
