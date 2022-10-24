@@ -26,6 +26,7 @@ CREATE TABLE UserTeam (
                           Employee_ID int,
                           Team_ID int,
                           Role int NOT NULL,
+                          PRIMARY KEY (Employee_ID, Team_ID),
                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                           FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID)
 );
@@ -139,4 +140,7 @@ insert into Suggestions values ( default,
                                  'pending',
                                  'do',
                                  'Teste data teskt. ');
+
+insert into UserTeam values (1,1,1);
+
 
