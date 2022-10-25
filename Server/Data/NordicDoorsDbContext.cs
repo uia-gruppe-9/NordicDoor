@@ -19,5 +19,8 @@ namespace Nordic_Door.Server.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<UserTeam> UserTeam{ get; set; }
 
+        public DbSet<Event> Events { get; set; }    
+
+
     }
 }
