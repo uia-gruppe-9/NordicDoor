@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace Nordic_Door.Shared.Models.API
+﻿namespace Nordic_Door.Shared.Models.API
 {
     public class AddUserRequest
     {

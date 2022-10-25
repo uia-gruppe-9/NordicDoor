@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.API;

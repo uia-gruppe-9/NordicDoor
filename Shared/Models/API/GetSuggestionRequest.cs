@@ -1,5 +1,4 @@
-﻿using System;
-using Nordic_Door.Shared.Models.Database;
+﻿using Nordic_Door.Shared.Models.Database;
 namespace Nordic_Door.Shared.Models.API
 {
     public class GetSuggestionRequest
@@ -17,7 +16,7 @@ namespace Nordic_Door.Shared.Models.API
         public string Title { get; set; }
 
         public DateTime CreatedAt { get; set; }
-            
+
         public DateTime? DeadLine { get; set; }
 
         public DateTime? LastUpdatedAt { get; set; } // gir null verdig atm, kan hende det skal være med en set.

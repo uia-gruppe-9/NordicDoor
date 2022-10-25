@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 
@@ -15,9 +14,9 @@ builder.Services.AddSwaggerGen();
 
 
 
-builder.Services.AddDbContext<NordicDoorsDbContext>(options => 
+builder.Services.AddDbContext<NordicDoorsDbContext>(options =>
     options.UseMySql(
-        builder.Configuration.GetConnectionString("MariaDB"), 
+        builder.Configuration.GetConnectionString("MariaDB"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MariaDb"))));
 
 
