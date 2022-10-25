@@ -1,5 +1,6 @@
 .vs
 **/bin/*
 **/obj/*
+**/obj/staticwebassets.pack.sentinel
 Server/Nordic Door.Server.csproj.user
 .idea
