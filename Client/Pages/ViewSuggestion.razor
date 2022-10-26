@@ -1,5 +1,7 @@
 ﻿@page "/suggestion/{id:int}"
 @using Nordic_Door.Shared.Models.API;
+@using Nordic_Door.Shared.Models.Database;
+
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
 
@@ -27,8 +29,10 @@
         background: #fafafa;
         border: 2px solid #bdbdbd;
         border-radius: 25px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         gap: 1rem;
-        padding: 1rem 0.4rem; 
+        padding: 1rem 1rem; 
+
 
     }
 
@@ -54,14 +58,32 @@
         gap: 0.5rem;
         align-items: center;
     }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .button-container {
+          display: flex;
+        gap: 1rem;
+    }
+    .history-container {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow: auto;
+        padding: 1rem;
+        border-top: solid grey 1px;
+    }
  
     </style>
-@if(loading) {
+@if(loading || suggestion == null) {
     <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true"/>
 } else {
+    <MudForm >
     <MudGrid Style="margin-top: 10px;">
 
-        <MudItem xs="3">
+        <MudItem lg="3" sm="12" xs="12">
             <div class="paper">
               <div class="info-container">
                   <div class="icon-container">
@@ -85,7 +107,12 @@
                     <MudIcon Icon="@Icons.Filled.Person" />
                     <MudText>Ansvarlig Ansatt</MudText>
                 </div>
-                <MudTextField @bind-Value="suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined"/>
+                @if(editEnabled) {
+                        <MudAutocomplete T="Employee" Label="Søk etter ansatt" @bind-Value="@suggestion.ResponsibleEmployee" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees"/>
+                } else {
+                        <MudTextField @bind-Value="suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                }
 
             </div>
                 <div class="info-container">
@@ -93,16 +120,24 @@
                         <MudIcon Icon="@Icons.Filled.People" />
                         <MudText>Ansvarlig Team</MudText>
                     </div>
-                    <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" />
+                    @if (editEnabled)
+                    {
+                        <MudAutocomplete T="Team" Label="Søk etter team" @bind-Value="@suggestion.ResponsibleTeam" ToStringFunc="@(e => e.Name)" SearchFunc="SearchTeams" />
+                    }
+                    else
+                    {
+                        <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                    }
 
                 </div>
                 <MudDivider DividerType="DividerType.Middle" Class="my-6" Style="background-color: #9e9e9e;" />
                 <div class="info-container">
                     <div class="icon-container">
                         <MudIcon Icon="@Icons.Filled.AccessTime" />
-                        <MudText>Sist oppdatert</MudText>
+                        <MudText>Opprettet</MudText>
                     </div>
-                    <MudTextField @bind-Value="@suggestion.LastUpdatedAt" T="DateTime?" ReadOnly="true" Format="yyyy-MM-dd HH:mm:ss" Variant="Variant.Outlined" />
+                    <MudTextField @bind-Value="@suggestion.CreatedAt" T="DateTime" ReadOnly="true" Format="yyyy-MM-dd HH:mm:ss" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
                 </div>
                 <div class="info-container">
@@ -110,14 +145,16 @@
                         <MudIcon Icon="@Icons.Filled.AssignmentLate" />
                         <MudText>Frist</MudText>
                     </div>
-                    <MudTextField @bind-Value="@suggestion.DeadLine" T="DateTime?" ReadOnly="true" Format="yyyy-MM-dd HH:mm:ss" Variant="Variant.Outlined" />
+                    <MudTextField @bind-Value="@suggestion.DeadLine" T="DateTime?" ReadOnly="true" Format="yyyy-MM-dd HH:mm:ss" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
                 </div>
 
             </div>
+          
         </MudItem>
-        <MudItem xs="6">
-            <div class="paper" style="height: 100%;">
+        <MudItem lg="6" sm="12" xs="12" >
+            <div class="paper">
+                <MudText>@suggestion.ResponsibleEmployee.Name</MudText>
                 <div class="title-container">
                     <div class="title-heading">
 
@@ -129,30 +166,91 @@
                         <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 20%;"/> @suggestion.CreatedBy.Name</MudText>
                 </div>
                 <MudDivider Style="background-color: #9e9e9e;" />
+                <MudText>Beskrivelse</MudText>
+                <MudTextField T="string" Variant="Variant.Outlined" Text="@suggestion.Description" Lines="10" />
             </div>
         </MudItem>
-        <MudItem xs="3">
+        <MudItem lg="3" sm="12" xs="12">
+            <div class="paper">
+                <div class="actions">
+                    <div class="icon-container">
+                        <MudIcon Icon="@Icons.Filled.Settings" />
+                        <MudText>Handlinger</MudText>
+                    </div>
+                    <div class="button-container">
+                        <MudButton Color="Color.Primary" StartIcon="@Icons.Filled.Edit" Variant="Variant.Filled" OnClick="OnEditClick">Endre sak</MudButton>
+                        <MudButton Color="Color.Error" StartIcon="@Icons.Filled.Cancel" Variant="Variant.Filled">Lukk sak</MudButton>
+                    </div>
+                </div>
 
-        </MudItem>
-        <MudItem xs="12">
-            <div>
+                    <div class="icon-container">
+                        <MudIcon Icon="@Icons.Filled.History" />
+                        <MudText>Historikk</MudText>
+                    </div>
+
+                <div class="history-container">
+                        <MudTimeline>
+                        @foreach (var _event in events)
+                        {
+                            <MudTimelineItem>
+                                <div>
+
+                                <MudText Style="font-size: 1rem; font-weight: 600;">@_event.Description</MudText>
+                               <MudText Style="font-weight: 200; font-size: 14px;">@_event.Timestamp; 
+                        <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;"/> @suggestion.CreatedBy.Name</MudText> 
+                                </div>
+
+                            </MudTimelineItem>
+                        }
+                        </MudTimeline>
+                        </div>
             </div>
         </MudItem>
+      
     </MudGrid>
+    </MudForm>
 }
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    private GetSuggestionRequest suggestion;
-
+    private GetSuggestionRequest? suggestion;
+    private List<GetEventRequest>? events;
+    private bool editEnabled = false;
     private bool loading = true;
+    private MudForm form;
+
+    protected void OnEditClick() {
+        editEnabled = !editEnabled;
+    }
     protected override async Task OnInitializedAsync()
     {
         suggestion = await httpClient.GetFromJsonAsync<GetSuggestionRequest>("api/Suggestions/" + id);
+        events = await httpClient.GetFromJsonAsync<List<GetEventRequest>>("api/Events/" + id);
         loading = false;
 
     }
 
+    protected async Task<IEnumerable<Employee>> SearchEmployees(string name) {
+
+    
+        var employees = await httpClient.GetFromJsonAsync<List<Employee>>("api/Users");
+        if (string.IsNullOrEmpty(name))
+        {
+            return employees;
+        }
+        return employees.Where(emp => emp.Name.Contains(name));
+        }
+    protected async Task<IEnumerable<Team>> SearchTeams(string name)
+    {
+
+
+        var teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
+        if (string.IsNullOrEmpty(name))
+        {
+            return teams;
+        }
+        return teams.Where(team => team.Name.Contains(name));
+    }
 }

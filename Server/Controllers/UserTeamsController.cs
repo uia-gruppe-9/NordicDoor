@@ -26,7 +26,7 @@ namespace Nordic_Door.Server.Controllers
 
         public async Task<IActionResult> GetUserTeams()
         {
-            var userTeams = await dbContext.UserTeam.ToListAsync();
+            var userTeams = await dbContext.UserTeams.ToListAsync();
 
             var updateUserTeams = new List<GetUserTeamRequest>();
 
@@ -34,7 +34,7 @@ namespace Nordic_Door.Server.Controllers
             {
                 var team = await dbContext.Teams.FindAsync(userTeam.TeamId);
                 var employee = await dbContext.Employees.FindAsync(userTeam.EmployeeId);
-                var role = await dbContext.UserTeam.FindAsync(userTeam.Role);
+                var role = await dbContext.UserTeams.FindAsync(userTeam.Role);
 
                 if (team == null || employee == null || role == null)
                 {
@@ -59,7 +59,7 @@ namespace Nordic_Door.Server.Controllers
             
 
 
-            var role = await dbContext.UserTeam.FindAsync(eId, tId);
+            var role = await dbContext.UserTeams.FindAsync(eId, tId);
 
 
             if (role != null)

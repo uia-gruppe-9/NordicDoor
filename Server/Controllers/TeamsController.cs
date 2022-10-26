@@ -19,7 +19,6 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/Search/All/teams")]
         public async Task<IActionResult> GetTeams()
         {
             var team = await dbContext.Teams.ToListAsync();
