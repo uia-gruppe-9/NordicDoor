@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using System.Xml.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.API;
@@ -10,11 +8,11 @@ namespace Nordic_Door.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SuggestionController : Controller
+    public class SuggestionsController : Controller
     {
         public NordicDoorsDbContext dbContext { get; set; }
 
-        public SuggestionController(NordicDoorsDbContext ctx)
+        public SuggestionsController(NordicDoorsDbContext ctx)
         {
             dbContext = ctx;
         }
@@ -40,7 +38,7 @@ namespace Nordic_Door.Server.Controllers
 
                 updateSuggestions.Add(new GetSuggestionRequest()
                 {
-                    
+
                     Team = team,
                     ResponsibleEmployee = resposibleEmployee,
                     ResponsibleTeam = responsibleTeam,
@@ -62,12 +60,12 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/Search/SuggestionById{id:int}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> GetSuggestionById([FromRoute] int id)
         {
-            
+
             var suggestion = await dbContext.Suggestions.FindAsync(id);
-            
+
             if (suggestion == null)
             {
                 return NotFound();
@@ -124,9 +122,9 @@ namespace Nordic_Door.Server.Controllers
         public async Task<IActionResult> GetAllSuggestionsByTitle([FromRoute] string title)
         {
 
-            var suggestion = await dbContext.Suggestions.Where( suggestion => suggestion.Title  == title).ToListAsync();
+            var suggestion = await dbContext.Suggestions.Where(suggestion => suggestion.Title == title).ToListAsync();
 
-            if ( suggestion == null)
+            if (suggestion == null)
             {
                 return NotFound();
             }
@@ -134,7 +132,7 @@ namespace Nordic_Door.Server.Controllers
             return Ok(suggestion);
         }
 
-        
+
 
         [HttpPut]
         [Route("/Update/{id:int}")]
@@ -163,8 +161,6 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPost]
-        [Route("/Add")]
-
         public async Task<IActionResult> AddSuggestion(AddSuggestionRequest addSuggestionRequest)
         {
             var suggestion = new Suggestion()
@@ -180,12 +176,12 @@ namespace Nordic_Door.Server.Controllers
                 Phase = addSuggestionRequest.Phase,
                 Description = addSuggestionRequest.Description,
             };
-            
-                await dbContext.Suggestions.AddAsync(suggestion);
-                await dbContext.SaveChangesAsync();
-                return Ok(suggestion);
 
-            
+            await dbContext.Suggestions.AddAsync(suggestion);
+            await dbContext.SaveChangesAsync();
+            return Ok(suggestion);
+
+
         }
 
         [HttpDelete]

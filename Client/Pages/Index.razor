@@ -1,21 +1,74 @@
 ﻿@page "/"
-@using Nordic_Door.Shared.Models.Database;
+@using Nordic_Door.Shared.Models.API;
 @inject HttpClient httpClient
+@inject NavigationManager Navigation
 
-<PageTitle>Index</PageTitle>
 
+<style>
+
+    .page-title {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+
+    }
+</style>
+<PageTitle>Home</PageTitle>
 <MudContainer Style="width: 100%">
-    
+
+
+    <div class="page-title">
+        <MudText Typo="Typo.h2" Style="display: inline-block;">Saker</MudText>
+        <MudButton OnClick="OnCreateNewClick" Size="Size.Medium" Color="Color.Tertiary" Variant="Variant.Filled">Opprett ny sak</MudButton>
+    </div>
+
+    <MudTable 
+        Items="@Suggestions" 
+        Hover="true" 
+        T="GetSuggestionRequest"
+        Breakpoint="Breakpoint.Sm"
+        LoadingProgressColor="Color.Info" 
+        Loading="@loading"
+        OnRowClick="NavigateSelectedSuggestion"
+    >
+        <HeaderContent>
+            <MudTh>ID</MudTh>
+            <MudTh>Tittel</MudTh>
+            <MudTh>Beskrivelse</MudTh>
+            <MudTh>Opprettet av</MudTh>
+            <MudTh>Team</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="ID">@context.Id</MudTd>
+            <MudTd DataLabel="Tittel">@context.Title</MudTd>
+            <MudTd DataLabel="Beskrivelse">@context.Description</MudTd>
+            <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>
+            <MudTd DataLabel="Team">@context.Team.Name</MudTd>
+
+
+        </RowTemplate>
+    </MudTable>
+
 
 </MudContainer>
 
 
 @code {
-    private List<Suggestion> suggestions = new List<Suggestion>();
+    private List<GetSuggestionRequest> Suggestions = new List<GetSuggestionRequest>();
 
-
+    private bool loading = true;
     protected override async Task OnInitializedAsync() {
-        suggestions = await httpClient.GetFromJsonAsync<List<Suggestion>>("api/users");
+        Suggestions = await httpClient.GetFromJsonAsync<List<GetSuggestionRequest>>("api/Suggestions");
+        loading = false;
 
+    }
+
+    private void NavigateSelectedSuggestion(TableRowClickEventArgs<GetSuggestionRequest> clickEvent) {
+        Navigation.NavigateTo("suggestion/" + clickEvent.Item.Id);
+    }
+
+    private void OnCreateNewClick() {
+        Navigation.NavigateTo("new");
     }
 }
