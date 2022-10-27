@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
+using Nordic_Door.Shared.Models;
 using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
 
@@ -25,7 +26,7 @@ namespace Nordic_Door.Server.Controllers
 
         public async Task<IActionResult> GetUserTeams()
         {
-            var userTeams = await dbContext.UserTeam.ToListAsync();
+            var userTeams = await dbContext.UserTeams.ToListAsync();
 
             var updateUserTeams = new List<GetUserTeamRequest>();
 
@@ -33,7 +34,7 @@ namespace Nordic_Door.Server.Controllers
             {
                 var team = await dbContext.Teams.FindAsync(userTeam.TeamId);
                 var employee = await dbContext.Employees.FindAsync(userTeam.EmployeeId);
-                var role = await dbContext.UserTeam.FindAsync(userTeam.Role);
+                var role = await dbContext.UserTeams.FindAsync(userTeam.Role);
 
                 if (team == null || employee == null || role == null)
                 {
@@ -49,6 +50,29 @@ namespace Nordic_Door.Server.Controllers
                     );
             }
             return Ok(updateUserTeams);
+        }
+
+        [HttpPut]
+        
+        public async Task<IActionResult> UpdateRole( int eId, int tId, UpdateUserTeamRequest updateRole)
+        {
+            
+
+
+            var role = await dbContext.UserTeams.FindAsync(eId, tId);
+
+
+            if (role != null)
+            {
+                role.Role = updateRole.Role;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(role);
+            }
+
+            return NotFound();
+
         }
 
 

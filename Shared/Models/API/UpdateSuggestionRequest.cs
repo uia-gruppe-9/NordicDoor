@@ -1,5 +1,4 @@
-﻿using System;
-namespace Nordic_Door.Shared.Models.API
+﻿namespace Nordic_Door.Shared.Models.API
 {
     public class UpdateSuggestionRequest
     {
@@ -9,7 +8,7 @@ namespace Nordic_Door.Shared.Models.API
 
         public int? ResponsibleTeam { get; set; }
 
-        public string Title { get; set; }       
+        public string Title { get; set; }
 
         public DateTime? DeadLine { get; set; }
 

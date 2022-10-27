@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Nordic_Door.Shared.Models.API
+﻿namespace Nordic_Door.Shared.Models.API
 {
     public class AddSuggestionRequest
     {

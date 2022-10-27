@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.API;
@@ -37,7 +36,7 @@ namespace Nordic_Door.Server.Controllers
             {
                 return NotFound();
             }
-            
+
             return Ok(user);
         }
 
@@ -91,7 +90,7 @@ namespace Nordic_Door.Server.Controllers
             }
             return NotFound();
         }
-        
+
 
         [HttpPost]
         [Route("/Add/User")]
@@ -111,7 +110,7 @@ namespace Nordic_Door.Server.Controllers
                 await dbContext.Employees.AddAsync(user);
                 await dbContext.SaveChangesAsync();
                 return Ok(user);
-            
+
             }
             catch
             {
@@ -126,7 +125,7 @@ namespace Nordic_Door.Server.Controllers
         {
             var user = await dbContext.Employees.FindAsync(id);
 
-            if(user != null)
+            if (user != null)
             {
                 dbContext.Remove(user);
                 await dbContext.SaveChangesAsync();
@@ -136,5 +135,5 @@ namespace Nordic_Door.Server.Controllers
             return NotFound();
         }
 
-}
+    }
 }
