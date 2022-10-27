@@ -3,47 +3,66 @@ USE nordicdoors;
 
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS Teams, Employees, UserTeam, Events, History, Suggestions, Admins;
+DROP TABLE IF EXISTS Teams, Employees, UserTeams, Events, SuggestionPhase, SuggestionStatus, Suggestions, EmployeeRoles;
 SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
-                       Team_ID int AUTO_INCREMENT,
-                       Name varchar (60) NOT NULL,
+                       Team_ID INT AUTO_INCREMENT,
+                       Name VARCHAR (60) NOT NULL,
                        PRIMARY KEY (Team_ID)
 );
 
 CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
-                           Name varchar (60) NOT NULL,
-                           Email varchar (60) NOT NULL,
-                           Password varchar (60) NOT NULL,
-                           Is_Admin int NOT NULL,
+                           Name VARCHAR (60) NOT NULL,
+                           Email VARCHAR (60) NOT NULL,
+                           Password VARCHAR (60) NOT NULL,
+                           Is_Admin INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
 );
 
+CREATE TABLE EmployeeRoles (
+                          EmpRole VARCHAR (20),
+                          PRIMARY KEY (EmpRole)
+    );
+INSERT INTO EmployeeRoles (EmpRole) VALUES ('Medarbeider'), ('Teamleder');
 
-CREATE TABLE UserTeam (
-                          Employee_ID int,
-                          Team_ID int,
-                          Role int NOT NULL,
-                          PRIMARY KEY (Employee_ID, Team_ID),
+CREATE TABLE UserTeams (
+                          Employee_ID INT,
+                          Team_ID INT,
+                          EmpRole VARCHAR (20) NOT NULL DEFAULT ('Medarbeider'),
+                          PRIMARY KEY (Employee_ID, Team_ID, EmpRole),
                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
-                          FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID)
+                          FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
+                          FOREIGN KEY (EmpRole) REFERENCES EmployeeRoles (EmpRole)
 );
 
+CREATE TABLE SuggestionStatus (
+                          Status VARCHAR (20),
+                          PRIMARY KEY (Status)
+    );
+INSERT INTO SuggestionStatus (Status) VALUES ('Ny'), ('Åpen'), ('Lukket'), ('Avslått');
+
+
+CREATE TABLE SuggestionPhase (
+                          Phase VARCHAR (20),
+                          PRIMARY KEY (Phase)
+    );
+INSERT INTO SuggestionPhase VALUES ('Plan'), ('Do'), ('Study'), ('Act');
+
 CREATE TABLE Suggestions (
-                             Suggestion_ID int AUTO_INCREMENT,
-                             CreatedBy_ID int NOT NULL,
-                             Team_ID int NOT NULL,
-                             Responsible_Employee_ID int,
-                             Title varchar (50) NOT NULL,
+                             Suggestion_ID INT AUTO_INCREMENT,
+                             CreatedBy_ID INT NOT NULL,
+                             Team_ID INT NOT NULL,
+                             Responsible_Employee_ID INT,
+                             Title VARCHAR (50) NOT NULL,
                              CreatedAt DATETIME NOT NULL,
-                             Responsible_Team_ID int,
+                             Responsible_Team_ID INT,
                              Deadline DATETIME,
                              LastUpdatedAt DATETIME,
-                             Status varchar (50),
-                             Phase varchar (50),
-                             Description varchar (250),
+                             Status VARCHAR (20) NOT NULL DEFAULT ('Ny'),
+                             Phase VARCHAR (20) NOT NULL DEFAULT ('Plan'),
+                             Description VARCHAR (250),
                              PRIMARY KEY (Suggestion_ID),
                              FOREIGN KEY (CreatedBy_ID) REFERENCES Employees (Employee_ID),
                              FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
@@ -51,15 +70,16 @@ CREATE TABLE Suggestions (
 );
 
 CREATE TABLE Events (
-                        Event_ID int AUTO_INCREMENT,
-                        Employee_ID int,
-                        Suggestion_ID int,
-                        Description varchar (100) NOT NULL,
-                        Timestamp DATETIME not null,
+                        Event_ID INT AUTO_INCREMENT,
+                        Employee_ID INT,
+                        Suggestion_ID INT,
+                        Description VARCHAR (100) NOT NULL,
+                        Timestamp DATETIME NOT NULL,
                         PRIMARY KEY (Event_ID),
                         FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID) ,
                         FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID)
 );
+
 INSERT INTO Teams values (
                              1,
                              'Salg og Marked'
@@ -115,7 +135,7 @@ insert INTO Employees values (
                                  'Ola Nordmann',
                                  'OlaN@nordicdoors.no',
                                  '1234',
-                                 0
+                                 1
                              );
 
 insert INTO Employees values (
@@ -131,7 +151,7 @@ insert INTO Employees values (
                                  'John Johnson',
                                  'JonJ@nordicdoors.no',
                                  '1234',
-                                 2
+                                 0
                              );
 
 insert INTO Employees values (
@@ -139,7 +159,7 @@ insert INTO Employees values (
                                  'Morten Harket',
                                  'MortHa@nordicdoors.no',
                                  '1234',
-                                 1
+                                 0
                              );
 
 insert INTO Employees values (
@@ -155,7 +175,7 @@ insert INTO Employees values (
                                  'Thor Magne Svendsen',
                                  'THMS@nordicdoors.no',
                                  '1234',
-                                 1
+                                 0
                              );
 
 insert INTO Employees values (
@@ -163,7 +183,7 @@ insert INTO Employees values (
                                  'Eskil Lie',
                                  'EskLi@nordicdoors.no',
                                  '1234',
-                                 1
+                                 0
                              );
 
 insert INTO Employees values (
@@ -171,7 +191,7 @@ insert INTO Employees values (
                                  'Katrine Amundsen',
                                  'KatAm@nordicdoors.no',
                                  '1234',
-                                 1
+                                 0
                              );
 
 insert INTO Employees values (
@@ -194,7 +214,7 @@ insert INTO Employees values (
                                  'Mia Ås',
                                  'MiaAA@nordicdoors.no',
                                  '1234',
-                                 2
+                                 0
                              );
 insert INTO Employees values (
                                  12,
@@ -204,113 +224,113 @@ insert INTO Employees values (
                                  0
                              );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 1,
                                 1,
-                                0
+                                'Medarbeider'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 2,
                                 2,
-                                1
+                                'Teamleder'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 3,
                                 3,
-                                2
+                                'TeamLeder'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 4,
                                 4,
-                                1
+                                'Teamleder'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 5,
                                 5,
-                                0
+                                'Medarbeider'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 6,
                                 6,
-                                1
+                                'Teamleder'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 7,
                                 7,
-                                1
+                                'Teamleder'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 8,
                                 8,
-                                1
+                                'Teamleder'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 9,
                                 9,
-                                0
+                                'Medarbeider'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 10,
                                 10,
-                                0
+                                'Medarbeider'
                             );
 
-insert into UserTeam values (
+insert into UserTeams values (
                                 11,
                                 1,
-                                2
+                                'Medarbeider'
                             );
-insert into UserTeam values (
+insert into UserTeams values (
                                 12,
                                 2,
-                                0
+                                'Medarbeider'
                             );
 
 insert into Suggestions values ( default,
                                  1,
-                                 1,
+                                 2,
                                  1,
                                  'Bedre mikrofoner på Support',
                                  current_timestamp,
-                                 1,
+                                 2,
                                  current_timestamp,
                                  current_timestamp,
-                                 'New',
+                                 'Ny',
                                  'Study',
                                  'Tilbakemedling fra kunder. ');
 
 insert into Suggestions values ( default,
                                  2,
-                                 2,
+                                 1,
                                  2,
                                  'Fellesrom: Nytt kjøleskap',
                                  current_timestamp,
-                                 2,
+                                 1,
                                  current_timestamp,
                                  current_timestamp,
-                                 'New',
+                                 'Ny',
                                  'Do',
                                  'Installere nytt kjøleskap på fellesrom. ');
 
 insert into Suggestions values ( default,
                                  3,
-                                 3,
+                                 2,
                                  3,
                                  'Bestille Flere spikere av lengde 2cm',
                                  current_timestamp,
-                                 3,
+                                 2,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'do',
                                  'Trenger for å fullføre dør. ');
 
@@ -323,7 +343,7 @@ insert into Suggestions values ( default,
                                  4,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'Act',
                                  'Tomme for trelim. ');
 
@@ -336,7 +356,7 @@ insert into Suggestions values ( default,
                                  5,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'Planing',
                                  'Splint i dørkarm, må gjøres på nytt. ');
 
@@ -349,7 +369,7 @@ insert into Suggestions values ( default,
                                  6,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'Do',
                                  'Kaste søpla på fellesrom. ');
 
@@ -362,7 +382,7 @@ insert into Suggestions values ( default,
                                  7,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'Do',
                                  'Spraylakker slutta å fungere. ');
 
@@ -375,7 +395,7 @@ insert into Suggestions values ( default,
                                  8,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'Do',
                                  'Trenger mer dopapir til do 2. ');
 
@@ -388,7 +408,7 @@ insert into Suggestions values ( default,
                                  9,
                                  current_timestamp,
                                  current_timestamp,
-                                 'pending',
+                                 'Åpen',
                                  'Do',
                                  'Trenger skruer til dørkarm. ');
 
@@ -401,8 +421,8 @@ insert into Suggestions values ( default,
                                  10,
                                  current_timestamp,
                                  current_timestamp,
-                                 'Closed',
-                                 'do',
+                                 'Lukket',
+                                 'Do',
                                  'Dør til kontor vil ikke lukkes. ');
 
 insert into Events values (
