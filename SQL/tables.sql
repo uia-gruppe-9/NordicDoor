@@ -94,6 +94,7 @@ CREATE TABLE Pictures (
 INSERT INTO Teams values (
                              1,
                              'Salg og Marked'
+
                          );
 
 INSERT INTO Teams values (
@@ -507,3 +508,12 @@ insert into Events values (
                               current_timestamp );
 
 
+INSERT INTO Pictures VALUES (
+                             DEFAULT,
+                             1,
+                             1,
+                             CURRENT_TIME,
+                             LOAD_FILE('C:/Users/starm/Downloads/Test.GIF')
+
+
+                            )
