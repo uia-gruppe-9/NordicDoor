@@ -1,0 +1,84 @@
+@*
+@page "/"
+@using Nordic_Door.Shared.Models.Database;
+@inject HttpClient httpClient
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+<DataAnnotationsValidator/>
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudCard>
+            <MudCardContent>
+                <MudTextField Label="Tittel"
+                              @bind-Value="model.Tittel" For="@(() => model.Tittel)"/>
+
+                <MudTextField Label="Problem" HelperText= "Beskriv problemet" Class="mt-3"
+                              @bind-Value="model.Problem" For="@(() => model.Problem)" />
+
+                <MudTextField Label="Årsak" HelperText="Hva er rotårsaken til problemet?" Class="mt-3"
+                              @bind-Value="model.Årsak" For="@(() => model.Årsak)" />
+
+                <MudTextField Label="Løsning" HelperText="Hvordan skal problemet løses?" Class="mt-3"
+                              @bind-Value="model.Løsning" For="@(() => model.Løsning)" />
+
+
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="5">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.subtitle2">Status på forslag</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Forslaget ditt har blitt registrert</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MudText Typo="Typo.body2" Align="Align.Center">
+            Fyll ut skjemaet for å sende inn ditt forslag.
+        </MudText>
+    </MudItem>
+</MudGrid>
+</EditForm>
+
+
+@code {
+    RegisterAccountForm model = new RegisterAccountForm();
+    bool success;
+
+    public class RegisterAccountForm
+    {
+        [Required]
+        [StringLength(25, ErrorMessage = "Tittel kan ikke være lenger enn 25 tegn.")]
+        public string Tittel { get; set; }
+
+        [Required]
+        [StringLength(250, ErrorMessage = "Beskrivelse må ikke overstride 250 tegn.")]
+        public string Problem { get; set; }
+
+        [Required]
+        public string Årsak { get; set; }
+
+        [Required]
+        public string Løsning { get; set; }
+
+    }
+
+    private void OnValidSubmit(EditContext context)
+    {
+        success = true;
+        StateHasChanged();
+    }
+
+} *@
