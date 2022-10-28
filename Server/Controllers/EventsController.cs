@@ -115,7 +115,6 @@ namespace Nordic_Door.Server.Controllers
 
         [HttpPost]
         [Route("/Add/Event")]
-
         public async Task<IActionResult> AddEvent(AddEventRequest addEventRequest)
         {
             var _event = new Event()

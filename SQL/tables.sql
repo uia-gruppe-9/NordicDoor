@@ -3,7 +3,7 @@ USE nordicdoors;
 
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS Teams, Employees, UserTeam, Events, History, Suggestions, Admins;
+DROP TABLE IF EXISTS Teams, Employees, UserTeam, Events, Pictures, Suggestions, Admins;
 SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
@@ -60,9 +60,22 @@ CREATE TABLE Events (
                         FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID) ,
                         FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID)
 );
+
+CREATE TABLE Pictures (
+                          Picture_ID INT AUTO_INCREMENT,
+                          Employee_ID INT,
+                          Suggestion_ID INT,
+                          UploadedAt DATETIME,
+                          Image LONGBLOB,
+                          PRIMARY KEY (Picture_ID),
+                          FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                          FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
+);
+
 INSERT INTO Teams values (
                              1,
                              'Salg og Marked'
+
                          );
 
 INSERT INTO Teams values (
@@ -476,3 +489,12 @@ insert into Events values (
                               current_timestamp );
 
 
+INSERT INTO Pictures VALUES (
+                             DEFAULT,
+                             1,
+                             1,
+                             CURRENT_TIME,
+                             LOAD_FILE('C:/Users/starm/Downloads/Test.GIF')
+
+
+                            )
