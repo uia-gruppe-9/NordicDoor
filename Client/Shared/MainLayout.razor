@@ -5,10 +5,23 @@
 <MudSnackbarProvider />
 <MudLayout>
     <MudAppBar Elevation="1">
+
+           
+        <MudIconButton Icon= "@Icons.Filled.ArrowBack" Color="Color.Inherit" Edge="Edge.Start" />
+
         <MudText Typo="Typo.h5" Class="ml-3">Nordic Doors</MudText>
-        <MudSpacer />
+
+        <MudSpacer /> 
+        <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Inherit" Edge="Edge.End" >
+            <MudMenuItem>Logg ut </MudMenuItem>
+        </MudMenu>
+       
     </MudAppBar>
     <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem;">
         @Body
     </MudMainContent>
 </MudLayout>
+
+@code{
+   
+}
