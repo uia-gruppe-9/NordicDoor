@@ -31,7 +31,7 @@ CREATE TABLE UserTeams (
                            Employee_ID INT,
                            Team_ID INT,
                            EmpRole VARCHAR (20) NOT NULL DEFAULT ('Medarbeider'),
-                           PRIMARY KEY (Employee_ID, Team_ID, EmpRole),
+                           PRIMARY KEY (Employee_ID, Team_ID),
                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                            FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
                            FOREIGN KEY (EmpRole) REFERENCES EmployeeRoles (EmpRole)
