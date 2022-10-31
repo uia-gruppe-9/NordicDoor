@@ -3,7 +3,7 @@ USE nordicdoors;
 
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS Teams, Employees, UserTeams, Events, SuggestionPhase, SuggestionStatus, Suggestions, EmployeeRoles;
+DROP TABLE IF EXISTS Teams, Employees, UserTeams, Events, SuggestionPhase, SuggestionStatus, Suggestions, EmployeeRoles, Pictures;
 SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
@@ -22,32 +22,32 @@ CREATE TABLE Employees (
 );
 
 CREATE TABLE EmployeeRoles (
-                          EmpRole VARCHAR (20),
-                          PRIMARY KEY (EmpRole)
-    );
+                               EmpRole VARCHAR (20),
+                               PRIMARY KEY (EmpRole)
+);
 INSERT INTO EmployeeRoles (EmpRole) VALUES ('Medarbeider'), ('Teamleder');
 
 CREATE TABLE UserTeams (
-                          Employee_ID INT,
-                          Team_ID INT,
-                          EmpRole VARCHAR (20) NOT NULL DEFAULT ('Medarbeider'),
-                          PRIMARY KEY (Employee_ID, Team_ID, EmpRole),
-                          FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
-                          FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
-                          FOREIGN KEY (EmpRole) REFERENCES EmployeeRoles (EmpRole)
+                           Employee_ID INT,
+                           Team_ID INT,
+                           EmpRole VARCHAR (20) NOT NULL DEFAULT ('Medarbeider'),
+                           PRIMARY KEY (Employee_ID, Team_ID, EmpRole),
+                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                           FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
+                           FOREIGN KEY (EmpRole) REFERENCES EmployeeRoles (EmpRole)
 );
 
 CREATE TABLE SuggestionStatus (
-                          Status VARCHAR (20),
-                          PRIMARY KEY (Status)
-    );
+                                  Status VARCHAR (20),
+                                  PRIMARY KEY (Status)
+);
 INSERT INTO SuggestionStatus (Status) VALUES ('Ny'), ('Åpen'), ('Lukket'), ('Avslått');
 
 
 CREATE TABLE SuggestionPhase (
-                          Phase VARCHAR (20),
-                          PRIMARY KEY (Phase)
-    );
+                                 Phase VARCHAR (20),
+                                 PRIMARY KEY (Phase)
+);
 INSERT INTO SuggestionPhase VALUES ('Plan'), ('Do'), ('Study'), ('Act');
 
 CREATE TABLE Suggestions (
@@ -80,9 +80,21 @@ CREATE TABLE Events (
                         FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID)
 );
 
+CREATE TABLE Pictures (
+                          Picture_ID INT AUTO_INCREMENT,
+                          Employee_ID INT,
+                          Suggestion_ID INT,
+                          UploadedAt DATETIME,
+                          Image LONGBLOB,
+                          PRIMARY KEY (Picture_ID),
+                          FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                          FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
+);
+
 INSERT INTO Teams values (
                              1,
                              'Salg og Marked'
+
                          );
 
 INSERT INTO Teams values (
@@ -225,75 +237,75 @@ insert INTO Employees values (
                              );
 
 insert into UserTeams values (
-                                1,
-                                1,
-                                'Medarbeider'
-                            );
+                                 1,
+                                 1,
+                                 'Medarbeider'
+                             );
 
 insert into UserTeams values (
-                                2,
-                                2,
-                                'Teamleder'
-                            );
+                                 2,
+                                 2,
+                                 'Teamleder'
+                             );
 
 insert into UserTeams values (
-                                3,
-                                3,
-                                'TeamLeder'
-                            );
+                                 3,
+                                 3,
+                                 'TeamLeder'
+                             );
 
 insert into UserTeams values (
-                                4,
-                                4,
-                                'Teamleder'
-                            );
+                                 4,
+                                 4,
+                                 'Teamleder'
+                             );
 
 insert into UserTeams values (
-                                5,
-                                5,
-                                'Medarbeider'
-                            );
+                                 5,
+                                 5,
+                                 'Medarbeider'
+                             );
 
 insert into UserTeams values (
-                                6,
-                                6,
-                                'Teamleder'
-                            );
+                                 6,
+                                 6,
+                                 'Teamleder'
+                             );
 
 insert into UserTeams values (
-                                7,
-                                7,
-                                'Teamleder'
-                            );
+                                 7,
+                                 7,
+                                 'Teamleder'
+                             );
 
 insert into UserTeams values (
-                                8,
-                                8,
-                                'Teamleder'
-                            );
+                                 8,
+                                 8,
+                                 'Teamleder'
+                             );
 
 insert into UserTeams values (
-                                9,
-                                9,
-                                'Medarbeider'
-                            );
+                                 9,
+                                 9,
+                                 'Medarbeider'
+                             );
 
 insert into UserTeams values (
-                                10,
-                                10,
-                                'Medarbeider'
-                            );
+                                 10,
+                                 10,
+                                 'Medarbeider'
+                             );
 
 insert into UserTeams values (
-                                11,
-                                1,
-                                'Medarbeider'
-                            );
+                                 11,
+                                 1,
+                                 'Medarbeider'
+                             );
 insert into UserTeams values (
-                                12,
-                                2,
-                                'Medarbeider'
-                            );
+                                 12,
+                                 2,
+                                 'Medarbeider'
+                             );
 
 insert into Suggestions values ( default,
                                  1,
@@ -496,3 +508,12 @@ insert into Events values (
                               current_timestamp );
 
 
+INSERT INTO Pictures VALUES (
+                             DEFAULT,
+                             1,
+                             1,
+                             CURRENT_TIME,
+                             LOAD_FILE('C:/Users/starm/Downloads/Test.GIF')
+
+
+                            )
