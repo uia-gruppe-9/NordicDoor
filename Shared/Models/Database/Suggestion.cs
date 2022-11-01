@@ -42,7 +42,8 @@ namespace Nordic_Door.Shared.Models.Database
         [Column("Status")]
         [ForeignKey("Status")]
         public string? Status { get; set; }
-
+        [Column("Phase")]
+        [ForeignKey("Phase")]
         public string? Phase { get; set; }
 
         public string? Description { get; set; }
