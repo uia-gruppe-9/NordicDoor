@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject HttpClient httpClient
+@inject NavigationManager Navigation
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -28,13 +30,15 @@
 
 @code{
     
-    @code {
+   
         ObjectFit ImageFit = ObjectFit.Cover;
 
         void SetImageFit(ObjectFit value)
         {
             ImageFit = value;
         }
-    }
+ 
+    public string ToBaseRelativePath(string uri);
+
 
 }
