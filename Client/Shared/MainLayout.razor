@@ -13,9 +13,9 @@
 
         <MudSpacer />
         <div class="d-flex justify-center">
-            <MudImage ObjectFit="@ImageFit" Height="60" Width="170" Src="images/nordic-door.jpg" Alt="Nordic door" Elevation="25" Class="rounded-lg" />
+            <MudImage ObjectFit="@ImageFit" Height="30"  Src="images/nordic-door.jpg" Alt="Nordic door" Elevation="1" Class="squared-lg" />
         </div>
-
+        
         <MudSpacer /> 
         <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Inherit" Edge="Edge.End" >
             <MudMenuItem>Logg ut </MudMenuItem>
@@ -30,12 +30,12 @@
 @code{
     
    
-        ObjectFit ImageFit = ObjectFit.Cover;
+    ObjectFit ImageFit = ObjectFit.Cover;
 
-        void SetImageFit(ObjectFit value)
-        {
-            ImageFit = value;
-        }
-
+    void SetImageFit(ObjectFit value)
+    {
+        ImageFit = value;
+    }
+    
 
 }
