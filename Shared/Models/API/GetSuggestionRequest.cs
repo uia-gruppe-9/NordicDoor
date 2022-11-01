@@ -47,6 +47,8 @@ namespace Nordic_Door.Shared.Models.API
         public string? Phase { get; set; }
 
         public string? Description { get; set; }
+
+        public List<Picture> Pictures { get; set; }  
     }
 }
 
