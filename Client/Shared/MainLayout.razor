@@ -11,6 +11,10 @@
 
         <MudText Typo="Typo.h5" Class="ml-3">Nordic Doors</MudText>
 
+        <div class="d-flex justify-center">
+            <MudImage ObjectFit="@ImageFit" Height="60" Width="170" Src="NordicDoor/images/nordic-door.jpg" Alt="Nordic door" Elevation="25" Class="rounded-lg" />
+        </div>
+
         <MudSpacer /> 
         <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Inherit" Edge="Edge.End" >
             <MudMenuItem>Logg ut </MudMenuItem>
@@ -23,5 +27,14 @@
 </MudLayout>
 
 @code{
-   
+    
+    @code {
+        ObjectFit ImageFit = ObjectFit.Cover;
+
+        void SetImageFit(ObjectFit value)
+        {
+            ImageFit = value;
+        }
+    }
+
 }
