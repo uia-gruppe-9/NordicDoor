@@ -13,8 +13,8 @@ namespace Nordic_Door.Shared.Models.Database
     {
         [Key]
         [Required]
-        [Column("SuggestionsPhase")]
-        public string SuggestionPhases { get; set; }
+        [Column("Phase")]
+        public string Phase { get; set; }
 
 
 
