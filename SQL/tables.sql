@@ -31,7 +31,7 @@ CREATE TABLE UserTeams (
                            Employee_ID INT,
                            Team_ID INT,
                            EmpRole VARCHAR (20) NOT NULL DEFAULT ('Medarbeider'),
-                           PRIMARY KEY (Employee_ID, Team_ID, EmpRole),
+                           PRIMARY KEY (Employee_ID, Team_ID),
                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                            FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
                            FOREIGN KEY (EmpRole) REFERENCES EmployeeRoles (EmpRole)
@@ -48,7 +48,7 @@ CREATE TABLE SuggestionPhase (
                                  Phase VARCHAR (20),
                                  PRIMARY KEY (Phase)
 );
-INSERT INTO SuggestionPhase VALUES ('Plan'), ('Do'), ('Study'), ('Act');
+INSERT INTO SuggestionPhase (Phase) VALUES ('Plan'), ('Do'), ('Study'), ('Act');
 
 CREATE TABLE Suggestions (
                              Suggestion_ID INT AUTO_INCREMENT,
@@ -60,13 +60,16 @@ CREATE TABLE Suggestions (
                              Responsible_Team_ID INT,
                              Deadline DATETIME,
                              LastUpdatedAt DATETIME,
-                             Status VARCHAR (20) NOT NULL DEFAULT ('Ny'),
-                             Phase VARCHAR (20) NOT NULL DEFAULT ('Plan'),
+                             Status VARCHAR (20) NOT NULL,
+                             Phase VARCHAR (20) NOT NULL,
                              Description VARCHAR (250),
                              PRIMARY KEY (Suggestion_ID),
                              FOREIGN KEY (CreatedBy_ID) REFERENCES Employees (Employee_ID),
                              FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
-                             FOREIGN KEY (Responsible_Employee_ID) REFERENCES Employees (Employee_ID)
+                             FOREIGN KEY (Responsible_Employee_ID) REFERENCES Employees (Employee_ID),
+                             FOREIGN KEY (Status) REFERENCES SuggestionStatus (Status),
+                             FOREIGN KEY (Phase) REFERENCES SuggestionPhase (Phase)
+
 );
 
 CREATE TABLE Events (
@@ -369,7 +372,7 @@ insert into Suggestions values ( default,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
-                                 'Planing',
+                                 'Plan',
                                  'Splint i dørkarm, må gjøres på nytt. ');
 
 insert into Suggestions values ( default,
