@@ -9,7 +9,7 @@ namespace Nordic_Door.Shared.Models.API
     {
         public Employee Employee { get; set; }
         public Team Team { get; set; }
-        public UserTeam Role { get; set; }
+        public EmployeeRole Role { get; set; }
     }
 }
 

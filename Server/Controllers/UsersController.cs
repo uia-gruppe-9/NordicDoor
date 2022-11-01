@@ -103,6 +103,7 @@ namespace Nordic_Door.Server.Controllers
                 Name = addUserRequest.Name,
                 Email = addUserRequest.Email,
                 Password = addUserRequest.Password,
+               
             };
 
             try
