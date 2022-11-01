@@ -282,22 +282,26 @@ else
 
                         <MudTabPanel Text="Bilder" Icon="@Icons.Filled.Image">
                             <div class="m-5">
-                            <InputFile id="images" hidden />
+                            <InputFile id="images" hidden OnChange="UploadFile"/>
                             <MudButton HtmlTag="label"
                                    Variant="Variant.Filled"
                                    Color="Color.Primary"
                                    StartIcon="@Icons.Filled.PhotoCamera"
-                                   for="fileInput">
-                               Last opp bilder
+                                   for="images">
+                               Last opp bilde
                             </MudButton>
                             </div>
 
-                            <MudCarousel TData="object" Class="mud-width-full" Style="height: 20rem;">
-                                <MudCarouselItem>
-                                    <div class="d-flex" style="height:100%">
-                                        <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-                                    </div>
-                                </MudCarouselItem>
+                            <MudCarousel TData="object" Class="mud-width-full" Style="height: 20rem;" AutoCycle="false">
+                                @foreach (var image in images) {
+                                    <MudCarouselItem>
+                                        <div class="d-flex" style="height:100%">
+                                        <MudImage Src="@image"/>
+
+</div>
+                                    </MudCarouselItem>
+                                }
+                               
                             </MudCarousel>
                         </MudTabPanel>
                     </MudTabs>
@@ -365,7 +369,7 @@ else
     private bool editEnabled = false;
     private bool loading = true;
     private MudForm? form;
-    IList<IBrowserFile> images;
+    IList<string> images = new List<string>(); // base64 
 
 
     private async Task EnsureSaveDialogOk()
@@ -493,14 +497,31 @@ else
             Snackbar.Add("Feil under henting av sak. Kontakt din administrator", Severity.Error);
             return (null, null);
         }
+        Console.WriteLine(_suggestion);
+        foreach(var picture in _suggestion.Pictures) {
+            images.Add($"data:image/png;base64,{Convert.ToBase64String(picture.Image)}");
+        }
         var sortedEvents = _events.OrderBy(x => x.Timestamp).ToList();
         return (_suggestion, sortedEvents);
 
     }
 
-    private void UploadFiles(InputFileChangeEventArgs e)
+    private async Task UploadFile(InputFileChangeEventArgs e)
     {
+        var image = await e.File.RequestImageFileAsync("image/png", 1000, 1000);
+        var buffer = new byte[image.Size];
+        await image.OpenReadStream().ReadAsync(buffer);
+        images.Add($"data:image/png;base64,{Convert.ToBase64String(buffer)}");
+        var content = new StreamContent(e.File.OpenReadStream());
+        var bytes = await content.ReadAsByteArrayAsync();
 
-        e.File
+        await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Picture/Add", new AddPictureRequest()
+            {
+                SuggestionId = suggestion.Id,
+                EmployeeId = suggestion.CreatedBy.Id,
+                UploadedAt = DateTime.Now,
+                Image = bytes
+            });
+            
     }
-}
+    }

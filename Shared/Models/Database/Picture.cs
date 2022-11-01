@@ -12,7 +12,6 @@ namespace Nordic_Door.Shared.Models.Database
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("Picture_ID")]
-
         public int Id { get; set; }
 
         [Required]
