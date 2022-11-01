@@ -17,7 +17,7 @@ namespace Nordic_Door.Shared.Models.API
 
         public DateTime UploadedAt { get; set; }
 
-        public Byte Image { get; set; }
+        public byte[] Image { get; set; }
 
         
     }

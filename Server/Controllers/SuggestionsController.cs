@@ -31,7 +31,7 @@ namespace Nordic_Door.Server.Controllers
                 var resposibleEmployee = await dbContext.Employees.FindAsync(suggestion.ResponsibleEmployee);
                 var responsibleTeam = await dbContext.Teams.FindAsync(suggestion.ResponsibleTeam);
                 var createByEmployee = await dbContext.Employees.FindAsync(suggestion.CreatedBy);
-                var Pictures = await dbContext.Pictures.Where(p => p.SuggestionId == id).ToListAsync();
+                var Pictures = await dbContext.Pictures.Where(p => p.SuggestionId == suggestion.Id).ToListAsync();
 
                 if (team == null || createByEmployee == null)
                 {
