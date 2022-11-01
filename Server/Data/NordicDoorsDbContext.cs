@@ -21,6 +21,7 @@ namespace Nordic_Door.Server.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<Picture> Pictures { get; set; }
         public DbSet<EmployeeRole> EmployeeRoles { get; set; }
+        public DbSet<SuggestionStatus> SuggestionStatus { get; set; }
 
     }
 }
