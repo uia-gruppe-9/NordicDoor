@@ -29,10 +29,10 @@ namespace NordicDoor.Server.Controllers
            if (user != null)
            {
 
-                var userUserteam = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
+                var userInUserteams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
 
                 var teamRelations = new List<UserTeamRelation>();
-                foreach (var userteam in userUserteam)
+                foreach (var userteam in userInUserteams)
                 {
 
                     var team = await dbContext.Teams.FindAsync(userteam.TeamId);

@@ -242,7 +242,7 @@ insert INTO Employees values (
 insert into UserTeams values (
                                  1,
                                  1,
-                                 'Medarbeider'
+                                 'Teamleder'
                              );
 
 insert into UserTeams values (
@@ -306,6 +306,11 @@ insert into UserTeams values (
                              );
 insert into UserTeams values (
                                  12,
+                                 2,
+                                 'Medarbeider'
+                             );
+insert into UserTeams values (
+                                 1,
                                  2,
                                  'Medarbeider'
                              );
