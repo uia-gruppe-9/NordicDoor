@@ -22,7 +22,7 @@ namespace NordicDoor.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/Get/CommentBySuggestionID")]
+        [Route("{id:int}")]
         public async Task<IActionResult> GetCommentById([FromRoute] int id)
         {
             var comment = await dbContext.SuggestionComments.FindAsync(id);
@@ -36,9 +36,7 @@ namespace NordicDoor.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/Get/Comments")]
-
-        public async Task<IActionResult> GetCommentRequest()
+          public async Task<IActionResult> GetCommentRequest()
         {
             var comments = await dbContext.SuggestionComments.ToListAsync();
             var updateComment = new List<GetSuggestionCommentRequest>();
@@ -72,6 +70,25 @@ namespace NordicDoor.Server.Controllers
 
         }
 
-    }
+        [HttpPost]
+        [Route("/Add/Comment")]
+
+        public async Task<IActionResult> AddComment (AddSuggestionCommentRequest addSuggestionCommentRequest)
+        {
+            var comment = new SuggestionComment()
+            {
+                Id = addSuggestionCommentRequest.Id,
+                EmployeeId = addSuggestionCommentRequest.EmployeeId,
+                SuggestionId = addSuggestionCommentRequest.SuggestionId,
+                Comment = addSuggestionCommentRequest.Comment,
+                Timestamp = addSuggestionCommentRequest.Timestamp,
+            };
+            await dbContext.SuggestionComments.AddAsync(comment);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        
+        }
+
+
 
 }
