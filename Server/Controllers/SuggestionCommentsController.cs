@@ -36,7 +36,7 @@ namespace NordicDoor.Server.Controllers
         }
 
         [HttpGet]
-          public async Task<IActionResult> GetCommentRequest()
+        public async Task<IActionResult> GetCommentRequest()
         {
             var comments = await dbContext.SuggestionComments.ToListAsync();
             var updateComment = new List<GetSuggestionCommentRequest>();
@@ -73,7 +73,7 @@ namespace NordicDoor.Server.Controllers
         [HttpPost]
         [Route("/Add/Comment")]
 
-        public async Task<IActionResult> AddComment (AddSuggestionCommentRequest addSuggestionCommentRequest)
+        public async Task<IActionResult> AddComment(AddSuggestionCommentRequest addSuggestionCommentRequest)
         {
             var comment = new SuggestionComment()
             {
@@ -86,9 +86,10 @@ namespace NordicDoor.Server.Controllers
             await dbContext.SuggestionComments.AddAsync(comment);
             await dbContext.SaveChangesAsync();
             return Ok();
-        
+
         }
 
 
 
+    }
 }
