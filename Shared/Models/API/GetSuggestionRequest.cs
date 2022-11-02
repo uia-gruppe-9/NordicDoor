@@ -3,6 +3,27 @@ namespace Nordic_Door.Shared.Models.API
 {
     public class GetSuggestionRequest
     {
+        // Constructor er trengs siden i ViewSuggestions så må vi lage flere GetSuggestionsRequest, og de kan ikke ha samme referanse
+        // Denne lar oss lage en ny request fra en annen eksisterende request litt lettere.
+        public GetSuggestionRequest(GetSuggestionRequest request)
+        {
+            Id = request.Id;
+            Team = request.Team;
+            ResponsibleEmployee = request.ResponsibleEmployee;
+            ResponsibleTeam = request.ResponsibleTeam;
+            CreatedBy = request.CreatedBy;
+            Title = request.Title;
+            CreatedAt = request.CreatedAt;
+            DeadLine = request.DeadLine;
+            LastUpdatedAt = request.LastUpdatedAt;
+            Status = request.Status;
+            Phase = request.Phase;
+            Description = request.Description;
+        }
+
+        // Default constructor
+        public GetSuggestionRequest () {}
+
         public int Id { get; set; }
 
         public Team Team { get; set; }
@@ -26,6 +47,8 @@ namespace Nordic_Door.Shared.Models.API
         public string? Phase { get; set; }
 
         public string? Description { get; set; }
+
+        public List<Picture> Pictures { get; set; }  
     }
 }
 

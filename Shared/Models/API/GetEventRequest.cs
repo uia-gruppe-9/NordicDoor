@@ -7,6 +7,7 @@ namespace Nordic_Door.Shared.Models.API
     public class GetEventRequest
     {
     public int Id { get; set; }
+
     public Employee Employee { get; set; }
    
     public Suggestion Suggestion { get; set; }

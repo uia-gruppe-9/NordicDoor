@@ -9,7 +9,6 @@ namespace Nordic_Door.Shared.Models.API
 {
     public class AddPictureRequest
     {
-        public int Id { get; set; }
 
         public int SuggestionId { get; set; }
 
@@ -17,7 +16,7 @@ namespace Nordic_Door.Shared.Models.API
 
         public DateTime UploadedAt { get; set; }
 
-        public Byte Image { get; set; }
+        public byte[] Image { get; set; }
 
         
     }

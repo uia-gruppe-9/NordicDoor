@@ -12,7 +12,6 @@ namespace Nordic_Door.Shared.Models.Database
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("Picture_ID")]
-
         public int Id { get; set; }
 
         [Required]
@@ -29,7 +28,7 @@ namespace Nordic_Door.Shared.Models.Database
         [Required]
         public DateTime UploadedAt { get; set; }
         [Required]
-        public Byte Image { get; set; }
+        public byte[] Image { get; set; }
     }
 
         

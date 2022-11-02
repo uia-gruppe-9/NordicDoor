@@ -18,6 +18,8 @@ namespace Nordic_Door.Shared.Models.Database
         public int TeamId { get; set; }
 
         [Required]
-        public Role Role { get; set; }
+        [Column("EmpRole")]
+        [ForeignKey("EmployeeRole")]
+        public string Role { get; set; }
     }
 }

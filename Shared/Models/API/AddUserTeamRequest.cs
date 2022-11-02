@@ -1,12 +1,13 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Nordic_Door.Shared.Models.Database;
 
 namespace Nordic_Door.Shared.Models.API
 {
-    public class UpdateUserTeamRequest
+    public class AddUserTeamRequest
     {
+        public int EmployeeId { get; set; }
+        public int TeamId { get; set; }
         public string Role { get; set; }
     }
 }
+

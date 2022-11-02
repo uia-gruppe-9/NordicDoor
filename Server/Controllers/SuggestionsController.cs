@@ -24,12 +24,14 @@ namespace Nordic_Door.Server.Controllers
 
             var updateSuggestions = new List<GetSuggestionRequest>();
 
+
             foreach (var suggestion in suggestions)
             {
                 var team = await dbContext.Teams.FindAsync(suggestion.TeamId);
                 var resposibleEmployee = await dbContext.Employees.FindAsync(suggestion.ResponsibleEmployee);
                 var responsibleTeam = await dbContext.Teams.FindAsync(suggestion.ResponsibleTeam);
                 var createByEmployee = await dbContext.Employees.FindAsync(suggestion.CreatedBy);
+                var Pictures = await dbContext.Pictures.Where(p => p.SuggestionId == suggestion.Id).ToListAsync();
 
                 if (team == null || createByEmployee == null)
                 {
@@ -52,6 +54,7 @@ namespace Nordic_Door.Server.Controllers
                     Status = suggestion.Status,
                     Phase = suggestion.Phase,
                     Description = suggestion.Description,
+                    Pictures = Pictures,
                 }
                     );
             }
@@ -65,6 +68,7 @@ namespace Nordic_Door.Server.Controllers
         {
 
             var suggestion = await dbContext.Suggestions.FindAsync(id);
+            var Pictures = await dbContext.Pictures.Where(p => p.SuggestionId == id).ToListAsync();
 
             if (suggestion == null)
             {
@@ -96,13 +100,14 @@ namespace Nordic_Door.Server.Controllers
                 Status = suggestion.Status,
                 Phase = suggestion.Phase,
                 Description = suggestion.Description,
+                Pictures = Pictures,
             };
 
             return Ok(suggestionResponse);
         }
 
         [HttpGet]
-        [Route("/Search/Firstby/{title}")]
+        [Route("Search/Firstby/{title}")]
         public async Task<IActionResult> GetFirstSuggestionByTitle([FromRoute] string title)
         {
 
@@ -118,7 +123,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpGet]
-        [Route("/Search/All/Suggestion/{title}")]
+        [Route("Search/All/Suggestion/{title}")]
         public async Task<IActionResult> GetAllSuggestionsByTitle([FromRoute] string title)
         {
 
@@ -135,17 +140,18 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPut]
-        [Route("/Update/{id:int}")]
+        [Route("Update/{id:int}")]
 
-        public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateSuggestionRequest updateSuggestionRequest)
+        public async Task<IActionResult> UpdateSuggestion([FromRoute] int id, UpdateSuggestionRequest updateSuggestionRequest)
+
         {
             var suggestion = await dbContext.Suggestions.FindAsync(id);
 
             if (suggestion != null)
             {
-                suggestion.TeamId = updateSuggestionRequest.TeamId;
                 suggestion.ResponsibleEmployee = updateSuggestionRequest.ResponsibleEmployee;
                 suggestion.ResponsibleTeam = updateSuggestionRequest.ResponsibleTeam;
+                suggestion.LastUpdatedAt = updateSuggestionRequest.LastUpdatedAt;
                 suggestion.Title = updateSuggestionRequest.Title;
                 suggestion.DeadLine = updateSuggestionRequest.DeadLine;
                 suggestion.Status = updateSuggestionRequest.Status;
@@ -185,7 +191,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpDelete]
-        [Route("/Delete/{id:int}")]
+        [Route("Delete/{id:int}")]
 
         public async Task<IActionResult> DeleteSuggestionById([FromRoute] int id)
         {
