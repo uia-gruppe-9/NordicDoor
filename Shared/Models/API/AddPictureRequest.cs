@@ -9,7 +9,6 @@ namespace Nordic_Door.Shared.Models.API
 {
     public class AddPictureRequest
     {
-        public int Id { get; set; }
 
         public int SuggestionId { get; set; }
 

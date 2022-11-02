@@ -2,7 +2,6 @@
 {
     public class UpdateSuggestionRequest
     {
-        public int TeamId { get; set; }
 
         public int? ResponsibleEmployee { get; set; }
 
@@ -12,7 +11,7 @@
 
         public DateTime? DeadLine { get; set; }
 
-        //public DateTime? LastUpdatedAt { get; } // kan hende denne skal være med.
+        public DateTime LastUpdatedAt{ get; set; }
 
         public string? Status { get; set; }
 
