@@ -8,7 +8,7 @@ SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
                        Team_ID INT AUTO_INCREMENT,
-                       Name VARCHAR (60) NOT NULL,
+                       Name VARCHAR (60) NOT NULL UNIQUE,
                        PRIMARY KEY (Team_ID)
 );
 

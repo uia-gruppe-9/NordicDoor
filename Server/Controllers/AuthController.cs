@@ -36,10 +36,16 @@ namespace NordicDoor.Server.Controllers
                 {
 
                     var team = await dbContext.Teams.FindAsync(userteam.TeamId);
+                    
                     var userRole = userteam.Role;
 
                     teamRelations.Add(new UserTeamRelation(
                     ){
+                        EmployeeName = user.Name,
+                        EmployeeEmail = user.Email,
+                        EmployeeIsAdmin = user.IsAdmin,
+                        EmployeeId = user.Id,
+
                         UserRole = userRole,
                         Team = team
                     });
