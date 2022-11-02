@@ -497,7 +497,6 @@ else
             Snackbar.Add("Feil under henting av sak. Kontakt din administrator", Severity.Error);
             return (null, null);
         }
-        Console.WriteLine(_suggestion);
         foreach(var picture in _suggestion.Pictures) {
             images.Add($"data:image/png;base64,{Convert.ToBase64String(picture.Image)}");
         }
