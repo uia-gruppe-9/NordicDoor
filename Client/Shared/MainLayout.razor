@@ -1,27 +1,48 @@
 ﻿@inherits LayoutComponentBase
+@inject HttpClient httpClient
+@inject NavigationManager Navigation
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<MudLayout>
-    <MudAppBar Elevation="1">
+<MudLayout Style="background-color:whitesmoke">
+    <MudAppBar Style=" Elevation: 1; background-color: white;">
 
-           
-        <MudIconButton Icon= "@Icons.Filled.ArrowBack" Color="Color.Inherit" Edge="Edge.Start" />
+          @if(Navigation.Uri != Navigation.BaseUri) {
+            <MudIconButton Icon="@Icons.Filled.ArrowBack" Color="Color.Dark" Edge="Edge.Start" OnClick="OnBackClick"/>
 
-        <MudText Typo="Typo.h5" Class="ml-3">Nordic Doors</MudText>
+          }
+        <MudSpacer />
+        <div class="d-flex justify-center">
+            <MudImage ObjectFit="@ImageFit" Height="20"  Src="images/nordic-door.png" Alt="Nordic door" Elevation="0" Class="squared-lg" />
+        </div>
 
         <MudSpacer /> 
-        <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Inherit" Edge="Edge.End" >
+        <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Dark" Edge="Edge.End" >
             <MudMenuItem>Logg ut </MudMenuItem>
         </MudMenu>
-       
+     
     </MudAppBar>
     <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem;">
         @Body
     </MudMainContent>
 </MudLayout>
 
+
+
 @code{
-   
+
+
+    ObjectFit ImageFit = ObjectFit.Cover;
+
+    void SetImageFit(ObjectFit value)
+    {
+        ImageFit = value;
+    }
+
+    public void OnBackClick() {
+            Navigation.NavigateTo("/");
+       
+    }
+
 }
