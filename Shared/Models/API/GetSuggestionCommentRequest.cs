@@ -11,8 +11,7 @@ namespace Nordic_Door.Shared.Models.API
     public class GetSuggestionCommentRequest
     {
         public int Id { get; set; }
-        public Employee Employee { get; set; }
-        public Suggestion Suggestion { get; set; }
+        public string EmployeeName { get; set; }
         public string Comment { get; set; }
         public DateTime Timestamp { get; set; }
 

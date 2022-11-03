@@ -74,14 +74,13 @@ CREATE TABLE Suggestions (
 
 CREATE TABLE SuggestionComments (
                             Comment_ID INT AUTO_INCREMENT,
-                            Employee_ID INT NOT NULL,
-                            Suggestion_ID INT NOT NULL,
+                            Employee_ID INT NOT NULL ,
+                            Suggestion_ID INT NOT NULL ,
                             Comment VARCHAR (250),
-                            Datetime TIMESTAMP,
+                            Timestamp DATETIME NOT NULL ,
                             PRIMARY KEY (Comment_ID),
                             FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                             FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
-
 );
 
 CREATE TABLE Events (
@@ -105,13 +104,7 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
-INSERT INTO SuggestionComments VALUES(
-                         DEFAULT,
-                         1,
-                         1,
-                         'Jeg syntes dette var en veldig god ide!',
-                         current_timestamp
-);
+
 
 INSERT INTO Teams values (
                              1,
@@ -539,3 +532,11 @@ INSERT INTO Pictures VALUES (
 
 
                             )
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        1,
+        1,
+        'Jeg syntes dette var en veldig god ide!',
+        current_timestamp
+    );

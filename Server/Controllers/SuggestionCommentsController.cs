@@ -23,31 +23,22 @@ namespace NordicDoor.Server.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<IActionResult> GetCommentById([FromRoute] int id)
+        public async Task<IActionResult> GetCommentBySuggeestionId([FromRoute] int id)
         {
-            var comment = await dbContext.SuggestionComments.FindAsync(id);
-            if (comment == null)
+            // Finn alle comments hvor suggestion ID er like alle comments du får inn fra frontend
+            var comments = await dbContext.SuggestionComments.Where(c => c.SuggestionId == id).ToListAsync();
+            if (comments == null)
             {
                 return NotFound();
             }
-
-            return Ok(comment);
-
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetCommentRequest()
-        {
-            var comments = await dbContext.SuggestionComments.ToListAsync();
             var updateComment = new List<GetSuggestionCommentRequest>();
-
             foreach (var comment in comments)
 
             {
                 var employee = await dbContext.Employees.FindAsync(comment.EmployeeId);
-                var suggestion = await dbContext.Suggestions.FindAsync(comment.SuggestionId);
+                
 
-                if (employee == null || suggestion == null)
+                if (employee == null)
                 {
                     continue;
                 }
@@ -55,9 +46,7 @@ namespace NordicDoor.Server.Controllers
                 updateComment.Add(new GetSuggestionCommentRequest()
                 {
                     Id = comment.Id,
-                    Employee = employee,
-                    Suggestion = suggestion,
-
+                    EmployeeName = employee.Name,
                     Comment = comment.Comment,
                     Timestamp = comment.Timestamp,
                 }
@@ -66,6 +55,7 @@ namespace NordicDoor.Server.Controllers
 
 
             }
+
             return Ok(updateComment);
 
         }
@@ -77,7 +67,6 @@ namespace NordicDoor.Server.Controllers
         {
             var comment = new SuggestionComment()
             {
-                Id = addSuggestionCommentRequest.Id,
                 EmployeeId = addSuggestionCommentRequest.EmployeeId,
                 SuggestionId = addSuggestionCommentRequest.SuggestionId,
                 Comment = addSuggestionCommentRequest.Comment,
