@@ -97,6 +97,17 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
 
+CREATE TABLE SuggestionComments (
+                            Comment_ID INT AUTO_INCREMENT,
+                            Employee_ID INT NOT NULL ,
+                            Suggestion_ID INT NOT NULL ,
+                            Comment VARCHAR (250),
+                            Timestamp DATETIME NOT NULL ,
+                            PRIMARY KEY (Comment_ID),
+                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                            FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
+);
+
 INSERT INTO Teams values (
                              1,
                              'Salg og Marked'
@@ -512,14 +523,11 @@ insert into Events values (
                               10,
                               'Opprettet Forbedringsforslag: Fiks dør til kontor.',
                               current_timestamp );
-
-
-INSERT INTO Pictures VALUES (
-                             DEFAULT,
-                             1,
-                             1,
-                             CURRENT_TIME,
-                             LOAD_FILE('C:/Users/starm/Downloads/Test.GIF')
-
-
-                            )
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        1,
+        1,
+        'Jeg syntes dette var en veldig god ide!',
+        current_timestamp
+    );
