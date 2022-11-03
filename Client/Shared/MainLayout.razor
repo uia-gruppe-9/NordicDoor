@@ -9,7 +9,7 @@
     <MudAppBar Style=" Elevation: 1; background-color: white;">
 
           @if(Navigation.Uri != Navigation.BaseUri) {
-            <MudIconButton Icon="@Icons.Filled.ArrowBack" Color="Color.Dark" Edge="Edge.Start" OnClick="OnBackClick"/>
+            <MudIconButton Icon="@Icons.Filled.ArrowBack" Color="Color.Dark" Edge="Edge.Start" OnClick="OnBackClick" />
 
           }
         <MudSpacer />
@@ -41,8 +41,8 @@
     }
 
     public void OnBackClick() {
-            Navigation.NavigateTo("/");
-       
+        Navigation.NavigateTo("/");
+
     }
 
     MudTheme MyCustomTheme = new MudTheme()
@@ -51,6 +51,7 @@
             {
                 Primary = Colors.Blue.Accent4,
                 Secondary = Colors.Red.Accent3,
+                
                
             },
           
