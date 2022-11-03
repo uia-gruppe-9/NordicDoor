@@ -19,14 +19,13 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpPost]
-        [Route("/Add/Pictures")] // Fjern denne, holder den for markus sin skyld
+        [Route("Add")]
 
         public async Task<IActionResult> AddPicture(AddPictureRequest addPictureRequest)
         {
 
             var picture = new Picture()
             {
-                Id = addPictureRequest.Id,
                 SuggestionId = addPictureRequest.SuggestionId,
                 EmployeeId = addPictureRequest.EmployeeId,
                 UploadedAt = addPictureRequest.UploadedAt,

@@ -107,7 +107,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/Search/Firstby/{title}")]
+        [Route("Search/Firstby/{title}")]
         public async Task<IActionResult> GetFirstSuggestionByTitle([FromRoute] string title)
         {
 
@@ -123,7 +123,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpGet]
-        [Route("/Search/All/Suggestion/{title}")]
+        [Route("Search/All/Suggestion/{title}")]
         public async Task<IActionResult> GetAllSuggestionsByTitle([FromRoute] string title)
         {
 
@@ -140,17 +140,18 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPut]
-        [Route("/Update/{id:int}")]
+        [Route("Update/{id:int}")]
 
-        public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateSuggestionRequest updateSuggestionRequest)
+        public async Task<IActionResult> UpdateSuggestion([FromRoute] int id, UpdateSuggestionRequest updateSuggestionRequest)
+
         {
             var suggestion = await dbContext.Suggestions.FindAsync(id);
 
             if (suggestion != null)
             {
-                suggestion.TeamId = updateSuggestionRequest.TeamId;
                 suggestion.ResponsibleEmployee = updateSuggestionRequest.ResponsibleEmployee;
                 suggestion.ResponsibleTeam = updateSuggestionRequest.ResponsibleTeam;
+                suggestion.LastUpdatedAt = updateSuggestionRequest.LastUpdatedAt;
                 suggestion.Title = updateSuggestionRequest.Title;
                 suggestion.DeadLine = updateSuggestionRequest.DeadLine;
                 suggestion.Status = updateSuggestionRequest.Status;
@@ -190,7 +191,7 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpDelete]
-        [Route("/Delete/{id:int}")]
+        [Route("Delete/{id:int}")]
 
         public async Task<IActionResult> DeleteSuggestionById([FromRoute] int id)
         {
