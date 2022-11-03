@@ -3,7 +3,7 @@ USE nordicdoors;
 
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS Teams, Employees, UserTeams, Events, SuggestionPhase, SuggestionStatus, Suggestions, EmployeeRoles, Pictures;
+DROP TABLE IF EXISTS Teams, Employees, UserTeams, Events, SuggestionPhase, SuggestionStatus, Suggestions, EmployeeRoles, SuggestionComments, Pictures;
 SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
@@ -72,6 +72,17 @@ CREATE TABLE Suggestions (
 
 );
 
+CREATE TABLE SuggestionComments (
+                            Comment_ID INT AUTO_INCREMENT,
+                            Employee_ID INT NOT NULL ,
+                            Suggestion_ID INT NOT NULL ,
+                            Comment VARCHAR (250),
+                            Timestamp DATETIME NOT NULL ,
+                            PRIMARY KEY (Comment_ID),
+                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                            FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
+);
+
 CREATE TABLE Events (
                         Event_ID INT AUTO_INCREMENT,
                         Employee_ID INT,
@@ -93,6 +104,7 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
+
 
 INSERT INTO Teams values (
                              1,
@@ -520,3 +532,11 @@ INSERT INTO Pictures VALUES (
 
 
                             )
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        1,
+        1,
+        'Jeg syntes dette var en veldig god ide!',
+        current_timestamp
+    );
