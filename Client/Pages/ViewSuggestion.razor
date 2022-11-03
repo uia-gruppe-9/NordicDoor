@@ -129,7 +129,7 @@ else
                                 </div>
                                 @if (editEnabled)
                                 {
-                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status">
+                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status" >
                                         <MudSelectItem Value="@("Ny")" />
                                         <MudSelectItem Value="@("Åpen")" />
                                         <MudSelectItem Value="@("Lukket")" />
@@ -249,7 +249,7 @@ else
                                 }
                             </div>
                             <MudText Style="font-weight: 300; font-size: 15px">
-                                Opprettet @suggestion.CreatedAt
+                                Opprettet @suggestion.CreatedAt.ToString("yyyy-MM-dd H:m:s")
                             </MudText>
                         </div>
 
@@ -344,7 +344,7 @@ else
 
                                     <MudText Style="font-size: 1rem; font-weight: 600;">@_event.Description</MudText>
                                     <MudText Style="font-weight: 200; font-size: 14px;">
-                                        @_event.Timestamp
+                                        @_event.Timestamp.ToString("yyyy-MM-dd H:m:s")
                                         <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;" /> @suggestion.CreatedBy.Name
                                     </MudText>
                                 </div>
@@ -369,7 +369,7 @@ else
     private bool editEnabled = false;
     private bool loading = true;
     private MudForm? form;
-    IList<string> images = new List<string>(); // base64 
+    IList<string> images = new List<string>(); // base64 for display
 
 
     private async Task EnsureSaveDialogOk()
@@ -514,7 +514,7 @@ else
         var content = new StreamContent(e.File.OpenReadStream());
         var bytes = await content.ReadAsByteArrayAsync();
 
-        await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Picture/Add", new AddPictureRequest()
+        await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
             {
                 SuggestionId = suggestion.Id,
                 EmployeeId = suggestion.CreatedBy.Id,

@@ -22,7 +22,9 @@ namespace NordicDoor.Server.Controllers
         public async Task<IActionResult> GetRoles()
         {
             var Emprole = await dbContext.EmployeeRoles.ToListAsync();
-            return Ok(Emprole);
+
+
+            return Ok(Emprole.Select(x => x.Role));
         }
     }
 }
