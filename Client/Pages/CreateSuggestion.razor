@@ -272,8 +272,8 @@
     {
         var res = await httpClient.PostAsJsonAsync<AddSuggestionRequest>("api/Suggestions", new AddSuggestionRequest() {
                 TeamId = 1, // DENNE MÅ OPPDATERES,
-                ResponsibleEmployee = model.ResponsibleEmployee.Id,
-                ResponsibleTeam = model.ResponsibleTeam.Id,
+                ResponsibleEmployee = (model.ResponsibleEmployee != null ? model.ResponsibleEmployee.Id : null ),
+                ResponsibleTeam = (model.ResponsibleTeam != null ? model.ResponsibleTeam.Id : null),
                 CreatedBy = 1, // DENNE MÅ OPPPDATERES,
                 Title = model.Title,
                 CreatedAt = DateTime.Now,
@@ -295,8 +295,9 @@
 
         await UploadPictures(id);
 
+        Snackbar.Add("Sak har blitt opprettet", Severity.Success);
         Navigation.NavigateTo("/suggestion/" + id); // response is the ID of the created suggestion
-        StateHasChanged();
+
     }
 
     private async Task UploadPictures(int id) {
@@ -313,14 +314,6 @@
         }
     }
 
-    protected void OpenSaveDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var parameters = new DialogParameters { ["OnOk"] = EventCallback.Factory.Create(this, EnsureSaveDialogOk) };
-        parameters.Add("Content", "Er du sikker på at du vil lagre endringene dine?");
-
-        DialogService.Show<NordicDialog>("Vil du lagre?", parameters, options);
-    }
     protected void OpenCancelDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
