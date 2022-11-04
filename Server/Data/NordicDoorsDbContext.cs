@@ -24,5 +24,6 @@ namespace Nordic_Door.Server.Data
         public DbSet<EmployeeRole> EmployeeRoles { get; set; }
         public DbSet<SuggestionStatus> SuggestionStatus { get; set; }
 
+        public DbSet<SuggestionComment> SuggestionComments { get; set; }
     }
 }

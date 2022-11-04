@@ -171,12 +171,13 @@ namespace Nordic_Door.Server.Controllers
         {
             var suggestion = new Suggestion()
             {
-
                 TeamId = addSuggestionRequest.TeamId,
                 CreatedBy = addSuggestionRequest.CreatedBy,
                 ResponsibleEmployee = addSuggestionRequest.ResponsibleEmployee,
                 ResponsibleTeam = addSuggestionRequest.ResponsibleTeam,
+                LastUpdatedAt = addSuggestionRequest.LastUpdatedAt,
                 Title = addSuggestionRequest.Title,
+                CreatedAt = addSuggestionRequest.CreatedAt,
                 DeadLine = addSuggestionRequest.DeadLine,
                 Status = addSuggestionRequest.Status,
                 Phase = addSuggestionRequest.Phase,
@@ -185,7 +186,8 @@ namespace Nordic_Door.Server.Controllers
 
             await dbContext.Suggestions.AddAsync(suggestion);
             await dbContext.SaveChangesAsync();
-            return Ok(suggestion);
+            var value = await dbContext.Entry(suggestion).GetDatabaseValuesAsync();
+            return Ok(value.GetValue<int>("Id"));
 
 
         }

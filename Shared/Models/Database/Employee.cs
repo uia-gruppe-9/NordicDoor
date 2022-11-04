@@ -13,7 +13,7 @@ namespace Nordic_Door.Shared.Models.Database
         public string Name { get; set; }
         public string Email { get; set; }
         [Required]
-        public string Password { get; set; }
+                public string Password { get; set; }
         [Required]
         [Column("Is_Admin")]
         public int IsAdmin { get; set; }

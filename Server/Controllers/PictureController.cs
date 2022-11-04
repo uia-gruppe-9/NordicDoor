@@ -9,11 +9,11 @@ namespace Nordic_Door.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PictureController : Controller
+    public class PicturesController : Controller
     {
         public NordicDoorsDbContext dbContext { get; set; }
 
-        public PictureController(NordicDoorsDbContext ctx)
+        public PicturesController(NordicDoorsDbContext ctx)
         {
             dbContext = ctx;
         }
