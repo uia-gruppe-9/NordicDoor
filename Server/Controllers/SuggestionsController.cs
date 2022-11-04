@@ -139,9 +139,8 @@ namespace Nordic_Door.Server.Controllers
 
 
 
-        [HttpPut]
+        [HttpPut] // Oppdatere Forbedringsforslag
         [Route("Update/{id:int}")]
-
         public async Task<IActionResult> UpdateSuggestion([FromRoute] int id, UpdateSuggestionRequest updateSuggestionRequest)
 
         {
