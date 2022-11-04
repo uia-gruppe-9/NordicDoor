@@ -1,102 +1,376 @@
 ﻿@page "/new"
-@using System.ComponentModel.DataAnnotations
+@using Nordic_Door.Shared.Models.API;
+@using Nordic_Door.Shared.Models.Database;
+@using Nordic_Door.Client.Models;
 
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <MudGrid>
-        <MudItem xs="12" sm="7">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField Label="Tittel"
-                                  @bind-Value="model.Tittel" For="@(() => model.Tittel)" />
+@inject HttpClient httpClient
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
-                    <MudTextField Label="Problem" HelperText="Beskriv problemet" Class="mt-3"
-                                  @bind-Value="model.Problem" For="@(() => model.Problem)" />
-
-                    <MudTextField Label="Årsak" HelperText="Hva er rotårsaken til problemet?" Class="mt-3"
-                                  @bind-Value="model.Årsak" For="@(() => model.Årsak)" />
-
-                    <MudTextField Label="Løsning" HelperText="Hvordan skal problemet løses?" Class="mt-3"
-                                  @bind-Value="model.Løsning" For="@(() => model.Løsning)" />
-                    
-
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Filled.CloudUpload"
-                               for="fileInput">
-                        Last Opp Bilde
-                    </MudButton>
+<!-- https://mudblazor.com/components/grid#basic-grid -->
+<style>
 
 
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12" sm="5">
-            <MudPaper Class="pa-4 mud-height-full">
-                <MudText Typo="Typo.subtitle2">Status på forslag</MudText>
-                @if (success)
-                {
-                    <MudText Color="Color.Success">Forslaget ditt har blitt registrert</MudText>
-                }
-                else
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                }
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Align="Align.Center">
-                Fyll ut skjemaet for å sende inn ditt forslag.
-            </MudText>
-        </MudItem>
-    </MudGrid>
-</EditForm>
+    .container {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
 
+    .container-column {
+        flex-direction: column;
+    }
 
-@code {
-    RegisterAccountForm model = new RegisterAccountForm();
-    bool success;
+    .info-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem
+    }
 
-    public class RegisterAccountForm
-    {
-        [Required]
-        [StringLength(25, ErrorMessage = "Tittel kan ikke være lenger enn 25 tegn.")]
-        public string Tittel { get; set; }
+    .space-evenly {
+        justify-content: space-evenly;
+    }
 
-        [Required]
-        [StringLength(250, ErrorMessage = "Beskrivelse må ikke overstride 250 tegn.")]
-        public string Problem { get; set; }
+    .info-container-vertical {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem
+    }
 
-        [Required]
-        public string Årsak { get; set; }
+    .paper {
+        display: flex;
+        flex-direction: column;
+        background-color: #fffcfc;
+        border: 2px solid #bdbdbd;
+        min-width: 20%;
+        border-radius: 25px;
+        box-shadow: rgba(0, 0, 0, 0.10) 0px 5px 24px;
+        gap: 1rem;
+        padding: 1rem 1rem;
+    }
 
-        [Required]
-        public string Løsning { get; set; }
+    .paper-vertical {
+        flex-direction: row !important;
+        height: 10rem !important;
+    }
 
+    .paper .mud-typography {
+        font-size: 1.3rem;
+        font-weight: 400;
+    }
 
+    .title-container {
+        display: flex;
+        justify-content: space-between;
+        margin-left: 1rem;
+    }
 
-        IList<IBrowserFile> files = new List<IBrowserFile>();
-        private void UploadFiles(InputFileChangeEventArgs e)
-        {
-            foreach (var file in e.GetMultipleFiles())
-            {
-                files.Add(file);
-            }
-            //TODO upload the files to the server
+        .title-container .title-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.4rem;
         }
 
+    .icon-container {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
     }
 
-    private void OnValidSubmit(EditContext context)
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .history-container {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow: auto;
+        padding: 1rem;
+        border-top: solid grey 1px;
+    }
+</style>
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+        <div class="container">
+
+            <div class="container container-column">
+                <MudContainer class="d-flex flex-column gap-2">
+                    <div class="paper paper-vertical">
+                        <div class="info-container space-evenly">
+
+                            <div class="info-container-vertical">
+                                <div class="icon-container">
+                                    <MudIcon Icon="@Icons.Filled.Info" />
+                                    <MudText>Status</MudText>
+                                </div>
+                                    <MudSelect T="string" Label="Status" @bind-Value="@status" For="@(() => model.Status)">
+                                        @foreach(var status in statuses) {
+                                            <MudSelectItem Value="@(status)" />
+                                        }
+                           
+
+                                    </MudSelect>
+                            </div>
+                            <div class="info-container-vertical">
+                                <div class="icon-container">
+                                    <MudIcon Icon="@Icons.Filled.AssignmentTurnedIn" />
+                                    <MudText>Fase</MudText>
+                                </div>
+                                    <MudSelect T="string" Label="Fase" @bind-Value="@phase" For="@(() => model.Phase)">
+                                         @foreach(var phase in phases) {
+                                            <MudSelectItem Value="@(phase)" />
+                                        }
+                                    </MudSelect>
+                               
+                              
+
+                            </div>
+                        </div>
+                        <MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="my-6" />
+                        <div class="info-container space-evenly">
+                            <div class="info-container-vertical">
+                                <div class="icon-container">
+                                    <MudIcon Icon="@Icons.Filled.Person" />
+                                    <MudText>Ansvarlig ansatt</MudText>
+                                </div>
+                                    <MudAutocomplete T="Employee" Label="Søk etter ansatt" @bind-Value="@model.ResponsibleEmployee" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" For="@(() => model.ResponsibleEmployee)" />
+
+                            </div>
+                            <div class="info-container-vertical">
+                                <div class="icon-container">
+                                    <MudIcon Icon="@Icons.Filled.People" />
+                                    <MudText>Ansvarlig team</MudText>
+                                </div>
+                                    <MudAutocomplete  T="Team" Label="Søk etter team" @bind-Value="@model.ResponsibleTeam" ToStringFunc="@(e => e.Name)" SearchFunc="SearchTeams" For="@(() => model.ResponsibleTeam)" />
+                            </div>
+                        </div>
+                        <MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="my-6" />
+                        <div class="info-container space-evenly">
+                            <div class="info-container-vertical">
+                                <div class="icon-container">
+                                    <MudIcon Icon="@Icons.Filled.AssignmentLate" />
+                                    <MudText>Frist</MudText>
+                                </div>
+                                <MudDatePicker Label="Velg dato" DateFormat="dd.MM.yyyy" @bind-Date="@model.Deadline" For="@(() => model.Deadline)" />
+                            </div>
+                        </div>
+
+                    </div>
+                </MudContainer>
+                <div class="paper">
+                    <div class="title-container">
+                        <div class="flex-column gap-2">
+
+                            <div class="title-heading">
+
+                                <MudIcon Icon="@Icons.Filled.Assignment" Style="display: inline;" />
+
+                                    <MudTextField @bind-Value="@model.Title" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true" HelperText="Skriv en tittel" For="@(() => model.Title)"/>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div>
+                    </div>
+                    <MudTabs Elevation="2" Outlined="true">
+                        <MudTabPanel Text="Informasjon" Icon="@Icons.Filled.Image">
+                                <MudTextField T="string" @bind-Value="@model.Description" Variant="Variant.Outlined" Lines="10" HelperText="Beskriv saken du vil opprette" Required="true" For="@(() => model.Description)" />
+
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="Bilder" Icon="@Icons.Filled.Image">
+                            <div class="m-5">
+                                <InputFile id="images" hidden OnChange="UploadFile" />
+                                <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Filled.PhotoCamera"
+                                       Style="margin-top: 10px;"
+                                       for="images">
+                                    Last opp bilde
+                                </MudButton>
+                            </div>
+
+                            <MudCarousel TData="object" Class="mud-width-full" Style="height: 20rem;" AutoCycle="false">
+                                @foreach (var image in images)
+                                {
+                                    <MudCarouselItem>
+                                        <div class="d-flex" style="height:100%">
+                                            <MudImage Src="@image" />
+
+                                        </div>
+                                    </MudCarouselItem>
+                                }
+
+                            </MudCarousel>
+                        </MudTabPanel>
+                    </MudTabs>
+
+                </div>
+
+            </div>
+            <div class="paper">
+                <div class="actions">
+                    <div class="icon-container">
+                        <MudIcon Icon="@Icons.Filled.Settings" />
+                        <MudText>Handlinger</MudText>
+                    </div>
+                    <div class="button-container">
+                            <MudButton ButtonType="ButtonType.Submit" Color="Color.Success" StartIcon="@Icons.Outlined.SaveAs" Variant="Variant.Filled">Opprett sak</MudButton>
+                            <MudButton Color="Color.Error" StartIcon="@Icons.Filled.Cancel" Variant="Variant.Filled" OnClick="OpenCancelDialog">Forkast sak</MudButton>
+
+                    </div>
+                </div>
+                </div>
+        </div>
+    </EditForm>
+
+@code {
+    private CreateSuggestionModel model = new CreateSuggestionModel();
+    IList<string> images = new List<string>(); // base64 for display
+    IList<byte[]> files = new List<byte[]>(); // for sending to backend
+    List<string> statuses = new List<string>();
+    List<string> phases = new List<string>();
+    private string phase { get; set; } = "Plan";
+    private string status { get; set; } = "Ny";
+
+
+
+
+
+    private async Task EnsureSaveDialogOk()
+
     {
-        success = true;
-        StateHasChanged();
+        // var result = await httpClient
+        // editEnabled = false;
     }
 
+    protected async Task EnsureCancelDialogOk()
+    {
+        model = new CreateSuggestionModel();
+        phase = "Plan";
+        status = "Ny";
+        images.Clear();
+        files.Clear();
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        Console.WriteLine(model);
+        var res = await httpClient.PostAsJsonAsync<AddSuggestionRequest>("api/Suggestions", new AddSuggestionRequest() {
+                TeamId = 1, // DENNE MÅ OPPDATERES,
+                ResponsibleEmployee = (model.ResponsibleEmployee != null ? model.ResponsibleEmployee.Id : null ),
+                ResponsibleTeam = (model.ResponsibleTeam != null ? model.ResponsibleTeam.Id : null),
+                CreatedBy = 1, // DENNE MÅ OPPPDATERES,
+                Title = model.Title,
+                CreatedAt = DateTime.Now,
+                LastUpdatedAt = DateTime.Now,
+                Status = status,
+                Phase = phase,
+                DeadLine = model.Deadline,
+        Description = model.Description
+        });
+
+        var id = Int32.Parse(res.Content.ReadAsStringAsync().Result);
+        await httpClient.PostAsJsonAsync<AddEventRequest>("api/Events/Add", new AddEventRequest()
+            {
+                EmployeeId = 1, // DENNE MÅ OPPDATERES
+                SuggestionId = id,
+                Description = "Saken ble opprettet",
+                Timestamp = DateTime.Now,
+            });
+
+        await UploadPictures(id);
+
+        Snackbar.Add("Sak har blitt opprettet", Severity.Success);
+        Navigation.NavigateTo("/suggestion/" + id); // response is the ID of the created suggestion
+
+    }
+
+    private async Task UploadPictures(int id) {
+        // dårlig løsning, burde ha et endepunkt som støtter arrays
+        foreach(var file in files) {
+           
+            await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
+                {
+                    SuggestionId = id,
+                    EmployeeId = 1, // DENNE MÅ OPPDATERES
+                    UploadedAt = DateTime.Now,
+                    Image = file
+                });
+        }
+    }
+
+    protected void OpenCancelDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var parameters = new DialogParameters { ["OnOk"] = EventCallback.Factory.Create(this, EnsureCancelDialogOk) };
+        parameters.Add("Content", "Er du sikker på at du vil forkaste endringene dine?");
+
+        DialogService.Show<NordicDialog>("Vil du forkaste?", parameters, options);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var fetchedPhases = await httpClient.GetFromJsonAsync<string[]>("api/SuggestionPhase");
+        var fetchedStatuses = await httpClient.GetFromJsonAsync<string[]>("api/SuggestionStatus");
+        statuses.AddRange(fetchedStatuses);
+        phases.AddRange(fetchedPhases);
+
+    }
+
+    protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
+    {
+
+
+        var employees = await httpClient.GetFromJsonAsync<List<Employee>>("api/Users");
+        if (employees != null)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return employees;
+            }
+            return employees.Where(emp => emp.Name.Contains(name));
+        }
+        return Array.Empty<Employee>();
+    }
+    protected async Task<IEnumerable<Team>> SearchTeams(string name)
+    {
+        var teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
+        if (teams != null)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return teams;
+            }
+            return teams.Where(team => team.Name.Contains(name));
+        }
+        return Array.Empty<Team>();
+    }
+
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        var image = await e.File.RequestImageFileAsync("image/png", 1000, 1000);
+        var buffer = new byte[image.Size];
+        await image.OpenReadStream().ReadAsync(buffer);
+        images.Add($"data:image/png;base64,{Convert.ToBase64String(buffer)}");
+        var content = new StreamContent(e.File.OpenReadStream());
+        var bytes = await content.ReadAsByteArrayAsync();
+        files.Add(bytes);
+    }
 }

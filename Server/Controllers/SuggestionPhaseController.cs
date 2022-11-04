@@ -24,7 +24,7 @@ namespace NordicDoor.Server.Controllers
         public async Task<IActionResult>GetPhases()
         {
             var Phase = await dbContext.SuggestionPhase.ToListAsync();
-            return Ok(Phase);
+            return Ok(Phase.Select(x => x.Phase));
         }
 
 

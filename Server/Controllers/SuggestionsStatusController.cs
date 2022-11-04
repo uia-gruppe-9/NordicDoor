@@ -25,7 +25,7 @@ namespace NordicDoor.Server.Controllers
         public async Task<IActionResult> GetStatus()
         {
             var SuStatus = await dbContext.SuggestionStatus.ToListAsync();
-            return Ok(SuStatus);
+            return Ok(SuStatus.Select(x => x.Status));
         }
 
     }

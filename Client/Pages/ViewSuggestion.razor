@@ -129,7 +129,7 @@ else
                                 </div>
                                 @if (editEnabled)
                                 {
-                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status">
+                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status" >
                                         <MudSelectItem Value="@("Ny")" />
                                         <MudSelectItem Value="@("Åpen")" />
                                         <MudSelectItem Value="@("Lukket")" />
@@ -179,7 +179,13 @@ else
                                 }
                                 else
                                 {
-                                    <MudTextField @bind-Value="suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                    @if(suggestion.ResponsibleEmployee == null) {
+                                    <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+
+                                    } else {
+                                    <MudTextField @bind-Value="@suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+
+                                    }
 
                                 }
 
@@ -195,7 +201,13 @@ else
                                 }
                                 else
                                 {
+                                    @if(suggestion.ResponsibleTeam == null) {
+                                    <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+
+                                    } else {
+
                                     <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                    }
 
                                 }
 
@@ -219,7 +231,7 @@ else
                                 </div>
                                 @if (editEnabled)
                                 {
-                                    <MudDatePicker Label="Date Format" DateFormat="dd.MM.yyyy" @bind-Date="@updatedSuggestion.DeadLine" />
+                                    <MudDatePicker Label="Frist for sak" DateFormat="dd.MM.yyyy" @bind-Date="@updatedSuggestion.DeadLine" />
                                 }
                                 else
                                 {
@@ -249,7 +261,7 @@ else
                                 }
                             </div>
                             <MudText Style="font-weight: 300; font-size: 15px">
-                                Opprettet @suggestion.CreatedAt
+                                Opprettet @(suggestion.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
                             </MudText>
                         </div>
 
@@ -344,7 +356,7 @@ else
 
                                     <MudText Style="font-size: 1rem; font-weight: 600;">@_event.Description</MudText>
                                     <MudText Style="font-weight: 200; font-size: 14px;">
-                                        @_event.Timestamp
+                                        @_event.Timestamp.ToString("yyyy-MM-dd H:m:s")
                                         <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;" /> @suggestion.CreatedBy.Name
                                     </MudText>
                                 </div>
@@ -369,7 +381,7 @@ else
     private bool editEnabled = false;
     private bool loading = true;
     private MudForm? form;
-    IList<string> images = new List<string>(); // base64 
+    IList<string> images = new List<string>(); // base64 for display
 
 
     private async Task EnsureSaveDialogOk()
@@ -514,7 +526,7 @@ else
         var content = new StreamContent(e.File.OpenReadStream());
         var bytes = await content.ReadAsByteArrayAsync();
 
-        await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Picture/Add", new AddPictureRequest()
+        await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
             {
                 SuggestionId = suggestion.Id,
                 EmployeeId = suggestion.CreatedBy.Id,

@@ -1,6 +1,9 @@
 
 USE nordicdoors;
 
+-- UTF-8 enkoding så ÆØÅ støttes
+ALTER DATABASE nordicdoors CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS Teams, Employees, UserTeams, Events, SuggestionPhase, SuggestionStatus, Suggestions, EmployeeRoles, SuggestionComments, Pictures;
@@ -72,17 +75,6 @@ CREATE TABLE Suggestions (
 
 );
 
-CREATE TABLE SuggestionComments (
-                            Comment_ID INT AUTO_INCREMENT,
-                            Employee_ID INT NOT NULL ,
-                            Suggestion_ID INT NOT NULL ,
-                            Comment VARCHAR (250),
-                            Timestamp DATETIME NOT NULL ,
-                            PRIMARY KEY (Comment_ID),
-                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
-                            FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
-);
-
 CREATE TABLE Events (
                         Event_ID INT AUTO_INCREMENT,
                         Employee_ID INT,
@@ -105,6 +97,16 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
 
+CREATE TABLE SuggestionComments (
+                            Comment_ID INT AUTO_INCREMENT,
+                            Employee_ID INT NOT NULL ,
+                            Suggestion_ID INT NOT NULL ,
+                            Comment VARCHAR (250),
+                            Timestamp DATETIME NOT NULL ,
+                            PRIMARY KEY (Comment_ID),
+                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                            FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
+);
 
 INSERT INTO Teams values (
                              1,
@@ -521,17 +523,6 @@ insert into Events values (
                               10,
                               'Opprettet Forbedringsforslag: Fiks dør til kontor.',
                               current_timestamp );
-
-
-INSERT INTO Pictures VALUES (
-                             DEFAULT,
-                             1,
-                             1,
-                             CURRENT_TIME,
-                             LOAD_FILE('C:/Users/starm/Downloads/Test.GIF')
-
-
-                            )
 INSERT INTO SuggestionComments values
     (
         DEFAULT,
