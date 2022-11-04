@@ -177,6 +177,7 @@ namespace Nordic_Door.Server.Controllers
                 ResponsibleTeam = addSuggestionRequest.ResponsibleTeam,
                 LastUpdatedAt = addSuggestionRequest.LastUpdatedAt,
                 Title = addSuggestionRequest.Title,
+                CreatedAt = addSuggestionRequest.CreatedAt,
                 DeadLine = addSuggestionRequest.DeadLine,
                 Status = addSuggestionRequest.Status,
                 Phase = addSuggestionRequest.Phase,

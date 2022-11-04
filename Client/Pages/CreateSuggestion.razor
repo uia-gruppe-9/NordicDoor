@@ -270,6 +270,7 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
+        Console.WriteLine(model);
         var res = await httpClient.PostAsJsonAsync<AddSuggestionRequest>("api/Suggestions", new AddSuggestionRequest() {
                 TeamId = 1, // DENNE MÅ OPPDATERES,
                 ResponsibleEmployee = (model.ResponsibleEmployee != null ? model.ResponsibleEmployee.Id : null ),
