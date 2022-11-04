@@ -18,9 +18,8 @@ namespace Nordic_Door.Server.Controllers
             dbContext = ctx;
         }
 
-        [HttpPost]
+        [HttpPost] // legge til bilde
         [Route("Add")]
-
         public async Task<IActionResult> AddPicture(AddPictureRequest addPictureRequest)
         {
 
