@@ -102,6 +102,7 @@ namespace NordicDoor.Server.Controllers
 
         [HttpPost]
         [Route("CreateUser")]
+        //test
 
         public async Task<IActionResult> CreateUser(string name, string email, string password,
             int isAdmin, string teamName, string role)
@@ -112,7 +113,7 @@ namespace NordicDoor.Server.Controllers
                 Email = email,
                 Password = password,
                 IsAdmin = isAdmin,
-                //Id = eid,
+                
             };
             var findteam = await dbContext.Teams.FirstAsync(team => team.Name == teamName);
             await dbContext.Employees.AddAsync(newEmployee);
