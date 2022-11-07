@@ -38,7 +38,7 @@
     .info-container-vertical {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items:center;
         gap: 0.5rem
     }
 
@@ -104,6 +104,7 @@
 </style>
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>
+    <MudGrid>
         <div class="container">
 
             <div class="container container-column">
@@ -237,7 +238,9 @@
                 </div>
                 </div>
         </div>
+    </MudGrid>  
     </EditForm>
+
 
 @code {
     private CreateSuggestionModel model = new CreateSuggestionModel();
