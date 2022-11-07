@@ -103,7 +103,7 @@ namespace NordicDoor.Server.Controllers
         [HttpPost]
         [Route("CreateUser")]
 
-        public async Task<IActionResult> CreateUser(string name, int eid, string email, string password,
+        public async Task<IActionResult> CreateUser(string name, string email, string password,
             int isAdmin, string teamName, string role)
         {
             var newEmployee = new Employee()
@@ -112,21 +112,29 @@ namespace NordicDoor.Server.Controllers
                 Email = email,
                 Password = password,
                 IsAdmin = isAdmin,
-                Id = eid,
+                //Id = eid,
             };
             var findteam = await dbContext.Teams.FirstAsync(team => team.Name == teamName);
-
-
-            var NewUserteamForNewEmployee = new UserTeam()
-            {
-                EmployeeId = newEmployee.Id,
-                TeamId = findteam.Id,
-                Role = role,
-            };
             await dbContext.Employees.AddAsync(newEmployee);
-            await dbContext.UserTeams.AddAsync(NewUserteamForNewEmployee);
             await dbContext.SaveChangesAsync();
-            return Ok(NewUserteamForNewEmployee);
+
+            var value = await dbContext.Entry(newEmployee).GetDatabaseValuesAsync();
+
+            if (newEmployee != null && value != null)
+            {
+                var NewUserteamForNewEmployee = new UserTeam()
+                {
+                    EmployeeId = value.GetValue<int>("Id"),
+                    TeamId = findteam.Id,
+                    Role = role,
+                };
+
+
+                await dbContext.UserTeams.AddAsync(NewUserteamForNewEmployee);
+                await dbContext.SaveChangesAsync();
+                return Ok(NewUserteamForNewEmployee);
+            }
+            return StatusCode(500);
         }
     
 
