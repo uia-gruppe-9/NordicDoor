@@ -9,4 +9,10 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Models\Common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Common\" />
+  </ItemGroup>
 </Project>

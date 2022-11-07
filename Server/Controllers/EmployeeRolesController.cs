@@ -11,7 +11,6 @@ namespace NordicDoor.Server.Controllers
     {
 
         public NordicDoorsDbContext dbContext { get; set; }
-
         public EmployeeRolesController(NordicDoorsDbContext ctx)
         {
             dbContext = ctx;

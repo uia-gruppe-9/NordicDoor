@@ -13,17 +13,22 @@
 
           }
         <MudSpacer />
-        <div class="d-flex justify-center">
+        <div class="d-flex justify-center" style="position:relative; left:4%;">
             <MudImage ObjectFit="@ImageFit" Height="20"  Src="images/nordic-door.png" Alt="Nordic door" Elevation="0" Class="squared-lg" />
         </div>
 
+        <MudSpacer />
+        <div class="gap-6 d-flex">
+            <MudLink Href="#" Color="Color.Dark">Admin</MudLink>
+            <MudLink Href="#" Color="Color.Dark">Statistikk</MudLink>
+        </div>
         <MudSpacer /> 
 
 
         <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Dark" Edge="Edge.End" >
             <MudMenuItem>Logg ut </MudMenuItem>
         </MudMenu>
-     
+
     </MudAppBar>
     <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem; margin-top: 1rem;">
         @Body
