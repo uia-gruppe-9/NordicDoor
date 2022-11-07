@@ -93,13 +93,10 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPost]
-        [Route("/Add/User")]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
             var user = new Employee()
             {
-
-                Id = addUserRequest.Id,
                 Name = addUserRequest.Name,
                 Email = addUserRequest.Email,
                 Password = addUserRequest.Password,

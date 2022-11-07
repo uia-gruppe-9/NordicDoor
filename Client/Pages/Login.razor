@@ -1,0 +1,59 @@
+﻿@page "/login"
+
+<style>
+
+	.login-form {
+		text-align: center;
+		padding: 70px o;
+		background-color: #ededed;
+		
+	}
+
+	
+
+	/*Styling for tekstboks*/
+	input[type=text], [type=email], [type=password] {
+		width: 20%;
+		padding: 12px 20px;
+		margin: 8px 0;
+		box-sizing: border-box;
+		border-radius: 5px;
+	}
+
+	/*Styling for knappene*/
+	input[type=submit] {
+		padding: 10px 15px;
+		background: #848fa1;
+		cursor: pointer;
+		border-radius: 5px;
+		color: white;
+		transition-duration: 0.5s;
+	}
+
+	/*Styling knappene*/
+	input[type=submit]:hover {
+			background-color: #b29067;
+		color: white;
+	}
+
+	
+</style>
+
+<div class="login-form">
+	<form class="login" method="post">
+		<div class="container"></div>
+		<label for="brukernavn"><h2>Brukernavn</h2></label><br />
+		<input type="text" placeholder="Brukernavn" name="brukernavn" required/> <br />
+		<label for="passord"><h2>Passord</h2></label> <br />
+		<input type="password" placeholder="Passord" name="password" required/> <br />
+		<br /><input type="submit" value="Logg inn"/>
+	</form>
+
+</div>
+
+@code {
+
+	
+
+}
+
