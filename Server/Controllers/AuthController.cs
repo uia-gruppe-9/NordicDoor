@@ -5,7 +5,7 @@ using Nordic_Door.Server.Data;
 using Nordic_Door.Shared.Models.Common;
 using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
-
+using System.Web.Helpers;
 
 
 
@@ -28,10 +28,13 @@ namespace NordicDoor.Server.Controllers
         [Route("Login")]
         public async Task<IActionResult> AuthUsernameAndPassword(string email, string password)
         {
-            var user = await dbContext.Employees.SingleAsync(e => e.Email == email && e.Password == password);
+            var user = await dbContext.Employees.SingleAsync(e => e.Email == email);
+
 
             if (user != null)
             {
+
+
 
                 var userInUserteams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
 
@@ -72,72 +75,51 @@ namespace NordicDoor.Server.Controllers
 
 
         [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> CreateUserxx(CreateUserRequest createUserRequest)
-        {
-            var createUser = new Employee()
-            {
-                Name = createUserRequest.EmployeeName,
-                Id = createUserRequest.EmployeeId,
-                Email = createUserRequest.EmployeeEmail,
-                IsAdmin = createUserRequest.EmployeeIsAdmin,
-                Password = createUserRequest.Password,
-            };
-
-
-            //var team = await dbContext.Teams.FindAsync();
-
-            var createUserTeamAndRole = new UserTeam()
-            {
-                EmployeeId = createUser.Id,
-                TeamId = createUserRequest.TeamId,
-                Role = createUserRequest.Role,
-            };
-
-            await dbContext.Employees.AddAsync(createUser);
-            await dbContext.UserTeams.AddAsync(createUserTeamAndRole);
-            await dbContext.SaveChangesAsync();
-            return Ok(createUserTeamAndRole);
-        }
-
-        [HttpPost]
         [Route("CreateUser")]
-        //test
+        // opprette ny bruker: inputt fra frontend
+        // forloop med flere teams.
 
         public async Task<IActionResult> CreateUser(string name, string email, string password,
-            int isAdmin, string teamName, string role)
+            int isAdmin, string[] teamNames)
         {
             var newEmployee = new Employee()
             {
                 Name = name,
                 Email = email,
-                Password = password,
+                Password = Crypto.HashPassword(password),
                 IsAdmin = isAdmin,
                 
             };
-            var findteam = await dbContext.Teams.FirstAsync(team => team.Name == teamName);
+            
             await dbContext.Employees.AddAsync(newEmployee);
             await dbContext.SaveChangesAsync();
-
             var value = await dbContext.Entry(newEmployee).GetDatabaseValuesAsync();
-
-            if (newEmployee != null && value != null)
+            
+            if (newEmployee == null && value == null)
             {
-                var NewUserteamForNewEmployee = new UserTeam()
-                {
-                    EmployeeId = value.GetValue<int>("Id"),
-                    TeamId = findteam.Id,
-                    Role = role,
-                };
+                return StatusCode(500);
 
-
-                await dbContext.UserTeams.AddAsync(NewUserteamForNewEmployee);
-                await dbContext.SaveChangesAsync();
-                return Ok(NewUserteamForNewEmployee);
             }
-            return StatusCode(500);
+ 
+
+            foreach (var team in teamNames)
+            {
+                var findteam = await dbContext.Teams.FirstAsync(_team => _team.Name == team);
+
+                    var NewUserteamForNewEmployee = new UserTeam()
+                    {
+                        EmployeeId = value.GetValue<int>("Id"),
+                        TeamId = findteam.Id,
+                        Role = "Medarbeider", // default verdi
+                    };
+
+                   await dbContext.UserTeams.AddAsync(NewUserteamForNewEmployee);
+            }
+            await dbContext.SaveChangesAsync();
+            return Ok();
+
         }
-    
+       
 
     }
 }

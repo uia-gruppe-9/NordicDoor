@@ -79,14 +79,14 @@
 
 
 		<!--Form for opprettelse av employees-->
-		<EditForm class="create_Employee" Model="@model" OnValidSubmit="@OnValidSubmit">
+	<EditForm class="create_Employee" Model="@userModel" OnValidSubmit="@OnValidSubmit">
 			<h2>Opprett ny bruker:</h2> <br />
 			<label for="Name"><h3>Navn:</h3> </label><br />
-			<InputText type="text" id="Name" name="name" placeholder="Skriv fullt navn" @bind-Value="@model.Name"/><br /> 
-			<label for="Email"><h3>Epost:</h3></label> <br />
-			<InputText type="email" id="Email" name="email" placeholder="Skriv epost" @bind-Value="@model.Email" /><br />
+		<InputText type="text" id="Name" name="name" placeholder="Skriv fullt navn" @bind-Value="@userModel.Name" /><br />
+		<label for="Email"><h3>Epost:</h3></label> <br />
+		<InputText type="email" id="Email" name="email" placeholder="Skriv epost" @bind-Value="@userModel.Email" /><br />
 			<label for="Password"><h3>Passord:</h3></label><br />
-			<InputText type="password" id="Password" name="password" placeholder="Skriv passord" @bind-Value="@model.Password" /> <br />
+		<InputText type="password" id="Password" name="password" placeholder="Skriv passord" @bind-Value="@userModel.Password" /> <br />
 			<br />
 		<MudSelect T="string" Label="Velg opp til flere teams" MultiSelection="true" @bind-SelectedValues="options" >
 				@foreach (var team in teams)
@@ -96,7 +96,7 @@
 			</MudSelect>
 			<br />
 			<label for="Admin"><h3>Kryss av hvis denne brukeren skal være admin</h3></label><br />
-			<InputCheckbox id="Admin" name="Admin" @bind-Value="@model.isAdmin" /> <br />
+		<InputCheckbox id="Admin" name="Admin" @bind-Value="@userModel.isAdmin" /> <br />
 			<br />
 			<input type="submit" value="Opprett bruker" />
 
@@ -120,15 +120,20 @@
 		<p></p>
 	} 
 <!--Form for opprettelse av teams-->
-<form class="create_Team" action="https://www.nrk.no/">
+<EditForm class="create_Team" Model="@teamModel" OnValidSubmit="@OnValidTeamSubmit">
 	<h2>Opprett nytt team:</h2> <br />
+
 	<label for="Team-name"><h3>Fyll inn ønsket team-navn: </h3></label><br />
-	<input type="text" id="Team-name" name="Team-name" placeholder="Skriv team-navn" maxlength="60" required /><br />
+
+	<InputText type="text" id="Team-name" name="Team-name" placeholder="Skriv team-navn" @bind-Value="@teamModel.TeamName" /><br />
+
 	<br />
+	
 	<label for="Team-leader"></label>
-	<input type="text" id="Team-leader" name="Team-leader" placeholder="Hvem er teamleder?" maxlength="60" required /> 
+	<input type="text" id="Team-leader" name="Team-leader" placeholder="Hvem er teamleder?" maxlength="60" required />
 	<input type="submit" value="Opprett team"/>
-</form>
+	 
+</EditForm>
 
 
 
@@ -138,20 +143,32 @@
 
 @code {
 
-	public CreateUserModel model = new CreateUserModel();
+	public CreateUserModel userModel = new CreateUserModel();
+	public CreateTeamModel teamModel = new CreateTeamModel();
+
 	public List<Team> teams = new List<Team>();
 	private IEnumerable<string> options { get; set; } = new HashSet<string>();
 	public bool loading = true;
 
-	protected async Task OnValidSubmit() {
-
-		await httpClient.PostAsJsonAsync<AddUserRequest>("api/Users", new AddUserRequest()
-			{
-				Name = model.Name,
-				Email = model.Email,
+	protected async Task OnValidTeamSubmit() {
+			await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
+		{
+				Name = teamModel.TeamName,
 
 			});
+
 	}
+
+	protected async Task OnValidSubmit() {
+
+		//await httpClient.PostAsJsonAsync<AddUserRequest>("api/Users", new AddUserRequest()
+		//	{
+		//		Name = model.Name,
+		//		Email = model.Email,
+
+		//	});
+	}
+
 
 	protected override async Task OnInitializedAsync()
 	{
