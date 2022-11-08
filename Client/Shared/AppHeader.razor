@@ -1,0 +1,41 @@
+﻿@inject NavigationManager Navigation
+
+
+<MudAppBar Style=" Elevation: 1; background-color: white;">
+          @if(Navigation.Uri != Navigation.BaseUri) {
+            <MudIconButton Icon="@Icons.Filled.ArrowBack" Color="Color.Dark" Edge="Edge.Start" OnClick="OnBackClick" />
+
+          }
+        <MudSpacer />
+        <div class="d-flex justify-center" style="position:relative; left:4%;">
+            <MudImage ObjectFit="@ImageFit" Height="20"  Src="images/nordic-door.png" Alt="Nordic door" Elevation="0" Class="squared-lg" />
+        </div>
+
+        <MudSpacer />
+        <div class="gap-6 d-flex">
+            <MudLink Href="#" Color="Color.Dark">Admin</MudLink>
+            <MudLink Href="#" Color="Color.Dark">Statistikk</MudLink>
+        </div>
+        <MudSpacer /> 
+
+
+        <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Dark" Edge="Edge.End" >
+            <MudMenuItem>Logg ut </MudMenuItem>
+        </MudMenu>
+        </MudAppBar>
+@code {
+
+        ObjectFit ImageFit = ObjectFit.Cover;
+
+        void SetImageFit(ObjectFit value)
+        {
+        ImageFit = value;
+        }
+
+        public void OnBackClick()
+        {
+        Navigation.NavigateTo("/");
+        StateHasChanged();
+
+        }
+}

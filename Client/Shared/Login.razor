@@ -1,0 +1,80 @@
+﻿@using Nordic_Door.Client.Models;
+@using Nordic_Door.Shared.Models.Common;
+@using Nordic_Door.Shared.Models.API;
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+
+@inject HttpClient httpClient
+
+
+<style>
+
+	.login-form {
+		text-align: center;
+		padding: 70px o;
+		
+	}
+
+	
+
+	/*Styling for tekstboks*/
+	input[type=text], [type=email], [type=password] {
+		width: 20%;
+		padding: 12px 20px;
+		margin: 8px 0;
+		box-sizing: border-box;
+		border-radius: 5px;
+	}
+
+	/*Styling for knappene*/
+	input[type=submit] {
+		padding: 10px 15px;
+		background: #848fa1;
+		cursor: pointer;
+		border-radius: 5px;
+		color: white;
+		transition-duration: 0.5s;
+	}
+
+	/*Styling knappene*/
+	input[type=submit]:hover {
+			background-color: #b29067;
+		color: white;
+	}
+
+	
+</style>
+
+<div class="login-form">
+	<EditForm class="login"  Model="@model" OnValidSubmit="OnValidSubmit">
+		<div class="container"></div>
+		<label for="brukernavn"><h2>Epost</h2></label><br />
+		<InputText type="text" placeholder="Epost" name="brukernavn" required @bind-Value="model.EmailAddress"/> <br />
+		<label for="passord"><h2>Passord</h2></label> <br />
+		<InputText type="password" placeholder="Passord" name="password" required @bind-Value="model.Password"/> <br />
+		<br /><input type="submit" value="Logg inn"/>
+	</EditForm>
+
+</div>
+
+@code {
+	[CascadingParameter]
+	public UserRelation user { get; set; }
+
+	private LoginModel model = new LoginModel();
+
+	private async Task OnValidSubmit(){
+		var res = await httpClient.PostAsJsonAsync<LoginRequest>("api/Auth/Login", new LoginRequest()
+			{
+				Email = model.EmailAddress,
+				Password = model.Password,
+			});
+
+			if(!res.IsSuccessStatusCode) {
+				Snackbar.Add("Feil innloggingsdetaljer, vennligst prøv igjen", Severity.Error);
+			}
+	}
+
+}
+

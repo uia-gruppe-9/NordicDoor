@@ -26,15 +26,12 @@ namespace NordicDoor.Server.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> AuthUsernameAndPassword(string email, string password)
+        public async Task<IActionResult> AuthUsernameAndPassword(LoginRequest loginRequest)
         {
-            var user = await dbContext.Employees.SingleAsync(e => e.Email == email);
-
+            var user = await dbContext.Employees.SingleAsync(e => e.Email == loginRequest.Email);
 
             if (user != null)
             {
-
-
 
                 var userInUserteams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
 
@@ -69,7 +66,7 @@ namespace NordicDoor.Server.Controllers
 
             }
 
-            return StatusCode(500);
+            return StatusCode(401);
         }
 
 

@@ -1,57 +1,41 @@
 ﻿@inherits LayoutComponentBase
 @inject HttpClient httpClient
+@inject AltairCA.Blazor.WebAssembly.Cookie.IAltairCABlazorCookieUtil _cookieUtil;
+@inject ISnackbar Snackbar
+@using Nordic_Door.Shared.Models.Common;
 @inject NavigationManager Navigation
+
 
 <MudThemeProvider Theme="MyCustomTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout Style="background-color:#e9e9e8">
-    <MudAppBar Style=" Elevation: 1; background-color: white;">
-
-          @if(Navigation.Uri != Navigation.BaseUri) {
-            <MudIconButton Icon="@Icons.Filled.ArrowBack" Color="Color.Dark" Edge="Edge.Start" OnClick="OnBackClick" />
-
-          }
-        <MudSpacer />
-        <div class="d-flex justify-center" style="position:relative; left:4%;">
-            <MudImage ObjectFit="@ImageFit" Height="20"  Src="images/nordic-door.png" Alt="Nordic door" Elevation="0" Class="squared-lg" />
-        </div>
-
-        <MudSpacer />
-        <div class="gap-6 d-flex">
-            <MudLink Href="#" Color="Color.Dark">Admin</MudLink>
-            <MudLink Href="#" Color="Color.Dark">Statistikk</MudLink>
-        </div>
-        <MudSpacer /> 
-
-
-        <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Dark" Edge="Edge.End" >
-            <MudMenuItem>Logg ut </MudMenuItem>
-        </MudMenu>
-
-    </MudAppBar>
-    <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem; margin-top: 1rem;">
-        @Body
+    <CascadingValue Value="user">
+        <AppHeader/>
+    <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem; margin-top: 1rem; background-color: #e9e9e8">
+        @if(loggedIn) {
+             @Body
+        } else {
+            <Login/>
+        }
     </MudMainContent>
+    </CascadingValue>
 </MudLayout>
 
 
 
 @code{
+    private UserRelation user { get; set; }
+    private bool loggedIn;
 
+    protected override async Task OnInitializedAsync(){
+        var id = await _cookieUtil.GetValueAsync("nd_login_id");
 
-    ObjectFit ImageFit = ObjectFit.Cover;
-
-    void SetImageFit(ObjectFit value)
-    {
-        ImageFit = value;
+        if(id == null) {
+            Snackbar.Add("Du er ikke logget inn", Severity.Error);
+        } 
     }
-
-    public void OnBackClick() {
-        Navigation.NavigateTo("/");
-
-    }
-
+    
     MudTheme MyCustomTheme = new MudTheme()
         {
             Palette = new Palette()
