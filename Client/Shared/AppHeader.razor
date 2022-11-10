@@ -1,0 +1,51 @@
+﻿@inject NavigationManager Navigation
+@using Nordic_Door.Shared.Models.Common;
+
+
+<MudAppBar Style=" Elevation: 1; background-color: white;">
+          @if(Navigation.Uri != Navigation.BaseUri) {
+            <MudIconButton Icon="@Icons.Filled.ArrowBack" Color="Color.Dark" Edge="Edge.Start" OnClick="OnBackClick" />
+
+          }
+        <MudSpacer />
+        <div class="d-flex justify-center" style="position:relative; left:5%;">
+            <MudImage ObjectFit="@ImageFit" Height="20"  Src="images/nordic-door.png" Alt="Nordic door" Elevation="0" Class="squared-lg" />
+        </div>
+        <MudSpacer/>
+        @if(user != null) {
+
+        <div class="gap-6 d-flex" Style="align-items: center;">
+        <MudLink Href="/admin" Color="Color.Dark">Admin</MudLink>
+        <MudLink Href="/statistics" Color="Color.Dark">Statistikk</MudLink>
+        <MudText></MudText>
+        <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Dark" Edge="Edge.End">
+        <MudMenuItem OnClick="OnSignOutClick">Logg ut </MudMenuItem>
+    </MudMenu>
+        </div>
+    }
+
+    
+        </MudAppBar>
+@code {
+     [CascadingParameter]
+        private UserRelation user { get; set; }
+    [Parameter] public Action OnSignOut { get; set; }
+
+        ObjectFit ImageFit = ObjectFit.Cover;
+
+        protected void OnSignOutClick() {
+            OnSignOut.Invoke();
+        }
+
+        void SetImageFit(ObjectFit value)
+        {
+        ImageFit = value;
+        }
+
+        public void OnBackClick()
+        {
+        Navigation.NavigateTo("/");
+        StateHasChanged();
+
+        }
+}

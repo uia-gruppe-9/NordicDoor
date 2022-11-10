@@ -1,0 +1,190 @@
+﻿@page "/admin"
+@using Nordic_Door.Client.Models;
+@using Nordic_Door.Shared.Models.API;
+@using Nordic_Door.Shared.Models.Database;
+@inject ISnackbar Snackbar
+@inject HttpClient httpClient;
+
+<style>
+	/*Styling for form1*/
+	.create_Employee {
+		width: 50%;
+		float: left;
+		padding: 20px;
+	}
+
+	/*Styling for form2*/
+	.create_Team {
+		width: 50%;
+		float: right;
+		padding: 20px;
+	}
+
+	/*Styling for knappene*/
+	input[type=submit] {
+		padding:10px 15px;
+		background: #848fa1;
+		cursor:pointer;
+		border-radius: 5px; 
+		color: white;
+		transition-duration: 0.4s;
+	}
+
+	/*Styling knappene*/
+	input[type=submit]:hover {
+			background-color:#af8a61;
+		color: white;
+	}
+
+	/*Styling for tekstbokser*/
+	input[type=text], [type=email], [type=password] {
+		width: 100%;
+		padding: 12px 20px;
+		margin: 8px 0;
+		box-sizing: border-box;
+		border-radius: 5px;
+	}
+
+	/*Styling tekstbokser*/
+	input[type=text]:focus {
+		border: 3px solid #555;
+	}
+
+	input[type=email]:focus {
+		border: 3px solid #555;
+	}
+
+	input[type=password]:focus {
+		border: 3px solid #555;
+	}
+
+	/*Endre størrelse checkbox*/
+	input[type=checkbox] {
+		width: 15px;
+		height: 15px;
+	}
+
+	/*Endre størrelse radio*/
+	input[type=radio] {
+		width: 15px;
+		height: 15px;
+	}
+</style>
+
+
+@if (loading) {
+		<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+	} else
+	{
+
+
+		<!--Form for opprettelse av employees-->
+	<EditForm class="create_Employee" Model="@userModel" OnValidSubmit="@OnValidSubmit">
+			<h2>Opprett ny bruker:</h2> <br />
+			<label for="Name"><h3>Navn:</h3> </label><br />
+		<InputText type= "text" id="Name" name="name" placeholder="Skriv fullt navn" @bind-Value="@userModel.Name" /><br />
+		<label for="Email"><h3>Epost:</h3></label> <br />
+		<InputText type="email" id="Email" name="email" placeholder="Skriv epost" @bind-Value="@userModel.Email" /><br />
+			<label for="Password"><h3>Passord:</h3></label><br />
+		<InputText type="password" id="Password" name="password" placeholder="Skriv passord" @bind-Value="@userModel.Password" /> <br />
+			<br />
+		<MudSelect T="string" Label="Velg opp til flere teams" MultiSelection="true" @bind-SelectedValues="@selectedTeams" >
+				@foreach (var team in teams)
+				{
+					<MudSelectItem T="string"  Value="team.Name" />
+				}
+			</MudSelect>
+			<br />
+			<label for="Admin"><h3>Kryss av hvis denne brukeren skal være admin</h3></label><br />
+		<InputCheckbox id="Admin" name="Admin" @bind-Value="@userModel.isAdmin" /> <br />
+			<br />
+			<input type="submit" value="Opprett bruker" />
+
+		</EditForm>
+
+
+		<!--
+
+
+
+		<label for="Password"><h3>Passord:</h3></label><br />
+		<InputText type="password" id="Password" name="password" placeholder="Skriv passord" maxlength="60" required /> <br />
+		<br />
+
+		<p><h3>Kryss av hvis brukeren skal være admin:</h3></p> <br />
+		<input type="radio" id="Admin" name="Admin" value="Admin" />
+		<label for="Admin">Admin</label><br />
+		<br />
+
+		-->
+		<p></p>
+	} 
+<!--Form for opprettelse av teams-->
+<EditForm class="create_Team" Model="@teamModel" OnValidSubmit="@OnValidTeamSubmit">
+	<h2>Opprett nytt team:</h2> <br />
+
+	<label for="Team-name"><h3>Fyll inn ønsket team-navn: </h3></label><br />
+
+	<InputText type="text" id="Team-name" name="Team-name" placeholder="Skriv team-navn" @bind-Value="@teamModel.TeamName" /><br />
+
+	<br />
+	
+	<label for="Team-leader"></label>
+	<input type="text" id="Team-leader" name="Team-leader" placeholder="Hvem er teamleder?" maxlength="60" required />
+	<input type="submit" value="Opprett team"/>
+	 
+</EditForm>
+
+
+
+
+
+
+
+@code {
+
+	public CreateUserModel userModel = new CreateUserModel();
+	public CreateTeamModel teamModel = new CreateTeamModel();
+
+	public List<Team> teams = new List<Team>();
+	private IEnumerable<string> selectedTeams { get; set; } = new HashSet<string>();
+	public bool loading = true;
+
+	protected async Task OnValidTeamSubmit() {
+		await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
+		{
+				Name = teamModel.TeamName, 
+
+			});
+
+	}
+
+	protected async Task OnValidSubmit() {
+
+		var res = await httpClient.PostAsJsonAsync<AddUserRequest>("api/Auth/CreateUser", new AddUserRequest()
+			{
+				Name = userModel.Name,
+				Email = userModel.Email,
+				IsAdmin = userModel.isAdmin,
+				Password = userModel.Password,
+				TeamNames = selectedTeams.ToList(),
+			});
+
+		if(res.IsSuccessStatusCode) {
+			Snackbar.Add("Brukeren har blitt opprettet", Severity.Success);
+			userModel = new CreateUserModel();
+
+			} else {
+			Snackbar.Add("Feil under brukeroppretting", Severity.Error);
+
+			}
+	}
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		var _teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
+		teams.AddRange(_teams);
+		loading = false;
+	}
+}

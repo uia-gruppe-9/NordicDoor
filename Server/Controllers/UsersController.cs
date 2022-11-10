@@ -93,30 +93,40 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPost]
-        [Route("/Add/User")]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
+
             var user = new Employee()
             {
-
-                Id = addUserRequest.Id,
                 Name = addUserRequest.Name,
                 Email = addUserRequest.Email,
                 Password = addUserRequest.Password,
-               
+                IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
             };
+            await dbContext.Employees.AddAsync(user);
+            await dbContext.SaveChangesAsync();
 
-            try
-            {
-                await dbContext.Employees.AddAsync(user);
-                await dbContext.SaveChangesAsync();
-                return Ok(user);
+            var value = await dbContext.Entry(user).GetDatabaseValuesAsync();
+            var id = value.GetValue<int>("Id");
 
-            }
-            catch
+            foreach (var name in addUserRequest.TeamNames)
             {
-                return StatusCode(409);
+                var team = dbContext.Teams.FirstAsync(t => t.Name == name);
+                if (team == null) continue; // burde kanskje håndteres ordentlig
+
+                await dbContext.UserTeams.AddAsync(new UserTeam()
+                {
+                    EmployeeId = id,
+                    TeamId = team.Id,
+                    Role = "Medarbeider",
+                });
             }
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+
+    
+   
 
         }
 

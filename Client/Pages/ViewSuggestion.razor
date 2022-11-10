@@ -1,6 +1,8 @@
 ﻿@page "/suggestion/{id:int}"
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
+@using Nordic_Door.Shared.Models.Common;
+
 
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
@@ -440,7 +442,7 @@ else
                                     <MudText Style="font-size: 1rem; font-weight: 600;">@_event.Description</MudText>
                                     <MudText Style="font-weight: 200; font-size: 14px;">
                                         @_event.Timestamp.ToString("yyyy-MM-dd H:m:s")
-                                        <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;" /> @suggestion.CreatedBy.Name
+                                        <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;" /> @_event.Employee.Name
                                     </MudText>
                                 </div>
 
@@ -457,7 +459,8 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
-
+        [CascadingParameter]
+    private UserRelation user { get; set; }
     private GetSuggestionRequest? suggestion;
     private GetSuggestionRequest? updatedSuggestion;
     private List<GetEventRequest>? events;
@@ -519,7 +522,7 @@ else
 
         await httpClient.PostAsJsonAsync<AddEventRequest>($"api/Events/Add", new AddEventRequest()
             {
-                EmployeeId = suggestion.CreatedBy.Id, // DENNE MÅ OPPDATERES ETTER AT AUTENTISERING HAR BLITT IMPLEMENTERT
+                EmployeeId = user.EmployeeId,
                 SuggestionId = suggestion.Id,
                 Description = "Saken har blitt oppdatert",
                 Timestamp = DateTime.Now,
@@ -612,7 +615,7 @@ else
         await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
             {
                 SuggestionId = suggestion.Id,
-                EmployeeId = suggestion.CreatedBy.Id,
+                EmployeeId = user.EmployeeId,
                 UploadedAt = DateTime.Now,
                 Image = bytes
             });

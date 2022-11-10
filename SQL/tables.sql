@@ -11,14 +11,14 @@ SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
                        Team_ID INT AUTO_INCREMENT,
-                       Name VARCHAR (60) NOT NULL,
+                       Name VARCHAR (60) NOT NULL UNIQUE,
                        PRIMARY KEY (Team_ID)
 );
 
 CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
                            Name VARCHAR (60) NOT NULL,
-                           Email VARCHAR (60) NOT NULL,
+                           Email VARCHAR (60) NOT NULL UNIQUE,
                            Password VARCHAR (60) NOT NULL,
                            Is_Admin INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
@@ -256,7 +256,7 @@ insert INTO Employees values (
 insert into UserTeams values (
                                  1,
                                  1,
-                                 'Medarbeider'
+                                 'Teamleder'
                              );
 
 insert into UserTeams values (
@@ -320,6 +320,11 @@ insert into UserTeams values (
                              );
 insert into UserTeams values (
                                  12,
+                                 2,
+                                 'Medarbeider'
+                             );
+insert into UserTeams values (
+                                 1,
                                  2,
                                  'Medarbeider'
                              );
