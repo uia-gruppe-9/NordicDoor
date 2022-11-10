@@ -23,8 +23,7 @@ namespace NordicDoor.Server.Controllers
             dbContext = ctx;
         }
 
-        // Autentisering av innlogging 
-        
+        // Autentisering av innlogging ved E-post og HasedPassord.
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> AuthUsernameAndPassword(LoginRequest loginRequest)
