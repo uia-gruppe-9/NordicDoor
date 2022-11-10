@@ -19,7 +19,7 @@ CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
                            Name VARCHAR (60) NOT NULL,
                            Email VARCHAR (60) NOT NULL UNIQUE,
-                           Password VARCHAR (60) NOT NULL,
+                           Password VARCHAR (100) NOT NULL,
                            Is_Admin INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
 );
@@ -161,97 +161,107 @@ INSERT INTO Teams values (
 
 insert INTO Employees values (
                                  1,
-                                 'Ola Nordmann',
-                                 'OlaN@nordicdoors.no',
-                                 '1234',
+                                 'Admin',
+                                 'Admin@admin.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  1
                              );
 
 insert INTO Employees values (
                                  2,
-                                 'Kari Nordmann',
-                                 'KariN@nordicdoors.no',
-                                 '1234',
+                                 'Ola Nordmann',
+                                 'OlaN@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  1
                              );
 
 insert INTO Employees values (
                                  3,
-                                 'John Johnson',
-                                 'JonJ@nordicdoors.no',
-                                 '1234',
-                                 0
+                                 'Kari Nordmann',
+                                 'KariN@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 1
                              );
 
 insert INTO Employees values (
                                  4,
-                                 'Morten Harket',
-                                 'MortHa@nordicdoors.no',
-                                 '1234',
+                                 'John Johnson',
+                                 'JonJ@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 
 insert INTO Employees values (
                                  5,
-                                 'Egil Berntsen',
-                                 'EgBer@nordicdoors.no',
-                                 '1234',
+                                 'Morten Harket',
+                                 'MortHa@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 
 insert INTO Employees values (
                                  6,
-                                 'Thor Magne Svendsen',
-                                 'THMS@nordicdoors.no',
-                                 '1234',
+                                 'Egil Berntsen',
+                                 'EgBer@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 
 insert INTO Employees values (
                                  7,
-                                 'Eskil Lie',
-                                 'EskLi@nordicdoors.no',
-                                 '1234',
+                                 'Thor Magne Svendsen',
+                                 'THMS@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 
 insert INTO Employees values (
                                  8,
-                                 'Katrine Amundsen',
-                                 'KatAm@nordicdoors.no',
-                                 '1234',
+                                 'Eskil Lie',
+                                 'EskLi@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 
 insert INTO Employees values (
                                  9,
-                                 'Susanne Tyri',
-                                 'susT@nordicdoors.no',
-                                 '1234',
+                                 'Katrine Amundsen',
+                                 'KatAm@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 
 insert INTO Employees values (
                                  10,
-                                 'Maria Andersen',
-                                 'MarA@nordicdoors.no',
-                                 '1234',
+                                 'Susanne Tyri',
+                                 'susT@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
+
 insert INTO Employees values (
                                  11,
-                                 'Mia Ås',
-                                 'MiaAA@nordicdoors.no',
-                                 '1234',
+                                 'Maria Andersen',
+                                 'MarA@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
 insert INTO Employees values (
                                  12,
-                                 'Espen Tømmerstigen',
-                                 'Espentom@nordicdoors.no',
-                                 '1234',
+                                 'Mia Ås',
+                                 'MiaAA@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
                                  0
                              );
+insert INTO Employees values (
+                                 13,
+                                 'Espen Tømmerstigen',
+                                 'Espentom@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0
+                             );
+
+
 
 insert into UserTeams values (
                                  1,
@@ -365,7 +375,7 @@ insert into Suggestions values ( default,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
-                                 'do',
+                                 'Do',
                                  'Trenger for å fullføre dør. ');
 
 insert into Suggestions values ( default,
@@ -424,14 +434,14 @@ insert into Suggestions values ( default,
                                  8,
                                  8,
                                  8,
-                                 'Bare 1 dorull igjen',
+                                 'Glassdør til kontor 15 er knust. ',
                                  current_timestamp,
                                  8,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
                                  'Do',
-                                 'Trenger mer dopapir til do 2. ');
+                                 'Bestille nytt glassmanter, og installere ny dør. ');
 
 insert into Suggestions values ( default,
                                  9,
