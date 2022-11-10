@@ -2,6 +2,8 @@
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
 @using Nordic_Door.Client.Models;
+@using Nordic_Door.Shared.Models.Common;
+
 
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
@@ -68,6 +70,7 @@
         display: flex;
         justify-content: space-between;
         margin-left: 1rem;
+        flex: 1 1 0;
     }
 
         .title-container .title-heading {
@@ -154,7 +157,7 @@
                                     <MudIcon Icon="@Icons.Filled.People" />
                                     <MudText>Ansvarlig team</MudText>
                                 </div>
-                                    <MudAutocomplete  T="Team" Label="Søk etter team" @bind-Value="@model.ResponsibleTeam" ToStringFunc="@(e => e.Name)" SearchFunc="SearchTeams" For="@(() => model.ResponsibleTeam)" />
+                                    <MudAutocomplete  T="Team" Label="Søk etter team" @bind-Value="@model.ResponsibleTeam" ToStringFunc="@(e => e.Name)" SearchFunc="(string input) =>SearchTeams(input, false)" For="@(() => model.ResponsibleTeam)" />
                             </div>
                         </div>
                         <MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="my-6" />
@@ -180,7 +183,14 @@
 
                                     <MudTextField @bind-Value="@model.Title" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true" HelperText="Skriv en tittel" For="@(() => model.Title)"/>
                             </div>
+
                         </div>
+                        <div>
+                        @if(user.userTeamRelations.Count > 1) {
+
+                            <MudAutocomplete T="Team" Label="Hvilket team vil du opprette saken i?" @bind-Value="@model.AssociatedTeam" ToStringFunc="@(e => e.Name)" SearchFunc="(string input) =>SearchTeams(input, true)" For="@(() => model.AssociatedTeam)" />
+                        } 
+</div>
 
                     </div>
 
@@ -240,6 +250,9 @@
     </EditForm>
 
 @code {
+    [CascadingParameter]
+    private UserRelation user { get; set; }
+
     private CreateSuggestionModel model = new CreateSuggestionModel();
     IList<string> images = new List<string>(); // base64 for display
     IList<byte[]> files = new List<byte[]>(); // for sending to backend
@@ -249,15 +262,6 @@
     private string status { get; set; } = "Ny";
 
 
-
-
-
-    private async Task EnsureSaveDialogOk()
-
-    {
-        // var result = await httpClient
-        // editEnabled = false;
-    }
 
     protected async Task EnsureCancelDialogOk()
     {
@@ -270,12 +274,11 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
-        Console.WriteLine(model);
         var res = await httpClient.PostAsJsonAsync<AddSuggestionRequest>("api/Suggestions", new AddSuggestionRequest() {
-                TeamId = 1, // DENNE MÅ OPPDATERES,
+                TeamId = user.userTeamRelations.Count == 1 ? user.userTeamRelations.First().Team.Id : model.AssociatedTeam.Id,
                 ResponsibleEmployee = (model.ResponsibleEmployee != null ? model.ResponsibleEmployee.Id : null ),
                 ResponsibleTeam = (model.ResponsibleTeam != null ? model.ResponsibleTeam.Id : null),
-                CreatedBy = 1, // DENNE MÅ OPPPDATERES,
+                CreatedBy = user.EmployeeId,
                 Title = model.Title,
                 CreatedAt = DateTime.Now,
                 LastUpdatedAt = DateTime.Now,
@@ -288,7 +291,7 @@
         var id = Int32.Parse(res.Content.ReadAsStringAsync().Result);
         await httpClient.PostAsJsonAsync<AddEventRequest>("api/Events/Add", new AddEventRequest()
             {
-                EmployeeId = 1, // DENNE MÅ OPPDATERES
+                EmployeeId = user.EmployeeId,
                 SuggestionId = id,
                 Description = "Saken ble opprettet",
                 Timestamp = DateTime.Now,
@@ -304,11 +307,11 @@
     private async Task UploadPictures(int id) {
         // dårlig løsning, burde ha et endepunkt som støtter arrays
         foreach(var file in files) {
-           
+
             await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
                 {
                     SuggestionId = id,
-                    EmployeeId = 1, // DENNE MÅ OPPDATERES
+                    EmployeeId = user.EmployeeId,
                     UploadedAt = DateTime.Now,
                     Image = file
                 });
@@ -330,6 +333,9 @@
         var fetchedStatuses = await httpClient.GetFromJsonAsync<string[]>("api/SuggestionStatus");
         statuses.AddRange(fetchedStatuses);
         phases.AddRange(fetchedPhases);
+        if(user.userTeamRelations.Count == 1) {
+            model.AssociatedTeam = user.userTeamRelations.First().Team;
+        }
 
     }
 
@@ -348,8 +354,15 @@
         }
         return Array.Empty<Employee>();
     }
-    protected async Task<IEnumerable<Team>> SearchTeams(string name)
+    protected async Task<IEnumerable<Team>> SearchTeams(string name, bool useMemberTeams)
     {
+        if(useMemberTeams) {
+            if(string.IsNullOrEmpty(name)) {
+                return user.userTeamRelations.Select(t => t.Team);
+            }
+            var filteredTeams = user.userTeamRelations.Where(rel => rel.Team.Name.Contains(name));
+            return filteredTeams.Select(t => t.Team);
+        }
         var teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
         if (teams != null)
         {

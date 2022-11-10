@@ -59,9 +59,8 @@
 </div>
 
 @code {
-	[CascadingParameter]
-	public UserRelation user { get; set; }
 
+	[Parameter] public EventCallback<UserRelation> OnUserLoginSuccess { get; set; }
 	private LoginModel model = new LoginModel();
 
 	private async Task OnValidSubmit(){
@@ -73,6 +72,9 @@
 
 			if(!res.IsSuccessStatusCode) {
 				Snackbar.Add("Feil innloggingsdetaljer, vennligst prøv igjen", Severity.Error);
+			} else {
+				var _user = await res.Content.ReadFromJsonAsync<UserRelation>();
+				await OnUserLoginSuccess.InvokeAsync(_user);
 			}
 	}
 
