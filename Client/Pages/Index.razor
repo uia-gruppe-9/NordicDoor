@@ -22,6 +22,7 @@
         <MudButton OnClick="OnCreateNewClick" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">Opprett ny sak</MudButton>
     </div>
 
+
     <MudTable 
         Items="@Suggestions" 
         Hover="true" 
@@ -29,25 +30,39 @@
         Breakpoint="Breakpoint.Sm"
         LoadingProgressColor="Color.Info" 
         Loading="@loading"
-        OnRowClick="NavigateSelectedSuggestion"
-    >
+        OnRowClick="NavigateSelectedSuggestion" 
+        Filter="new Func<GetSuggestionRequest, bool>(FilterFunc1)"
+        >
+        
+
+        <ToolBarContent>
+            
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+
         <HeaderContent>
             <MudTh>ID</MudTh>
-            <MudTh>Tittel</MudTh>
-            <MudTh>Beskrivelse</MudTh>
-            <MudTh>Opprettet av</MudTh>
-            <MudTh>Team</MudTh>
+            <MudTh>Tittel</MudTh>     
+            <MudTh>Opprettet av</MudTh>           
+            <MudTh>Ansvarlig ansatt</MudTh>
+            <MudTh>Ansvarlig Team</MudTh>
+            <MudTh>Fase</MudTh>
 
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="ID">@context.Id</MudTd>
-            <MudTd DataLabel="Tittel">@context.Title</MudTd>
-            <MudTd DataLabel="Beskrivelse">@context.Description</MudTd>
-            <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>
-            <MudTd DataLabel="Team">@context.Team.Name</MudTd>
-
-
+            <MudTd DataLabel="Tittel">@context.Title</MudTd>            
+            <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>            
+            <MudTd DataLabel="Ansvarlig ansatt">@context.ResponsibleEmployee?.Name</MudTd>
+            <MudTd DataLabel="Ansvarlig Team">@context.ResponsibleTeam?.Name</MudTd>
+            <MudTd DataLabel="Fase">@context.Phase</MudTd>
         </RowTemplate>
+
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+
     </MudTable>
 
 
@@ -70,5 +85,21 @@
 
     private void OnCreateNewClick() {
         Navigation.NavigateTo("new");
+
+      
+    }
+    private string searchString1 = "";
+  
+    private bool FilterFunc1(GetSuggestionRequest suggestion ) => FilterFunc(suggestion, searchString1);
+
+    private bool FilterFunc(GetSuggestionRequest Suggestions , string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (Suggestions.CreatedBy.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (Suggestions.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
     }
 }
