@@ -11,15 +11,15 @@ SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
                        Team_ID INT AUTO_INCREMENT,
-                       Name VARCHAR (60) NOT NULL UNIQUE,
+                       Name VARCHAR (60) NOT NULL,
                        PRIMARY KEY (Team_ID)
 );
 
 CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
                            Name VARCHAR (60) NOT NULL,
-                           Email VARCHAR (60) NOT NULL UNIQUE,
-                           Password VARCHAR (100) NOT NULL,
+                           Email VARCHAR (60) NOT NULL,
+                           Password VARCHAR (70) NOT NULL,
                            Is_Admin INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
 );
@@ -75,6 +75,17 @@ CREATE TABLE Suggestions (
 
 );
 
+CREATE TABLE SuggestionComments (
+                                    Comment_ID INT AUTO_INCREMENT,
+                                    Employee_ID INT NOT NULL ,
+                                    Suggestion_ID INT NOT NULL ,
+                                    Comment VARCHAR (250),
+                                    Timestamp DATETIME NOT NULL ,
+                                    PRIMARY KEY (Comment_ID),
+                                    FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
+                                    FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
+);
+
 CREATE TABLE Events (
                         Event_ID INT AUTO_INCREMENT,
                         Employee_ID INT,
@@ -97,16 +108,6 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
 
-CREATE TABLE SuggestionComments (
-                            Comment_ID INT AUTO_INCREMENT,
-                            Employee_ID INT NOT NULL ,
-                            Suggestion_ID INT NOT NULL ,
-                            Comment VARCHAR (250),
-                            Timestamp DATETIME NOT NULL ,
-                            PRIMARY KEY (Comment_ID),
-                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
-                            FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
-);
 
 INSERT INTO Teams values (
                              1,
@@ -266,7 +267,7 @@ insert INTO Employees values (
 insert into UserTeams values (
                                  1,
                                  1,
-                                 'Teamleder'
+                                 'Medarbeider'
                              );
 
 insert into UserTeams values (
@@ -330,11 +331,6 @@ insert into UserTeams values (
                              );
 insert into UserTeams values (
                                  12,
-                                 2,
-                                 'Medarbeider'
-                             );
-insert into UserTeams values (
-                                 1,
                                  2,
                                  'Medarbeider'
                              );
@@ -418,41 +414,27 @@ insert into Suggestions values ( default,
                                  'Kaste søpla på fellesrom. ');
 
 insert into Suggestions values ( default,
-                                 7,
-                                 7,
-                                 7,
-                                 'Trenger ny spraylakker',
-                                 current_timestamp,
-                                 7,
-                                 current_timestamp,
-                                 current_timestamp,
-                                 'Åpen',
-                                 'Do',
-                                 'Spraylakker slutta å fungere. ');
-
-insert into Suggestions values ( default,
                                  8,
-                                 8,
+                                 10,
                                  8,
                                  'Glassdør til kontor 15 er knust. ',
                                  current_timestamp,
                                  8,
                                  current_timestamp,
                                  current_timestamp,
-                                 'Åpen',
+                                 'Lukket',
                                  'Do',
                                  'Bestille nytt glassmanter, og installere ny dør. ');
-
 insert into Suggestions values ( default,
                                  9,
-                                 9,
+                                 10,
                                  9,
                                  'Bestille nye skruer av slag "lengde:1.5cm"',
                                  current_timestamp,
                                  9,
                                  current_timestamp,
-                                 current_timestamp,
-                                 'Åpen',
+                                 '2017-01-03 14:50:50',
+                                 'Lukket',
                                  'Do',
                                  'Trenger skruer til dørkarm. ');
 
@@ -464,7 +446,7 @@ insert into Suggestions values ( default,
                                  current_timestamp,
                                  10,
                                  current_timestamp,
-                                 current_timestamp,
+                                 '2015-11-03',
                                  'Lukket',
                                  'Do',
                                  'Dør til kontor vil ikke lukkes. ');
@@ -532,12 +514,7 @@ insert into Events values (
                               'Lukket Forbedringsforslag: Bestille nye skruer av slag "lengde:1.5cm"',
                               current_timestamp );
 
-insert into Events values (
-                              DEFAULT,
-                              10,
-                              10,
-                              'Opprettet Forbedringsforslag: Fiks dør til kontor.',
-                              current_timestamp );
+
 INSERT INTO SuggestionComments values
     (
         DEFAULT,
