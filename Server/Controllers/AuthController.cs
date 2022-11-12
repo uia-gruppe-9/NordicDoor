@@ -7,7 +7,7 @@ using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
 using System.Web.Helpers;
 
-
+// AuthController har API punkter for autentsisering, her skal de metodene og kallene som er ment for innlogging og registering ligge. 
 
 namespace NordicDoor.Server.Controllers
 {
@@ -23,7 +23,7 @@ namespace NordicDoor.Server.Controllers
             dbContext = ctx;
         }
 
-
+        // Autentisering av innlogging ved E-post og HasedPassord.
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> AuthUsernameAndPassword(LoginRequest loginRequest)
@@ -31,18 +31,20 @@ namespace NordicDoor.Server.Controllers
             var user = await dbContext.Employees.FirstOrDefaultAsync(e => e.Email == loginRequest.Email);
             if (user != null)
             {
+                // Innsjekk av Passord i databasen (Allerede hashed)  = Boolen.
                 if (!Crypto.VerifyHashedPassword(user.Password, loginRequest.Password) )
                 {
                     // unauthorized
                     return StatusCode(403);
                 }
                 
-                var userInUserteams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
+                var userTeams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
                 var teamRelations = new List<UserTeamRelation>();
-                foreach (var userteam in userInUserteams)
+                
+                foreach (var _user in userTeams)
                 {
-                    var team = await dbContext.Teams.FindAsync(userteam.TeamId);
-                    var userRole = userteam.Role;
+                    var team = await dbContext.Teams.FindAsync(_user.TeamId);
+                    var userRole = _user.Role;
 
                     teamRelations.Add(new UserTeamRelation(
                     ) {
