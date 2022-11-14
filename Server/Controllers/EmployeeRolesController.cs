@@ -16,7 +16,7 @@ namespace NordicDoor.Server.Controllers
             dbContext = ctx;
         }
 
-
+        // test
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
