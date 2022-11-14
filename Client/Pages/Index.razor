@@ -42,13 +42,13 @@
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh>ID</MudTh>
-            <MudTh>Tittel</MudTh>     
-            <MudTh>Opprettet av</MudTh>           
-            <MudTh>Ansvarlig ansatt</MudTh>
-            <MudTh>Ansvarlig Team</MudTh>
-            <MudTh>Fase</MudTh>
-
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GetSuggestionRequest, object>(x=>x.Id)">ID</MudTableSortLabel></MudTh>
+            <MudTh>Tittel</MudTh> 
+            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.CreatedBy.Name)">Opprettet av</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleEmployee.Name)">Ansvarlig ansatt</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleTeam.Name)">Ansvarlig team </MudTableSortLabel></MudTh>         
+            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Phase)">Fase</MudTableSortLabel></MudTh>
+           
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="ID">@context.Id</MudTd>
@@ -99,6 +99,14 @@
         if (Suggestions.CreatedBy.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         if (Suggestions.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (Suggestions.Phase.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{Suggestions.Id}".Contains(searchString))
+            return true;
+        if (Suggestions.ResponsibleEmployee.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (Suggestions.ResponsibleTeam.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
     }
