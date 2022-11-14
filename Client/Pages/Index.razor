@@ -12,6 +12,14 @@
         margin-bottom: 1rem;
 
     }
+
+    .CaseTable{
+        display: flex;
+        
+        
+       
+      
+    }
 </style>
 <PageTitle>Home</PageTitle>
 <MudContainer Style="width: 100%">
@@ -22,48 +30,53 @@
         <MudButton OnClick="OnCreateNewClick" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">Opprett ny sak</MudButton>
     </div>
 
+    
+        <MudTable Items="@Suggestions"
+                  Hover="true"
+                  T="GetSuggestionRequest"
+                  Breakpoint="Breakpoint.Sm"
+                  LoadingProgressColor="Color.Info"
+                  Loading="@loading"
+                  OnRowClick="NavigateSelectedSuggestion"
+                  Filter="new Func<GetSuggestionRequest, bool>(FilterFunc1)"                 
+                  >
+                 
 
-    <MudTable 
-        Items="@Suggestions" 
-        Hover="true" 
-        T="GetSuggestionRequest"
-        Breakpoint="Breakpoint.Sm"
-        LoadingProgressColor="Color.Info" 
-        Loading="@loading"
-        OnRowClick="NavigateSelectedSuggestion" 
-        Filter="new Func<GetSuggestionRequest, bool>(FilterFunc1)"
-        >
+            <ToolBarContent>
+
+                <MudSpacer />
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GetSuggestionRequest, object>(x=>x.Id)">ID</MudTableSortLabel></MudTh>
+                <MudTh>Tittel</MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.CreatedBy.Name)">Opprettet av</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleEmployee.Name)">Ansvarlig ansatt</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleTeam.Name)">Ansvarlig team </MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Phase)">Fase</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Status)">Status</MudTableSortLabel></MudTh>
+
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="ID">@context.Id</MudTd>
+                <MudTd DataLabel="Tittel">@context.Title</MudTd>
+                <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>
+                <MudTd DataLabel="Ansvarlig ansatt">@context.ResponsibleEmployee?.Name</MudTd>
+                <MudTd DataLabel="Ansvarlig Team">@context.ResponsibleTeam?.Name</MudTd>
+                <MudTd DataLabel="Fase">@context.Phase</MudTd>
+                <MudTd DataLabel="Status">@context.Status</MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+
+        </MudTable>
+
         
 
-        <ToolBarContent>
-            
-            <MudSpacer />
-            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-
-        <HeaderContent>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GetSuggestionRequest, object>(x=>x.Id)">ID</MudTableSortLabel></MudTh>
-            <MudTh>Tittel</MudTh> 
-            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.CreatedBy.Name)">Opprettet av</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleEmployee.Name)">Ansvarlig ansatt</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleTeam.Name)">Ansvarlig team </MudTableSortLabel></MudTh>         
-            <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Phase)">Fase</MudTableSortLabel></MudTh>
-           
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="ID">@context.Id</MudTd>
-            <MudTd DataLabel="Tittel">@context.Title</MudTd>            
-            <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>            
-            <MudTd DataLabel="Ansvarlig ansatt">@context.ResponsibleEmployee?.Name</MudTd>
-            <MudTd DataLabel="Ansvarlig Team">@context.ResponsibleTeam?.Name</MudTd>
-            <MudTd DataLabel="Fase">@context.Phase</MudTd>
-        </RowTemplate>
-
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-
-    </MudTable>
+    
 
 
 </MudContainer>
@@ -110,4 +123,5 @@
             return true;
         return false;
     }
+   
 }
