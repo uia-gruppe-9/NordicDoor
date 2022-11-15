@@ -89,14 +89,11 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPost]
-        [Route("/Add/Team")]
         public async Task<IActionResult> AddTeam(AddTeamRequest addTeamRequest)
         {
             var team = new Team()
-            {
-
-                Id = addTeamRequest.Id,
-                Name = addTeamRequest.Name,
+            { 
+                Name = addTeamRequest.TeamName,
 
             };
 

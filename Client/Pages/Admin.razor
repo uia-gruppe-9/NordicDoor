@@ -20,6 +20,20 @@
 		padding: 20px;
 	}
 
+	/*Styling for form 3*/
+	.change_TeamLeader {
+		width: 50%;
+		float: left;
+		padding: 20px;
+	}
+
+	/*Styling form 4*/
+	.change_Team {
+		width: 50%;
+		float: right;
+		padding: 20px;
+	}
+
 	/*Styling for knappene*/
 	input[type=submit] {
 		padding:10px 15px;
@@ -60,14 +74,17 @@
 
 	/*Endre størrelse checkbox*/
 	input[type=checkbox] {
-		width: 15px;
-		height: 15px;
+		width: 17px;
+		height: 17px;
+		position:relative;
+		
 	}
 
 	/*Endre størrelse radio*/
 	input[type=radio] {
 		width: 15px;
 		height: 15px;
+
 	}
 </style>
 
@@ -95,47 +112,55 @@
 				}
 			</MudSelect>
 			<br />
-			<label for="Admin"><h3>Kryss av hvis denne brukeren skal være admin</h3></label><br />
+			<label for="Admin"><h3>Kryss av hvis denne brukeren skal være admin</h3></label>
 		<InputCheckbox id="Admin" name="Admin" @bind-Value="@userModel.isAdmin" /> <br />
 			<br />
 			<input type="submit" value="Opprett bruker" />
 
 		</EditForm>
-
-
-		<!--
-
-
-
-		<label for="Password"><h3>Passord:</h3></label><br />
-		<InputText type="password" id="Password" name="password" placeholder="Skriv passord" maxlength="60" required /> <br />
-		<br />
-
-		<p><h3>Kryss av hvis brukeren skal være admin:</h3></p> <br />
-		<input type="radio" id="Admin" name="Admin" value="Admin" />
-		<label for="Admin">Admin</label><br />
-		<br />
-
-		-->
 		<p></p>
 	} 
+
 <!--Form for opprettelse av teams-->
 <EditForm class="create_Team" Model="@teamModel" OnValidSubmit="@OnValidTeamSubmit">
 	<h2>Opprett nytt team:</h2> <br />
-
 	<label for="Team-name"><h3>Fyll inn ønsket team-navn: </h3></label><br />
-
 	<InputText type="text" id="Team-name" name="Team-name" placeholder="Skriv team-navn" @bind-Value="@teamModel.TeamName" /><br />
-
 	<br />
-	
-	<label for="Team-leader"></label>
-	<input type="text" id="Team-leader" name="Team-leader" placeholder="Hvem er teamleder?" maxlength="60" required />
-	<input type="submit" value="Opprett team"/>
+	<input type="submit" value="Opprett team" />
 	 
+</EditForm>
+<br />
+
+
+<!--Form for endring av teamleder-->
+<EditForm class="change_TeamLeader" Model="@changeTeamLeader" OnValidSubmit="@OnValidTeamSubmit">
+	<h2>Endre teamleder:</h2>
+	<label for="Team-leder"></label>
+	<MudAutocomplete T="Employee" Label="Søk etter ansatt" @bind-Value="@TeamLeader" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" />
+	<MudSelect T="string" Label="Velg nytt team" MultiSelection="true" @bind-SelectedValues="@alterTeamLeader">
+		@foreach (var team in teams)
+		{
+			<MudSelectItem T="string" Value="team.Name" /> 
+		}
+	</MudSelect> <br />
+	<input type="submit" value="Endre team-leder" />
 </EditForm>
 
 
+<!--Form for endring av teamtilhørighet-->
+<EditForm class="change_Team" Model="@changeTeamModel" OnValidSubmit="@OnValidTeamSubmit">
+	<h2>Endre teamtilhørighet:</h2>
+	<label for="Team-tilhørighet"></label>
+	<MudAutocomplete T="Employee" Label="Søk etter ansatt" @bind-Value="@employee" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" />
+	<MudSelect CT="string" Label="Velg nytt team" MultiSelection="true" @bind-SelectedValues="@alterEmployeeTeam">
+		@foreach (var team in teams)
+		{
+			<MudSelectItem T="string" Value="team.Name" />
+		}
+	</MudSelect> <br />
+	<input type="submit" value="Endre team" />
+</EditForm>
 
 
 
@@ -145,15 +170,28 @@
 
 	public CreateUserModel userModel = new CreateUserModel();
 	public CreateTeamModel teamModel = new CreateTeamModel();
+	public ChangeTeamModel changeTeamModel = new ChangeTeamModel();
+	public ChangeTeamLeaderModel changeTeamLeader = new ChangeTeamLeaderModel();
+
+	public Employee TeamLeader { get; set; }
+	public Employee employee { get; set; }
 
 	public List<Team> teams = new List<Team>();
+
 	private IEnumerable<string> options { get; set; } = new HashSet<string>();
+
+	private IEnumerable<string> selectedTeams { get; set; } = new HashSet<string>();
+	private IEnumerable<string> selectedTeamLeader { get; set; } = new HashSet<string>();
+	private IEnumerable<string> alterTeamLeader { get; set; } = new HashSet<string>();
+	private IEnumerable<string> alterEmployeeTeam { get; set; } = new HashSet<string>();
+
+
 	public bool loading = true;
 
 	protected async Task OnValidTeamSubmit() {
 			await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
 		{
-				Name = teamModel.TeamName, 
+				TeamName = teamModel.TeamName, 
 
 			});
 
@@ -176,4 +214,21 @@
 		teams.AddRange(_teams);
 		loading = false;
 	}
+	protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
+	{
+
+
+		var employees = await httpClient.GetFromJsonAsync<List<Employee>>("api/Users");
+		if (employees != null)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				return employees;
+			}
+			return employees.Where(emp => emp.Name.Contains(name));
+		}
+		return Array.Empty<Employee>();
+	}
+
 }
+
