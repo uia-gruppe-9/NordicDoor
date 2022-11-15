@@ -2,7 +2,7 @@
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
 @using Nordic_Door.Shared.Models.Common;
-
+@using Nordic_Door.Client.Utils;
 
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
@@ -95,6 +95,12 @@
         gap: 1rem;
     }
 
+    .comment-container {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+
     .history-container {
         flex: 1 1 0;
         min-height: 1rem;
@@ -106,7 +112,7 @@
 
 <style type="text/css" media="screen and (max-width:635px)">
 
-        .container {
+    .container {
         height: 100%;
         width: 100%;
         display: flex;
@@ -130,26 +136,23 @@
     .paper-vertical {
         flex-direction: column !important;
         height: 30rem !important;
-         
     }
 
 
-   .info-container-vertical {
+    .info-container-vertical {
         display: flex;
         flex-direction: row;
-        align-items:center;
+        align-items: center;
         gap: 0.5rem;
-       
     }
 
     .button-container {
         display: flex;
         gap: 1rem;
-        flex-direction:column;
-        
+        flex-direction: column;
     }
 
-     .history-container {
+    .history-container {
         flex: 1 1 0;
         min-height: 10rem;
         overflow: auto;
@@ -157,9 +160,9 @@
         border-top: solid grey 1px;
     }
 
-    </style>
+</style>
 
-    <style type="text/css" media="screen and (max-width:896px)">
+<style type="text/css" media="screen and (max-width:896px)">
 
     .paper {
         display: flex;
@@ -176,15 +179,14 @@
     .button-container {
         display: flex;
         gap: 1rem;
-        flex-direction:column;
-
+        flex-direction: column;
     }
 
-     .paper .mud-typography {
+    .paper .mud-typography {
         font-size: 0.8rem;
         font-weight: 400;
     }
-    </style>
+</style>
 
 @if (loading || suggestion == null)
 {
@@ -214,7 +216,7 @@ else
                                 </div>
                                 @if (editEnabled)
                                 {
-                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status" >
+                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status">
                                         <MudSelectItem Value="@("Ny")" />
                                         <MudSelectItem Value="@("Åpen")" />
                                         <MudSelectItem Value="@("Lukket")" />
@@ -264,11 +266,14 @@ else
                                 }
                                 else
                                 {
-                                    @if(suggestion.ResponsibleEmployee == null) {
-                                    <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    @if (suggestion.ResponsibleEmployee == null)
+                                    {
+                                        <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-                                    } else {
-                                    <MudTextField @bind-Value="@suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    }
+                                    else
+                                    {
+                                        <MudTextField @bind-Value="@suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
                                     }
 
@@ -286,12 +291,15 @@ else
                                 }
                                 else
                                 {
-                                    @if(suggestion.ResponsibleTeam == null) {
-                                    <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    @if (suggestion.ResponsibleTeam == null)
+                                    {
+                                        <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-                                    } else {
+                                    }
+                                    else
+                                    {
 
-                                    <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                        <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                     }
 
                                 }
@@ -379,32 +387,52 @@ else
 
                         <MudTabPanel Text="Bilder" Icon="@Icons.Filled.Image">
                             <div class="m-5">
-                            <InputFile id="images" hidden OnChange="UploadFile"/>
-                            <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Filled.PhotoCamera"
-                                   for="images">
-                               Last opp bilde
-                            </MudButton>
+                                <InputFile id="images" hidden OnChange="UploadFile" />
+                                <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Filled.PhotoCamera"
+                                       for="images">
+                                    Last opp bilde
+                                </MudButton>
                             </div>
 
                             <MudCarousel TData="object" Class="mud-width-full" Style="height: 20rem;" AutoCycle="false">
-                                @foreach (var image in images) {
+                                @foreach (var image in images)
+                                {
                                     <MudCarouselItem>
                                         <div class="d-flex" style="height:100%">
-                                        <MudImage Src="@image"/>
+                                            <MudImage Src="@image" />
 
-</div>
+                                        </div>
                                     </MudCarouselItem>
                                 }
-                               
+
                             </MudCarousel>
                         </MudTabPanel>
                     </MudTabs>
 
                 </div>
+                <div class="paper ">
+                    <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="@currentComment" Label="Skriv en kommentar.." Lines="2" />
+                    <MudButton Style="align-self: end;" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Filled.Send" OnClick="OnCommentClick">Kommenter</MudButton>
 
+                </div>
+                <MudDivider />
+
+                @foreach (var comment in comments)
+                {
+                    <MudPaper>
+                        <div class="comment-container gap-1">
+                            <div class="d-flex align-items-center gap-3">
+                                <MudIcon Icon="@Icons.Filled.PersonOutline" />
+                                <MudText Style="font-weight: 600;">@comment.EmployeeName</MudText>
+                                <MudText>@DateUtils.ToRelativeDateString(comment.Timestamp, true)</MudText>
+                            </div>
+                            @comment.Comment
+                        </div>
+                    </MudPaper>
+                }
             </div>
             <div class="paper">
                 <div class="actions">
@@ -459,11 +487,13 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
-        [CascadingParameter]
+    [CascadingParameter]
     private UserRelation user { get; set; }
     private GetSuggestionRequest? suggestion;
     private GetSuggestionRequest? updatedSuggestion;
     private List<GetEventRequest>? events;
+    private List<GetSuggestionCommentRequest> comments = new List<GetSuggestionCommentRequest>();
+    private string currentComment;
     private bool editEnabled = false;
     private bool loading = true;
     private MudForm? form;
@@ -482,6 +512,29 @@ else
         updatedSuggestion = new GetSuggestionRequest(suggestion);
         editEnabled = false;
     }
+
+    protected async void OnCommentClick()
+    {
+        var comment = new AddSuggestionCommentRequest()
+            {
+                EmployeeId = user.EmployeeId,
+                SuggestionId = suggestion.Id,
+                Comment = currentComment,
+                Timestamp = DateTime.Now
+            };
+
+        currentComment = "";
+        var res = await httpClient.PostAsJsonAsync<AddSuggestionCommentRequest>("api/SuggestionComments", comment);
+        await GetComments();
+    }
+
+    protected async Task GetComments()
+    {
+        var res = await httpClient.GetFromJsonAsync<List<GetSuggestionCommentRequest>>("api/SuggestionComments/" + suggestion.Id);
+        comments = res;
+        StateHasChanged();
+    }
+
 
     protected void OnEditClick()
     {
@@ -552,9 +605,13 @@ else
             updatedSuggestion = new GetSuggestionRequest(_suggestion);
             events = _events;
             loading = false;
+            await GetComments();
+
 
         }
     }
+
+
 
     protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
     {
@@ -595,7 +652,8 @@ else
             Snackbar.Add("Feil under henting av sak. Kontakt din administrator", Severity.Error);
             return (null, null);
         }
-        foreach(var picture in _suggestion.Pictures) {
+        foreach (var picture in _suggestion.Pictures)
+        {
             images.Add($"data:image/png;base64,{Convert.ToBase64String(picture.Image)}");
         }
         var sortedEvents = _events.OrderBy(x => x.Timestamp).ToList();
@@ -619,6 +677,6 @@ else
                 UploadedAt = DateTime.Now,
                 Image = bytes
             });
-            
+
     }
-    }
+}
