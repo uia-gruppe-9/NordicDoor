@@ -7,7 +7,7 @@ using Nordic_Door.Shared.Models.API;
 using Nordic_Door.Shared.Models.Database;
 using System.Web.Helpers;
 
-
+// AuthController har API punkter for autentsisering, her skal de metodene og kallene som er ment for innlogging og registering ligge. 
 
 namespace NordicDoor.Server.Controllers
 {
@@ -23,25 +23,28 @@ namespace NordicDoor.Server.Controllers
             dbContext = ctx;
         }
 
-
+        // Autentisering av innlogging ved E-post og HasedPassord.
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> AuthUsernameAndPassword(LoginRequest loginRequest)
         {
-            var user = await dbContext.Employees.SingleAsync(e => e.Email == loginRequest.Email);
-
+            var user = await dbContext.Employees.FirstOrDefaultAsync(e => e.Email == loginRequest.Email);
             if (user != null)
             {
-
-                var userInUserteams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
-
-                var teamRelations = new List<UserTeamRelation>();
-
-                foreach (var userteam in userInUserteams)
+                // Innsjekk av Passord i databasen (Allerede hashed)  = Boolen.
+                if (!Crypto.VerifyHashedPassword(user.Password, loginRequest.Password) )
                 {
-
-                    var team = await dbContext.Teams.FindAsync(userteam.TeamId);
-                    var userRole = userteam.Role;
+                    // unauthorized
+                    return StatusCode(403);
+                }
+                
+                var userTeams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
+                var teamRelations = new List<UserTeamRelation>();
+                
+                foreach (var _user in userTeams)
+                {
+                    var team = await dbContext.Teams.FindAsync(_user.TeamId);
+                    var userRole = _user.Role;
 
                     teamRelations.Add(new UserTeamRelation(
                     ) {
@@ -49,7 +52,6 @@ namespace NordicDoor.Server.Controllers
                         Team = team
                     });
                 }
-
                 var userRelation = new UserRelation()
                 {
                     EmployeeId = user.Id,
@@ -57,13 +59,8 @@ namespace NordicDoor.Server.Controllers
                     EmployeeIsAdmin = user.IsAdmin,
                     EmployeeEmail = user.Email,
                     userTeamRelations = teamRelations,
-
                 };
-
-
-
                 return Ok(userRelation);
-
             }
 
             return StatusCode(401);
@@ -76,15 +73,14 @@ namespace NordicDoor.Server.Controllers
         // opprette ny bruker: inputt fra frontend
         // forloop med flere teams.
 
-        public async Task<IActionResult> CreateUser(string name, string email, string password,
-            int isAdmin, string[] teamNames)
+        public async Task<IActionResult> CreateUser(AddUserRequest addUserRequest)
         {
             var newEmployee = new Employee()
             {
-                Name = name,
-                Email = email,
-                Password = Crypto.HashPassword(password),
-                IsAdmin = isAdmin,
+                Name = addUserRequest.Name,
+                Email = addUserRequest.Email,
+                Password = Crypto.HashPassword(addUserRequest.Password),
+                IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
                 
             };
             
@@ -99,7 +95,7 @@ namespace NordicDoor.Server.Controllers
             }
  
 
-            foreach (var team in teamNames)
+            foreach (var team in addUserRequest.TeamNames)
             {
                 var findteam = await dbContext.Teams.FirstAsync(_team => _team.Name == team);
 

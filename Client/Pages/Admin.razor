@@ -2,7 +2,7 @@
 @using Nordic_Door.Client.Models;
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
-
+@inject ISnackbar Snackbar
 @inject HttpClient httpClient;
 
 <style>
@@ -99,13 +99,13 @@
 	<EditForm class="create_Employee" Model="@userModel" OnValidSubmit="@OnValidSubmit">
 			<h2>Opprett ny bruker:</h2> <br />
 			<label for="Name"><h3>Navn:</h3> </label><br />
-		<InputText id="Name" name="name" placeholder="Skriv fullt navn" @bind-Value="@userModel.Name" /><br />
+		<InputText type= "text" id="Name" name="name" placeholder="Skriv fullt navn" @bind-Value="@userModel.Name" /><br />
 		<label for="Email"><h3>Epost:</h3></label> <br />
 		<InputText type="email" id="Email" name="email" placeholder="Skriv epost" @bind-Value="@userModel.Email" /><br />
 			<label for="Password"><h3>Passord:</h3></label><br />
 		<InputText type="password" id="Password" name="password" placeholder="Skriv passord" @bind-Value="@userModel.Password" /> <br />
 			<br />
-		<MudSelect T="string" Label="Velg opp til flere teams" MultiSelection="true" @bind-SelectedValues="options" >
+		<MudSelect T="string" Label="Velg opp til flere teams" MultiSelection="true" @bind-SelectedValues="@selectedTeams" >
 				@foreach (var team in teams)
 				{
 					<MudSelectItem T="string"  Value="team.Name" />
@@ -189,7 +189,7 @@
 	public bool loading = true;
 
 	protected async Task OnValidTeamSubmit() {
-			await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
+		await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
 		{
 				TeamName = teamModel.TeamName, 
 
@@ -199,12 +199,23 @@
 
 	protected async Task OnValidSubmit() {
 
-		//await httpClient.PostAsJsonAsync<AddUserRequest>("api/Users", new AddUserRequest()
-		//	{
-		//		Name = model.Name,
-		//		Email = model.Email,
+		var res = await httpClient.PostAsJsonAsync<AddUserRequest>("api/Auth/CreateUser", new AddUserRequest()
+			{
+				Name = userModel.Name,
+				Email = userModel.Email,
+				IsAdmin = userModel.isAdmin,
+				Password = userModel.Password,
+				TeamNames = selectedTeams.ToList(),
+			});
 
-		//	});
+		if(res.IsSuccessStatusCode) {
+			Snackbar.Add("Brukeren har blitt opprettet", Severity.Success);
+			userModel = new CreateUserModel();
+
+			} else {
+			Snackbar.Add("Feil under brukeroppretting", Severity.Error);
+
+			}
 	}
 
 

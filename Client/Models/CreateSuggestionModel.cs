@@ -18,6 +18,7 @@ namespace Nordic_Door.Client.Models
         public Employee ResponsibleEmployee { get; set; }
         public Team ResponsibleTeam { get; set; }
 
+        [Required]
         public Team AssociatedTeam { get; set; } // This is the team that the user want so associate the suggestion with (if the user is a member of multiple teams)
 
         public string Phase { get; set; }

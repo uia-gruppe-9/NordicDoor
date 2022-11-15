@@ -1,6 +1,8 @@
 ﻿@page "/suggestion/{id:int}"
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
+@using Nordic_Door.Shared.Models.Common;
+
 
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
@@ -101,6 +103,89 @@
         border-top: solid grey 1px;
     }
 </style>
+
+<style type="text/css" media="screen and (max-width:635px)">
+
+        .container {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .paper {
+        display: flex;
+        flex-direction: column;
+        background-color: #fffcfc;
+        border: 2px solid #bdbdbd;
+        min-width: 50%;
+        border-radius: 25px;
+        box-shadow: rgba(0, 0, 0, 0.10) 0px 5px 24px;
+        gap: 1rem;
+        padding: 1rem 1rem;
+    }
+
+    .paper-vertical {
+        flex-direction: column !important;
+        height: 30rem !important;
+         
+    }
+
+
+   .info-container-vertical {
+        display: flex;
+        flex-direction: row;
+        align-items:center;
+        gap: 0.5rem;
+       
+    }
+
+    .button-container {
+        display: flex;
+        gap: 1rem;
+        flex-direction:column;
+        
+    }
+
+     .history-container {
+        flex: 1 1 0;
+        min-height: 10rem;
+        overflow: auto;
+        padding: 1rem;
+        border-top: solid grey 1px;
+    }
+
+    </style>
+
+    <style type="text/css" media="screen and (max-width:896px)">
+
+    .paper {
+        display: flex;
+        flex-direction: column;
+        background-color: #fffcfc;
+        border: 2px solid #bdbdbd;
+        min-width: 20%;
+        border-radius: 25px;
+        box-shadow: rgba(0, 0, 0, 0.10) 0px 5px 24px;
+        gap: 1rem;
+        padding: 1rem 1rem;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 1rem;
+        flex-direction:column;
+
+    }
+
+     .paper .mud-typography {
+        font-size: 0.8rem;
+        font-weight: 400;
+    }
+    </style>
+
 @if (loading || suggestion == null)
 {
     <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
@@ -357,7 +442,7 @@ else
                                     <MudText Style="font-size: 1rem; font-weight: 600;">@_event.Description</MudText>
                                     <MudText Style="font-weight: 200; font-size: 14px;">
                                         @_event.Timestamp.ToString("yyyy-MM-dd H:m:s")
-                                        <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;" /> @suggestion.CreatedBy.Name
+                                        <MudIcon Icon="@Icons.Outlined.Person" Style="position: relative; top: 10%;" /> @_event.Employee.Name
                                     </MudText>
                                 </div>
 
@@ -374,7 +459,8 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
-
+        [CascadingParameter]
+    private UserRelation user { get; set; }
     private GetSuggestionRequest? suggestion;
     private GetSuggestionRequest? updatedSuggestion;
     private List<GetEventRequest>? events;
@@ -436,7 +522,7 @@ else
 
         await httpClient.PostAsJsonAsync<AddEventRequest>($"api/Events/Add", new AddEventRequest()
             {
-                EmployeeId = suggestion.CreatedBy.Id, // DENNE MÅ OPPDATERES ETTER AT AUTENTISERING HAR BLITT IMPLEMENTERT
+                EmployeeId = user.EmployeeId,
                 SuggestionId = suggestion.Id,
                 Description = "Saken har blitt oppdatert",
                 Timestamp = DateTime.Now,
@@ -529,7 +615,7 @@ else
         await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
             {
                 SuggestionId = suggestion.Id,
-                EmployeeId = suggestion.CreatedBy.Id,
+                EmployeeId = user.EmployeeId,
                 UploadedAt = DateTime.Now,
                 Image = bytes
             });
