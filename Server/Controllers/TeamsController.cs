@@ -95,7 +95,11 @@ namespace Nordic_Door.Server.Controllers
         // gjøre innput employee til leder av innput team
         public async Task<IActionResult> UpdateTeamLeaderInTeam(string teamName, string employeeName)
         {
-            var teamn = await dbContext.Teams.FirstAsync(e => e.Name == teamName);
+            var team = await dbContext.Teams.FirstAsync(e => e.Name == teamName);
+            var userTeamOldTL = await dbContext.UserTeams.FirstAsync(tL => tL.TeamId == team.Id);
+
+            var oldTeamLeader = await dbContext.UserTeams.FirstAsync(l => l.Role == "Leader");
+
 
             var employee = await dbContext.Employees.FirstAsync(e => e.Name == employeeName);
             var userTeam = await dbContext.UserTeams.FirstAsync(e => e.EmployeeId == employee.Id);
