@@ -18,7 +18,7 @@ CREATE TABLE Teams (
 CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
                            Name VARCHAR (60) NOT NULL,
-                           Email VARCHAR (60) NOT NULL,
+                           Email VARCHAR (60) NOT NULL UNIQUE,
                            Password VARCHAR (70) NOT NULL,
                            Is_Admin INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
