@@ -11,16 +11,17 @@ SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
                        Team_ID INT AUTO_INCREMENT,
-                       Name VARCHAR (60) NOT NULL,
+                       Name VARCHAR (60) NOT NULL UNIQUE,
                        PRIMARY KEY (Team_ID)
 );
 
 CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
                            Name VARCHAR (60) NOT NULL,
-                           Email VARCHAR (60) NOT NULL,
+                           Email VARCHAR (60) NOT NULL UNIQUE,
                            Password VARCHAR (70) NOT NULL,
                            Is_Admin INT NOT NULL,
+                           Is_Disabled INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
 );
 
@@ -36,7 +37,7 @@ CREATE TABLE UserTeams (
                            EmpRole VARCHAR (20) NOT NULL DEFAULT ('Medarbeider'),
                            PRIMARY KEY (Employee_ID, Team_ID),
                            FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
-                           FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
+                          FOREIGN KEY (Team_ID) REFERENCES Teams (Team_ID),
                            FOREIGN KEY (EmpRole) REFERENCES EmployeeRoles (EmpRole)
 );
 
@@ -77,8 +78,8 @@ CREATE TABLE Suggestions (
 
 CREATE TABLE SuggestionComments (
                                     Comment_ID INT AUTO_INCREMENT,
-                                    Employee_ID INT NOT NULL ,
-                                    Suggestion_ID INT NOT NULL ,
+                                    Employee_ID INT,
+                                    Suggestion_ID INT,
                                     Comment VARCHAR (250),
                                     Timestamp DATETIME NOT NULL ,
                                     PRIMARY KEY (Comment_ID),
@@ -107,7 +108,6 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
-
 
 INSERT INTO Teams values (
                              1,
@@ -165,7 +165,8 @@ insert INTO Employees values (
                                  'Admin',
                                  'Admin@admin.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
-                                 1
+                                 1,
+                                 0
                              );
 
 insert INTO Employees values (
@@ -173,7 +174,8 @@ insert INTO Employees values (
                                  'Ola Nordmann',
                                  'OlaN@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
-                                 1
+                                 1,
+                                 0
                              );
 
 insert INTO Employees values (
@@ -181,7 +183,8 @@ insert INTO Employees values (
                                  'Kari Nordmann',
                                  'KariN@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
-                                 1
+                                 1,
+                                 0
                              );
 
 insert INTO Employees values (
@@ -189,6 +192,7 @@ insert INTO Employees values (
                                  'John Johnson',
                                  'JonJ@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -197,6 +201,7 @@ insert INTO Employees values (
                                  'Morten Harket',
                                  'MortHa@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -205,6 +210,7 @@ insert INTO Employees values (
                                  'Egil Berntsen',
                                  'EgBer@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -213,6 +219,7 @@ insert INTO Employees values (
                                  'Thor Magne Svendsen',
                                  'THMS@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -221,6 +228,7 @@ insert INTO Employees values (
                                  'Eskil Lie',
                                  'EskLi@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -229,6 +237,7 @@ insert INTO Employees values (
                                  'Katrine Amundsen',
                                  'KatAm@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -237,6 +246,7 @@ insert INTO Employees values (
                                  'Susanne Tyri',
                                  'susT@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -245,6 +255,7 @@ insert INTO Employees values (
                                  'Maria Andersen',
                                  'MarA@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 insert INTO Employees values (
@@ -252,6 +263,7 @@ insert INTO Employees values (
                                  'Mia Ås',
                                  'MiaAA@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 insert INTO Employees values (
@@ -259,10 +271,17 @@ insert INTO Employees values (
                                  'Espen Tømmerstigen',
                                  'Espentom@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
-
-
+insert INTO Employees values (
+                                 14,
+                                 'Stig Brenner',
+                                 'Stigbrenner@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
+                                 1
+                             );
 
 insert into UserTeams values (
                                  1,
@@ -412,7 +431,18 @@ insert into Suggestions values ( default,
                                  'Åpen',
                                  'Do',
                                  'Kaste søpla på fellesrom. ');
-
+insert into Suggestions values ( default,
+                                 7,
+                                 7,
+                                 7,
+                                 'Lage jule arrangement for avdelingen!',
+                                 current_timestamp,
+                                 7,
+                                 current_timestamp,
+                                 '2015-11-03',
+                                 'Åpen',
+                                 'Do',
+                                 'Husk å holde secret santa hemmelig!');
 insert into Suggestions values ( default,
                                  8,
                                  10,
@@ -523,3 +553,160 @@ INSERT INTO SuggestionComments values
         'Jeg syntes dette var en veldig god ide!',
         current_timestamp
     );
+
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        2,
+        2,
+        'Fint Forslag!',
+        current_timestamp
+    );
+
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        3,
+        3,
+        'Jeg syntes vi skal ha fokus på dette til neste uke!',
+        current_timestamp
+    );
+
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        4,
+        4,
+        'Jeg skal gjøre dette nå!',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        5,
+        5,
+        'Kan du starte med det idag?',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        6,
+        6,
+        'Ville vært interessant!',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        7,
+        7,
+        'Jeg kan sette igang!',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        8,
+        8,
+        'Kan du be Ola se på dette imorgen?',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        9,
+        9,
+        'Kan du be Kari se på dette til imorgen?',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        10,
+        10,
+        'Flott!',
+        current_timestamp
+    );
+
+INSERT INTO Pictures values
+    (
+         DEFAULT,
+         1,
+         1,
+         DEFAULT,
+         x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        2,
+        2,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        3,
+        3,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        4,
+        4,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        5,
+        5,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        6,
+        6,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        7,
+        7,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        8,
+        8,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        9,
+        9,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+INSERT INTO Pictures values
+    (
+        DEFAULT,
+        10,
+        10,
+        DEFAULT,
+        x'89504E470D0A1A0A0000000D494844520000001000000010080200000090916836000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA8640000001E49444154384F6350DAE843126220493550F1A80662426C349406472801006AC91F1040F796BD0000000049454E44AE426082'
+    );
+

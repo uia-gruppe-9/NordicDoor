@@ -21,9 +21,7 @@ namespace Nordic_Door.Server.Controllers
         public async Task<IActionResult> GetSuggestions()
         {
             var suggestions = await dbContext.Suggestions.ToListAsync();
-
             var updateSuggestions = new List<GetSuggestionRequest>();
-
 
             foreach (var suggestion in suggestions)
             {
@@ -40,7 +38,6 @@ namespace Nordic_Door.Server.Controllers
 
                 updateSuggestions.Add(new GetSuggestionRequest()
                 {
-
                     Team = team,
                     ResponsibleEmployee = resposibleEmployee,
                     ResponsibleTeam = responsibleTeam,
