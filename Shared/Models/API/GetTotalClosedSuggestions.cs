@@ -5,7 +5,7 @@ using Nordic_Door.Shared.Models.Database;
 
 namespace Nordic_Door.Shared.Models.API
 {
-    public class GetTotalClosedSuggestions
+    public class GetTotalSuggestions
     {
         public string status { get; set; }
     }

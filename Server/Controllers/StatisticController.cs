@@ -12,6 +12,7 @@ using static MudBlazor.Colors;
 // Ønsker å se antall forbedringer utført pr.team som snitt av antall ansatte pr.team - grafisk fremstilt med farmer som bytter ved oppnådd måltall pr.mnd
 // Ønsker å se antall forbedringer totalt pr.team hittil i mnd, hittil år, og utvikling år for år
 // Ønsker å se antall utførte forbedringer totalt for bedriften år for år
+// Ønsker å se antall forbedringer pr ansatt, men ikke som visning på hovedskjerm / Admin tilgang
 
 namespace NordicDoor.Server.Controllers
 {
@@ -39,24 +40,23 @@ namespace NordicDoor.Server.Controllers
         [HttpGet]
         [Route("/teamStatisticRange")]
         //Ønsker å se antall forbedringer totalt pr.team hittil i mnd, hittil år, og utvikling år for år
-        public async Task<IActionResult> GetTeamStatisticsByDateRange(GetTeamStatisticsByDateRange getTeamStatisticsByDateRange)
-        {
+        public async Task<IActionResult> GetTeamStatisticsByDateRange([FromQuery]GetTeamStatisticsByDateRange getTeamStatisticsByDateRange)
+        {            
             var closedSuggestion = await dbContext.Suggestions.Where
             (s => (s.ResponsibleTeam == getTeamStatisticsByDateRange.Id) && (s.Status == getTeamStatisticsByDateRange.Status) && 
             (s.CreatedAt > getTeamStatisticsByDateRange.startTime) && (s.LastUpdatedAt < getTeamStatisticsByDateRange.endTime)).ToListAsync();
             return Ok(closedSuggestion.Count);
-
-
         }
 
         [HttpGet]
         [Route("/statusSuggestion")]
         //Ønsker å se antall utførte forbedringer totalt for bedriften år for år
-        public async Task<IActionResult> GetTotalSuggestionsClosed ([FromQuery]GetTotalClosedSuggestions getTotalClosedSuggestions)
+        public async Task<IActionResult> GetTotalSuggestionsClosed ([FromQuery]GetTotalSuggestions getTotalSuggestions)
         {          
-            var statusSuggestion = await dbContext.Suggestions.Where(s => s.Status == getTotalClosedSuggestions.status).ToListAsync();
+            var statusSuggestion = await dbContext.Suggestions.Where(s => s.Status == getTotalSuggestions.status).ToListAsync();
             return Ok(statusSuggestion.Count);
         }
+
         [HttpGet]
         [Route("/teamStatisticsPrEmployee")]    
         //Ønsker å se antall forbedringer utført pr.team som snitt av antall ansatte pr.team - grafisk fremstilt med farmer som bytter ved oppnådd måltall pr.mnd  
@@ -65,8 +65,11 @@ namespace NordicDoor.Server.Controllers
             var teamStatisticByAverage = await dbContext.Suggestions.Where (ts => (ts.ResponsibleTeam == getTeamSuggestionsStatistic.responsible)
             && (ts.ResponsibleTeam == getTeamSuggestionsStatistic.id)).ToListAsync();
             return Ok(teamStatisticByAverage.Count);
-
         }
+
+        
+
+        
 
 
 
