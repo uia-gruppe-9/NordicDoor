@@ -2,7 +2,7 @@
 USE nordicdoors;
 
 -- UTF-8 enkoding så ÆØÅ støttes
-ALTER DATABASE nordicdoors CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER DATABASE nordicdoors DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
