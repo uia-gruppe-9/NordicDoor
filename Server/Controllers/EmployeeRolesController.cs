@@ -16,12 +16,10 @@ namespace NordicDoor.Server.Controllers
             dbContext = ctx;
         }
 
-        // test
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
             var Emprole = await dbContext.EmployeeRoles.ToListAsync();
-
 
             return Ok(Emprole.Select(x => x.Role));
         }

@@ -2,8 +2,7 @@
 {
     public class AddTeamRequest
     {
-        public int Id { get; }
-        public string Name { get; set; }
+        public string teamName { get; set; }
     }
 }
 

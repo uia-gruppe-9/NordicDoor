@@ -33,7 +33,7 @@ namespace Nordic_Door.Server.Controllers
             {
                 var team = await dbContext.Teams.FindAsync(userTeam.TeamId);
                 var employee = await dbContext.Employees.FindAsync(userTeam.EmployeeId);
-                var role = await dbContext.EmployeeRoles.FindAsync(userTeam.Role); // skal role ligge på userteam update eller ha egen? -----SJEKK!!!
+                var role = await dbContext.EmployeeRoles.FindAsync(userTeam.Role);
 
                 if (team == null || employee == null || role == null)
                 {
@@ -51,8 +51,11 @@ namespace Nordic_Door.Server.Controllers
             return Ok(updateUserTeams);
         }
 
+
+        
+
         [HttpPut]
-        public async Task<IActionResult> UpdateRole(int eId, int tId, UpdateUserTeamRequest updateRole) //----- SJEKK DENNE OGSÅ MTP USERTEAM ROLE REQUST!!
+        public async Task<IActionResult> UpdateRole(int eId, int tId, UpdateUserTeamRoleRequest updateRole)
         {
             var role = await dbContext.UserTeams.FindAsync(eId, tId);
 
@@ -69,6 +72,31 @@ namespace Nordic_Door.Server.Controllers
             return NotFound();
         }
 
+        // overflødig???
+
+        //[HttpPost]
+        //public async Task<IActionResult> AddUserToTeam(AddUserTeamRequest addUserTeamRequest)
+        //{
+        //    var user = new UserTeam()
+        //    {
+
+        //        TeamId = addUserTeamRequest.TeamId,
+        //        EmployeeId = addUserTeamRequest.EmployeeId,
+        //        Role = addUserTeamRequest.Role,
+        //    };
+
+        //    try
+        //    {
+        //        await dbContext.UserTeams.AddAsync(user);
+        //        await dbContext.SaveChangesAsync();
+        //        return Ok(user);
+        //    }
+        //    catch
+        //    {
+        //        return StatusCode(409);
+        //    }
+        //}
+
         [HttpDelete]
         public async Task<IActionResult> DeleteUserfromTeam(int eId, int tID)
         {
@@ -82,33 +110,6 @@ namespace Nordic_Door.Server.Controllers
 
             }
             return NotFound();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddUserToTeam(AddUserTeamRequest addUserTeamRequest)
-        {
-            var user = new UserTeam()
-            {
-
-                TeamId = addUserTeamRequest.TeamId,
-                EmployeeId = addUserTeamRequest.EmployeeId,
-                Role = addUserTeamRequest.Role,
-
-
-            };
-
-            try
-            {
-                await dbContext.UserTeams.AddAsync(user);
-                await dbContext.SaveChangesAsync();
-                return Ok(user);
-
-            }
-            catch
-            {
-                return StatusCode(409);
-            }
-
         }
     }
 }

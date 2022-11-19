@@ -61,8 +61,6 @@ namespace NordicDoor.Server.Controllers
         }
 
         [HttpPost]
-        [Route("/Add/Comment")]
-
         public async Task<IActionResult> AddComment(AddSuggestionCommentRequest addSuggestionCommentRequest)
         {
             var comment = new SuggestionComment()
