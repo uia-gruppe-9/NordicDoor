@@ -2,7 +2,7 @@
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
 @using Nordic_Door.Shared.Models.Common;
-
+@using Nordic_Door.Client.Utils;
 
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
@@ -14,11 +14,10 @@
 
 
     .container {
-        height: 90vh;
+        height: 100%;
         width: 100%;
         display: flex;
         gap: 1rem;
-        margin-top: 1.5rem;
     }
 
     .container-column {
@@ -46,7 +45,7 @@
     .paper {
         display: flex;
         flex-direction: column;
-        background-color: #fffcfc;
+        background-color: white;
         border: 2px solid #bdbdbd;
         min-width: 20%;
         border-radius: 25px;
@@ -95,9 +94,15 @@
         gap: 1rem;
     }
 
+    .comment-container {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+
     .history-container {
         flex: 1 1 0;
-        min-height: 0;
+        min-height: 1rem;
         overflow: auto;
         padding: 1rem;
         border-top: solid grey 1px;
@@ -106,7 +111,7 @@
 
 <style type="text/css" media="screen and (max-width:635px)">
 
-        .container {
+    .container {
         height: 100%;
         width: 100%;
         display: flex;
@@ -118,7 +123,7 @@
     .paper {
         display: flex;
         flex-direction: column;
-        background-color: #fffcfc;
+        background-color: white;
         border: 2px solid #bdbdbd;
         min-width: 50%;
         border-radius: 25px;
@@ -130,26 +135,23 @@
     .paper-vertical {
         flex-direction: column !important;
         height: 30rem !important;
-         
     }
 
 
-   .info-container-vertical {
+    .info-container-vertical {
         display: flex;
         flex-direction: row;
-        align-items:center;
+        align-items: center;
         gap: 0.5rem;
-       
     }
 
     .button-container {
         display: flex;
         gap: 1rem;
-        flex-direction:column;
-        
+        flex-direction: column;
     }
 
-     .history-container {
+    .history-container {
         flex: 1 1 0;
         min-height: 10rem;
         overflow: auto;
@@ -157,14 +159,14 @@
         border-top: solid grey 1px;
     }
 
-    </style>
+</style>
 
-    <style type="text/css" media="screen and (max-width:896px)">
+<style type="text/css" media="screen and (max-width:896px)">
 
     .paper {
         display: flex;
         flex-direction: column;
-        background-color: #fffcfc;
+        background-color: white;
         border: 2px solid #bdbdbd;
         min-width: 20%;
         border-radius: 25px;
@@ -176,15 +178,14 @@
     .button-container {
         display: flex;
         gap: 1rem;
-        flex-direction:column;
-
+        flex-direction: column;
     }
 
-     .paper .mud-typography {
+    .paper .mud-typography {
         font-size: 0.8rem;
         font-weight: 400;
     }
-    </style>
+</style>
 
 @if (loading || suggestion == null)
 {
@@ -193,8 +194,8 @@
 else
 {
     <MudForm @ref="form">
-        <div class="container">
-
+        <div class="container container-column">
+            <div class="container">
             <div class="container container-column">
                 <MudContainer class="d-flex flex-column gap-2">
                     @if (editEnabled)
@@ -214,7 +215,7 @@ else
                                 </div>
                                 @if (editEnabled)
                                 {
-                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status" >
+                                    <MudSelect T="string" Label="Status" @bind-Value="@updatedSuggestion.Status">
                                         <MudSelectItem Value="@("Ny")" />
                                         <MudSelectItem Value="@("Åpen")" />
                                         <MudSelectItem Value="@("Lukket")" />
@@ -264,11 +265,14 @@ else
                                 }
                                 else
                                 {
-                                    @if(suggestion.ResponsibleEmployee == null) {
-                                    <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    @if (suggestion.ResponsibleEmployee == null)
+                                    {
+                                        <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-                                    } else {
-                                    <MudTextField @bind-Value="@suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    }
+                                    else
+                                    {
+                                        <MudTextField @bind-Value="@suggestion.ResponsibleEmployee.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
                                     }
 
@@ -286,12 +290,15 @@ else
                                 }
                                 else
                                 {
-                                    @if(suggestion.ResponsibleTeam == null) {
-                                    <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    @if (suggestion.ResponsibleTeam == null)
+                                    {
+                                        <MudTextField T="string" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-                                    } else {
+                                    }
+                                    else
+                                    {
 
-                                    <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                        <MudTextField @bind-Value="suggestion.ResponsibleTeam.Name" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                     }
 
                                 }
@@ -379,32 +386,38 @@ else
 
                         <MudTabPanel Text="Bilder" Icon="@Icons.Filled.Image">
                             <div class="m-5">
-                            <InputFile id="images" hidden OnChange="UploadFile"/>
-                            <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Filled.PhotoCamera"
-                                   for="images">
-                               Last opp bilde
-                            </MudButton>
+                                <InputFile id="images" hidden OnChange="UploadFile" />
+                                <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Filled.PhotoCamera"
+                                       for="images">
+                                    Last opp bilde
+                                </MudButton>
                             </div>
 
                             <MudCarousel TData="object" Class="mud-width-full" Style="height: 20rem;" AutoCycle="false">
-                                @foreach (var image in images) {
+                                @foreach (var image in images)
+                                {
                                     <MudCarouselItem>
                                         <div class="d-flex" style="height:100%">
-                                        <MudImage Src="@image"/>
+                                            <MudImage Src="@image" />
 
-</div>
+                                        </div>
                                     </MudCarouselItem>
                                 }
-                               
+
                             </MudCarousel>
                         </MudTabPanel>
                     </MudTabs>
 
                 </div>
+                <div class="paper ">
+                    <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="@currentComment" Label="Skriv en kommentar.." Lines="2" />
+                    <MudButton Style="align-self: end;" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Filled.Send" OnClick="OnCommentClick">Kommenter</MudButton>
 
+                </div>
+             
             </div>
             <div class="paper">
                 <div class="actions">
@@ -422,6 +435,9 @@ else
                         else
                         {
                             <MudButton Color="Color.Primary" StartIcon="@Icons.Filled.Edit" Variant="Variant.Filled" OnClick="OnEditClick">Endre sak</MudButton>
+                            if(UserCanClose()) {
+                                <MudButton Color="Color.Secondary" StartIcon="@Icons.Filled.Cancel" Variant="Variant.Filled" OnClick="OpenCloseSuggestionDalog"> Lukk sak </MudButton>
+                            }
 
                         }
                     </div>
@@ -451,7 +467,24 @@ else
                     </MudTimeline>
                 </div>
             </div>
+            </div>
+            <div class="container container-column" style="width: 80% !important">
+                 <MudDivider />
 
+                @foreach (var comment in comments)
+                {
+                    <MudPaper>
+                        <div class="comment-container gap-1 ">
+                            <div class="d-flex align-items-center gap-3 w-75" >
+                                <MudIcon Icon="@Icons.Filled.PersonOutline" />
+                                <MudText Style="font-weight: 600;">@comment.EmployeeName</MudText>
+                                <MudText>@DateUtils.ToRelativeDateString(comment.Timestamp, true)</MudText>
+                            </div>
+                            @comment.Comment
+                        </div>
+                    </MudPaper>
+                }
+</div>
         </div>
     </MudForm>
 }
@@ -459,11 +492,13 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
-        [CascadingParameter]
+    [CascadingParameter]
     private UserRelation user { get; set; }
     private GetSuggestionRequest? suggestion;
     private GetSuggestionRequest? updatedSuggestion;
     private List<GetEventRequest>? events;
+    private List<GetSuggestionCommentRequest> comments = new List<GetSuggestionCommentRequest>();
+    private string currentComment;
     private bool editEnabled = false;
     private bool loading = true;
     private MudForm? form;
@@ -483,6 +518,50 @@ else
         editEnabled = false;
     }
 
+    // Denne funksjonen sjekker om brukeren har rettigheter til å lukke en sak
+    protected bool UserCanClose() {
+        Console.WriteLine(suggestion.Status);
+
+    if(suggestion.Status.Equals("Lukket") || suggestion.Status.Equals("Avslått")) {
+            return false;
+        } 
+        if(user.EmployeeId == suggestion.CreatedBy.Id) {
+            return true;
+        }
+        if(user.userTeamRelations.Any(x => x.UserRole.Equals("Teamleder") 
+            && x.Team.Id == suggestion.Team.Id)) {
+            return true;
+        }
+        if(user.EmployeeIsAdmin == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected async void OnCommentClick()
+    {
+        var comment = new AddSuggestionCommentRequest()
+            {
+                EmployeeId = user.EmployeeId,
+                SuggestionId = suggestion.Id,
+                Comment = currentComment,
+                Timestamp = DateTime.Now
+            };
+
+        currentComment = "";
+        var res = await httpClient.PostAsJsonAsync<AddSuggestionCommentRequest>("api/SuggestionComments", comment);
+        await GetComments();
+    }
+
+    protected async Task GetComments()
+    {
+        var res = await httpClient.GetFromJsonAsync<List<GetSuggestionCommentRequest>>("api/SuggestionComments/" + suggestion.Id);
+        comments = res;
+        StateHasChanged();
+    }
+
+
     protected void OnEditClick()
     {
         editEnabled = !editEnabled;
@@ -496,6 +575,13 @@ else
 
         DialogService.Show<NordicDialog>("Vil du lagre?", parameters, options);
     }
+
+    protected void OpenCloseSuggestionDalog () {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var parameters = new DialogParameters { ["OnOk"] = EventCallback.Factory.Create(this, async (string comment) => await CloseSuggestion(comment)) };
+
+        DialogService.Show<CommentDialog>("Gi en begrunnelse før saken lukkes", parameters, options);
+    }
     protected void OpenCancelDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -504,6 +590,44 @@ else
 
         DialogService.Show<NordicDialog>("Vil du forkaste?", parameters, options);
     }
+
+    protected async Task CloseSuggestion(string comment) {
+        await httpClient.PutAsJsonAsync<UpdateSuggestionRequest>($"api/Suggestions/Update/{id}", new UpdateSuggestionRequest()
+            {
+                Title = suggestion.Title,
+                ResponsibleTeam = suggestion.ResponsibleTeam?.Id,
+                ResponsibleEmployee = suggestion.ResponsibleTeam?.Id,
+                LastUpdatedAt = DateTime.Now,
+                DeadLine = suggestion.DeadLine,
+                Status = "Lukket",
+                Phase = "Act",
+                Description = suggestion.Description
+            });
+        await httpClient.PostAsJsonAsync<AddEventRequest>($"api/Events/Add", new AddEventRequest()
+            {
+                EmployeeId = user.EmployeeId,
+                SuggestionId = suggestion.Id,
+                Description = "Saken har bitt lukket: " + comment,
+                Timestamp = DateTime.Now,
+            });
+
+        var suggComment = new AddSuggestionCommentRequest()
+            {
+                EmployeeId = user.EmployeeId,
+                SuggestionId = suggestion.Id,
+                Comment = "SAK LUKKET: " + comment,
+                Timestamp = DateTime.Now
+            };
+        await httpClient.PostAsJsonAsync<AddSuggestionCommentRequest>("api/SuggestionComments", suggComment);
+
+        var (newSuggestion, newEvents) = await GetSuggestion();
+
+        suggestion = newSuggestion;
+        events = newEvents;
+        StateHasChanged();
+
+    }
+
     protected async Task UpdateSuggestion()
     {
 
@@ -540,6 +664,7 @@ else
         suggestion = newSuggestion;
         events = newEvents;
         editEnabled = false;
+        StateHasChanged();
 
     }
     protected override async Task OnInitializedAsync()
@@ -552,14 +677,17 @@ else
             updatedSuggestion = new GetSuggestionRequest(_suggestion);
             events = _events;
             loading = false;
+            await GetComments();
+
 
         }
+        StateHasChanged();
     }
+
+
 
     protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
     {
-
-
         var employees = await httpClient.GetFromJsonAsync<List<Employee>>("api/Users");
         if (employees != null)
         {
@@ -595,7 +723,8 @@ else
             Snackbar.Add("Feil under henting av sak. Kontakt din administrator", Severity.Error);
             return (null, null);
         }
-        foreach(var picture in _suggestion.Pictures) {
+        foreach (var picture in _suggestion.Pictures)
+        {
             images.Add($"data:image/png;base64,{Convert.ToBase64String(picture.Image)}");
         }
         var sortedEvents = _events.OrderBy(x => x.Timestamp).ToList();
@@ -619,6 +748,6 @@ else
                 UploadedAt = DateTime.Now,
                 Image = bytes
             });
-            
+
     }
-    }
+}

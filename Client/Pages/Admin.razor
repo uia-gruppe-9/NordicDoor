@@ -2,8 +2,11 @@
 @using Nordic_Door.Client.Models;
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
+@using Nordic_Door.Shared.Models.Common;
+
 @inject ISnackbar Snackbar
 @inject HttpClient httpClient;
+@inject NavigationManager Navigation
 
 <style>
 	/*Styling for form1*/
@@ -71,6 +74,7 @@
 	}
 </style>
 
+@if(user.EmployeeIsAdmin == 1){
 
 @if (loading) {
 		<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
@@ -135,13 +139,20 @@
 	 
 </EditForm>
 
+}
+else{
+	<MudText>Du har ikke tilgang til denne siden</MudText>
 
+	<MudButton OnClick="OnBackClick" Color="Color.Primary" Variant="Variant.Filled">Gå tilbake</MudButton>
+}
 
 
 
 
 
 @code {
+	[CascadingParameter]
+        private UserRelation user { get; set; }
 
 	public CreateUserModel userModel = new CreateUserModel();
 	public CreateTeamModel teamModel = new CreateTeamModel();
@@ -153,7 +164,7 @@
 	protected async Task OnValidTeamSubmit() {
 		await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
 		{
-				Name = teamModel.TeamName, 
+				teamName = teamModel.TeamName, 
 
 			});
 
@@ -187,4 +198,12 @@
 		teams.AddRange(_teams);
 		loading = false;
 	}
+
+	public void OnBackClick()
+	{
+		Navigation.NavigateTo("/");
+		StateHasChanged();
+
+	}
+
 }

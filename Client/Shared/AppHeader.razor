@@ -15,8 +15,11 @@
         @if(user != null) {
 
         <div class="gap-6 d-flex" Style="align-items: center;">
+            @if(user.EmployeeIsAdmin == 1)
+            {
         <MudLink Href="/admin" Color="Color.Dark">Admin</MudLink>
-        <MudLink Href="/statistics" Color="Color.Dark">Statistikk</MudLink>
+            }       
+        <MudLink Href="/statistic" Color="Color.Dark">Statistikk</MudLink>
         <MudText></MudText>
         <MudMenu MudIconButton Icon="@Icons.Filled.AccountBox" Color="Color.Dark" Edge="Edge.End">
         <MudMenuItem OnClick="OnSignOutClick">Logg ut </MudMenuItem>
@@ -35,6 +38,8 @@
 
         protected void OnSignOutClick() {
             OnSignOut.Invoke();
+         
+
         }
 
         void SetImageFit(ObjectFit value)

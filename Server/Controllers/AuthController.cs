@@ -15,9 +15,7 @@ namespace NordicDoor.Server.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-
         public NordicDoorsDbContext dbContext { get; set; }
-
         public AuthController(NordicDoorsDbContext ctx)
         {
             dbContext = ctx;
@@ -38,7 +36,7 @@ namespace NordicDoor.Server.Controllers
                     return StatusCode(403);
                 }
                 
-                var userTeams = await dbContext.UserTeams.Where(e => e.EmployeeId == user.Id).ToListAsync();
+                var userTeams = await dbContext.UserTeams.Where(i => i.EmployeeId == user.Id).ToListAsync();
                 var teamRelations = new List<UserTeamRelation>();
                 
                 foreach (var _user in userTeams)
@@ -46,8 +44,10 @@ namespace NordicDoor.Server.Controllers
                     var team = await dbContext.Teams.FindAsync(_user.TeamId);
                     var userRole = _user.Role;
 
-                    teamRelations.Add(new UserTeamRelation(
-                    ) {
+                    if (team == null) continue; // Se over nullhåndtering
+
+                    teamRelations.Add(new UserTeamRelation()
+                    {
                         UserRole = userRole,
                         Team = team
                     });
@@ -59,10 +59,10 @@ namespace NordicDoor.Server.Controllers
                     EmployeeIsAdmin = user.IsAdmin,
                     EmployeeEmail = user.Email,
                     userTeamRelations = teamRelations,
+                    EmployeeIsDisabled = user.IsDisabled,
                 };
                 return Ok(userRelation);
             }
-
             return StatusCode(401);
         }
 
@@ -70,9 +70,6 @@ namespace NordicDoor.Server.Controllers
 
         [HttpPost]
         [Route("CreateUser")]
-        // opprette ny bruker: inputt fra frontend
-        // forloop med flere teams.
-
         public async Task<IActionResult> CreateUser(AddUserRequest addUserRequest)
         {
             var newEmployee = new Employee()
@@ -81,7 +78,7 @@ namespace NordicDoor.Server.Controllers
                 Email = addUserRequest.Email,
                 Password = Crypto.HashPassword(addUserRequest.Password),
                 IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
-                
+                IsDisabled = 0,
             };
             
             await dbContext.Employees.AddAsync(newEmployee);
@@ -91,29 +88,23 @@ namespace NordicDoor.Server.Controllers
             if (newEmployee == null && value == null)
             {
                 return StatusCode(500);
-
             }
  
-
             foreach (var team in addUserRequest.TeamNames)
             {
-                var findteam = await dbContext.Teams.FirstAsync(_team => _team.Name == team);
+                var _team = await dbContext.Teams.FirstAsync(t => t.Name == team);
 
                     var NewUserteamForNewEmployee = new UserTeam()
                     {
                         EmployeeId = value.GetValue<int>("Id"),
-                        TeamId = findteam.Id,
+                        TeamId = _team.Id,
                         Role = "Medarbeider", // default verdi
                     };
-
                    await dbContext.UserTeams.AddAsync(NewUserteamForNewEmployee);
             }
             await dbContext.SaveChangesAsync();
             return Ok();
-
         }
-       
-
     }
 }
 

@@ -95,13 +95,13 @@ namespace Nordic_Door.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
-
             var user = new Employee()
             {
                 Name = addUserRequest.Name,
                 Email = addUserRequest.Email,
                 Password = addUserRequest.Password,
                 IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
+                IsDisabled = 0,
             };
             await dbContext.Employees.AddAsync(user);
             await dbContext.SaveChangesAsync();
@@ -118,16 +118,11 @@ namespace Nordic_Door.Server.Controllers
                 {
                     EmployeeId = id,
                     TeamId = team.Id,
-                    Role = "Medarbeider",
+                    Role = "Medarbeider", //default
                 });
             }
             await dbContext.SaveChangesAsync();
-
             return Ok();
-
-    
-   
-
         }
 
         [HttpDelete]
@@ -141,7 +136,6 @@ namespace Nordic_Door.Server.Controllers
                 dbContext.Remove(user);
                 await dbContext.SaveChangesAsync();
                 return Ok();
-
             }
             return NotFound();
         }
