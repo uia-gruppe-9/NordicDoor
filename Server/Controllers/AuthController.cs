@@ -59,6 +59,7 @@ namespace NordicDoor.Server.Controllers
                     EmployeeIsAdmin = user.IsAdmin,
                     EmployeeEmail = user.Email,
                     userTeamRelations = teamRelations,
+                    EmployeeIsDisabled = user.IsDisabled,
                 };
                 return Ok(userRelation);
             }
@@ -76,7 +77,8 @@ namespace NordicDoor.Server.Controllers
                 Name = addUserRequest.Name,
                 Email = addUserRequest.Email,
                 Password = Crypto.HashPassword(addUserRequest.Password),
-                IsAdmin = addUserRequest.IsAdmin ? 1 : 0,                
+                IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
+                IsDisabled = 0,
             };
             
             await dbContext.Employees.AddAsync(newEmployee);

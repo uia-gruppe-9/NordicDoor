@@ -17,5 +17,8 @@ namespace Nordic_Door.Shared.Models.Database
         [Required]
         [Column("Is_Admin")]
         public int IsAdmin { get; set; }
+
+        [Column("Is_Disabled")]
+        public int IsDisabled { get; set; }
     }
 }
