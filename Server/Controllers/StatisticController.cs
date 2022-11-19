@@ -58,23 +58,25 @@ namespace NordicDoor.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/teamStatisticsPrEmployee")]    
+        [Route("/teamStatisticsPrEmployee")]
         //Ønsker å se antall forbedringer utført pr.team som snitt av antall ansatte pr.team - grafisk fremstilt med farmer som bytter ved oppnådd måltall pr.mnd  
-        public async Task<IActionResult> getTeamStatisticsByAverage([FromQuery]GetTeamSuggestionsStatisticByAverage getTeamSuggestionsStatistic)
+        public async Task<IActionResult> GetTeamStatisticsByAverage([FromQuery] GetTeamSuggestionsStatisticByAverage getTeamSuggestionsStatistic)
         {
-            var teamStatisticByAverage = await dbContext.Suggestions.Where (ts => (ts.ResponsibleTeam == getTeamSuggestionsStatistic.responsible)
+            var teamStatisticByAverage = await dbContext.Suggestions.Where(ts => (ts.ResponsibleTeam == getTeamSuggestionsStatistic.responsible)
             && (ts.ResponsibleTeam == getTeamSuggestionsStatistic.id)).ToListAsync();
             return Ok(teamStatisticByAverage.Count);
         }
 
-        
+        [HttpGet]
+        [Route("/testTeamStatistics")]
+        public async Task<IActionResult> TestGetTeamStatisticsByDateRange ([FromQuery]GetTeamStatisticsByDateRange getTeamStatisticsByDateRange)
+        {
+            var testTeamStatistics = await dbContext.Suggestions.Where(t => t.ResponsibleTeam == getTeamStatisticsByDateRange.Id).ToListAsync();
+            return Ok(testTeamStatistics);
+        }
 
-        
 
 
-
-
-        
     }
 
 }
