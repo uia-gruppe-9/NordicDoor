@@ -59,6 +59,7 @@ namespace NordicDoor.Server.Controllers
                     EmployeeIsAdmin = user.IsAdmin,
                     EmployeeEmail = user.Email,
                     userTeamRelations = teamRelations,
+                    EmployeeIsDisabled = user.IsDisabled,
                 };
                 return Ok(userRelation);
             }
@@ -81,6 +82,7 @@ namespace NordicDoor.Server.Controllers
                 Email = addUserRequest.Email,
                 Password = Crypto.HashPassword(addUserRequest.Password),
                 IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
+                IsDisabled = 0,
                 
             };
             

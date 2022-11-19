@@ -1,112 +1,237 @@
 ﻿@page "/"
 @using Nordic_Door.Shared.Models.API;
+@using Nordic_Door.Shared.Models.Common;
 @inject HttpClient httpClient
 @inject NavigationManager Navigation
 
 
 <style>
 
+    .mud-table-toolbar {
+        height: 100%;
+    }
     .page-title {
         display: flex;
         justify-content: space-between;
         margin-bottom: 1rem;
-
     }
 
-    .CaseTable{
+    .container {
         display: flex;
-        
-        
-       
-      
+        flex-direction: column;
+        height: 100%;
     }
 </style>
 <PageTitle>Home</PageTitle>
 <MudContainer Style="width: 100%">
 
+    <div style="display: flex; gap: 2rem; align-items: center;">
+        <div>
+            <div class="page-title">
+                <MudText Typo="Typo.h2" Style="display: inline-block;">Saker</MudText>
+                <MudButton OnClick="OnCreateNewClick" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">Opprett ny sak</MudButton>
+            </div>
+            <MudTable Items="@FilteredSuggestions"
+                      Hover="true"
+                      T="GetSuggestionRequest"
+                      Breakpoint="Breakpoint.Sm"
+                      LoadingProgressColor="Color.Info"
+                      Loading="@loading"
+                      OnRowClick="NavigateSelectedSuggestion"
+                      Filter="new Func<GetSuggestionRequest, bool>(FilterFunc1)">
 
-    <div class="page-title">
-        <MudText Typo="Typo.h2" Style="display: inline-block;">Saker</MudText>
-        <MudButton OnClick="OnCreateNewClick" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">Opprett ny sak</MudButton>
+
+                <ToolBarContent>
+
+                    <div class="container p-3">
+                        <MudText Style="font-weight: 600;">Quick filter</MudText>
+                        <div>
+                            <MudChipSet @bind-SelectedChip="selectedFilter" Filter="true">
+                                <div class="container">
+                                    <div class="d-flex align-baseline">
+                                        <MudChip Text="all" OnClick="OnQuickFilterClick" Color="Color.Tertiary">Alle saker</MudChip>
+                                        <MudChip Text="mine" Color="Color.Tertiary" OnClick="OnQuickFilterClick"> Mine saker</MudChip>
+                                        <MudChip Text="myResponsible" OnClick="OnQuickFilterClick" Color="Color.Tertiary">Saker jeg er ansvarlig for</MudChip>
+
+                                        @if (user.userTeamRelations.Count == 1)
+                                        {
+                                            <MudChip Text="myResponsible" OnClick="OnQuickFilterClick" Color="Color.Tertiary">Mitt team</MudChip>
+
+                                        }
+                                        else
+                                        {
+                                            <MudMenu FullWidth="true">
+                                                <ActivatorContent>
+                                                    <MudChip Icon="@Icons.Filled.KeyboardArrowDown" Color="Color.Tertiary">Mitt team</MudChip>
+                                                </ActivatorContent>
+                                                <ChildContent>
+                                                    @foreach (var team in user.userTeamRelations)
+                                                    {
+                                                        <MudMenuItem OnClick="() => OnMemberTeamFilter(team.Team.Name)">@team.Team.Name</MudMenuItem>
+
+                                                    }
+                                                </ChildContent>
+                                            </MudMenu>
+                                        }
+
+                                    </div>
+                                    <div>
+                                        <MudMenu FullWidth="true">
+                                            <ActivatorContent>
+                                                <MudChip Icon="@Icons.Filled.KeyboardArrowDown" Color="Color.Tertiary">Status</MudChip>
+                                            </ActivatorContent>
+                                            <ChildContent>
+                                                @foreach (var status in Statuses)
+                                                {
+                                                    <MudMenuItem OnClick="() => OnStatusFilter(status)">@status</MudMenuItem>
+
+                                                }
+                                            </ChildContent>
+                                        </MudMenu>
+                                        <MudMenu FullWidth="true">
+                                            <ActivatorContent>
+                                                <MudChip Icon="@Icons.Filled.KeyboardArrowDown" Color="Color.Tertiary">Fase</MudChip>
+                                            </ActivatorContent>
+                                            <ChildContent>
+                                                @foreach (var phase in Phases)
+                                                {
+                                                    <MudMenuItem OnClick="() => OnPhaseFilter(phase)">@phase</MudMenuItem>
+
+                                                }
+                                            </ChildContent>
+                                        </MudMenu>
+</div>
+                                </div>
+
+
+
+                            </MudChipSet>
+                        </div>
+                    </div>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+                </ToolBarContent>
+
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GetSuggestionRequest, object>(x=>x.Id)">ID</MudTableSortLabel></MudTh>
+                    <MudTh>Tittel</MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.CreatedBy.Name)">Opprettet av</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleEmployee.Name)">Ansvarlig ansatt</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleTeam.Name)">Ansvarlig team </MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Phase)">Fase</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Status)">Status</MudTableSortLabel></MudTh>
+
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Tittel">@context.Title</MudTd>
+                    <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>
+                    <MudTd DataLabel="Ansvarlig ansatt">@context.ResponsibleEmployee?.Name</MudTd>
+                    <MudTd DataLabel="Ansvarlig Team">@context.ResponsibleTeam?.Name</MudTd>
+                    <MudTd DataLabel="Fase">@context.Phase</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                </RowTemplate>
+
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+
+            </MudTable>
+        </div>
     </div>
-
-    
-        <MudTable Items="@Suggestions"
-                  Hover="true"
-                  T="GetSuggestionRequest"
-                  Breakpoint="Breakpoint.Sm"
-                  LoadingProgressColor="Color.Info"
-                  Loading="@loading"
-                  OnRowClick="NavigateSelectedSuggestion"
-                  Filter="new Func<GetSuggestionRequest, bool>(FilterFunc1)"
-                      
-                  >
-                 
-
-            <ToolBarContent>
-
-                <MudSpacer />
-                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-
-            <HeaderContent>
-                <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GetSuggestionRequest, object>(x=>x.Id)">ID</MudTableSortLabel></MudTh>
-                <MudTh>Tittel</MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.CreatedBy.Name)">Opprettet av</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleEmployee.Name)">Ansvarlig ansatt</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.ResponsibleTeam.Name)">Ansvarlig team </MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Phase)">Fase</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetSuggestionRequest, object>(x=>x.Status)">Status</MudTableSortLabel></MudTh>
-
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="ID">@context.Id</MudTd>
-                <MudTd DataLabel="Tittel">@context.Title</MudTd>
-                <MudTd DataLabel="Opprettet av">@context.CreatedBy.Name</MudTd>
-                <MudTd DataLabel="Ansvarlig ansatt">@context.ResponsibleEmployee?.Name</MudTd>
-                <MudTd DataLabel="Ansvarlig Team">@context.ResponsibleTeam?.Name</MudTd>
-                <MudTd DataLabel="Fase">@context.Phase</MudTd>
-                <MudTd DataLabel="Status">@context.Status</MudTd>
-            </RowTemplate>
-
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-
-        </MudTable>
-
-        
-
-    
-
 
 </MudContainer>
 
 
 @code {
+
+    [CascadingParameter]
+    private UserRelation user { get; set; }
+
     private List<GetSuggestionRequest> Suggestions = new List<GetSuggestionRequest>();
+    private List<GetSuggestionRequest> FilteredSuggestions = new List<GetSuggestionRequest>();
+    private List<string> Statuses = new List<string>();
+    private List<string> Phases = new List<string>();
+
+
+    private MudChip selectedFilter;
+    private string filteredTeam;
 
     private bool loading = true;
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         Suggestions = await httpClient.GetFromJsonAsync<List<GetSuggestionRequest>>("api/Suggestions");
+        Statuses = await httpClient.GetFromJsonAsync<List<string>>("api/SuggestionStatus");
+        Phases = await httpClient.GetFromJsonAsync<List<string>>("api/SuggestionPhase");
+        FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
         loading = false;
 
     }
+    private void OnMemberTeamFilter(string teamName)
+    {
+        if (selectedFilter.Text == "Mitt team")
+        {
+            FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
+            return;
+        }
+        FilteredSuggestions = Suggestions.FindAll(x => x.Team.Name == teamName);
+        StateHasChanged();
+    }
 
-    private void NavigateSelectedSuggestion(TableRowClickEventArgs<GetSuggestionRequest> clickEvent) {
+    private void OnStatusFilter(string status)
+    {
+        FilteredSuggestions = Suggestions.FindAll(x => x.Status == status);
+        StateHasChanged();
+    }
+    private void OnPhaseFilter(string phase)
+    {
+        FilteredSuggestions = Suggestions.FindAll(x => x.Phase == phase);
+        StateHasChanged();
+    }
+    private void OnQuickFilterClick()
+    {
+        if (selectedFilter != null)
+        {
+
+            switch (selectedFilter.Text)
+            {
+                case "mine":
+                    FilteredSuggestions = Suggestions.FindAll(x => x.CreatedBy.Id == user.EmployeeId);
+                    break;
+                case "myResponsible":
+                    FilteredSuggestions = Suggestions.FindAll(x => x.ResponsibleEmployee?.Id == user.EmployeeId);
+                    break;
+                default:
+                    FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
+                    break;
+            }
+        }
+        else
+        {
+            FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
+
+        }
+        StateHasChanged();
+
+    }
+
+    private void NavigateSelectedSuggestion(TableRowClickEventArgs<GetSuggestionRequest> clickEvent)
+    {
         Navigation.NavigateTo("suggestion/" + clickEvent.Item.Id);
     }
 
-    private void OnCreateNewClick() {
+    private void OnCreateNewClick()
+    {
         Navigation.NavigateTo("new");
 
-      
+
     }
     private string searchString1 = "";
-  
-    private bool FilterFunc1(GetSuggestionRequest suggestion ) => FilterFunc(suggestion, searchString1);
 
-    private bool FilterFunc(GetSuggestionRequest Suggestions , string searchString)
+    private bool FilterFunc1(GetSuggestionRequest suggestion) => FilterFunc(suggestion, searchString1);
+
+    private bool FilterFunc(GetSuggestionRequest Suggestions, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
@@ -124,5 +249,5 @@
             return true;
         return false;
     }
-   
+
 }

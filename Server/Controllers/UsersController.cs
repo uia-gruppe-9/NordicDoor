@@ -102,6 +102,7 @@ namespace Nordic_Door.Server.Controllers
                 Email = addUserRequest.Email,
                 Password = addUserRequest.Password,
                 IsAdmin = addUserRequest.IsAdmin ? 1 : 0,
+                IsDisabled = 0,
             };
             await dbContext.Employees.AddAsync(user);
             await dbContext.SaveChangesAsync();
