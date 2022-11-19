@@ -164,7 +164,7 @@ else{
 	protected async Task OnValidTeamSubmit() {
 		await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
 		{
-				Name = teamModel.TeamName, 
+				teamName = teamModel.TeamName, 
 
 			});
 
