@@ -15,6 +15,7 @@
         @if(user != null) {
 
         <div class="gap-6 d-flex" Style="align-items: center;">
+            <!-- Bare vis admin dersom brukeren faktisk er admin-->
             @if(user.EmployeeIsAdmin == 1)
             {
         <MudLink Href="/admin" Color="Color.Dark">Admin</MudLink>
