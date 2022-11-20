@@ -2,7 +2,7 @@
 USE nordicdoors;
 
 -- UTF-8 enkoding så ÆØÅ støttes
-ALTER DATABASE nordicdoors CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER DATABASE nordicdoors DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Fjerner constraint for foreign keys så vi kan slette uten error
 SET foreign_key_checks = 0;
@@ -11,16 +11,17 @@ SET foreign_key_checks = 1;
 
 CREATE TABLE Teams (
                        Team_ID INT AUTO_INCREMENT,
-                       Name VARCHAR (60) NOT NULL,
+                       Name VARCHAR (60) NOT NULL UNIQUE,
                        PRIMARY KEY (Team_ID)
 );
 
 CREATE TABLE Employees (
                            Employee_ID int AUTO_INCREMENT,
                            Name VARCHAR (60) NOT NULL,
-                           Email VARCHAR (60) NOT NULL,
+                           Email VARCHAR (60) NOT NULL UNIQUE,
                            Password VARCHAR (70) NOT NULL,
                            Is_Admin INT NOT NULL,
+                           Is_Disabled INT NOT NULL,
                            PRIMARY KEY (Employee_ID)
 );
 
@@ -76,9 +77,10 @@ CREATE TABLE Suggestions (
 );
 
 CREATE TABLE SuggestionComments (
+
                                     Comment_ID INT AUTO_INCREMENT,
-                                    Employee_ID INT NOT NULL ,
-                                    Suggestion_ID INT NOT NULL ,
+                                    Employee_ID INT,
+                                    Suggestion_ID INT,
                                     Comment VARCHAR (250),
                                     Timestamp DATETIME NOT NULL ,
                                     PRIMARY KEY (Comment_ID),
@@ -107,7 +109,6 @@ CREATE TABLE Pictures (
                           FOREIGN KEY (Employee_ID) REFERENCES Employees (Employee_ID),
                           FOREIGN KEY (Suggestion_ID) REFERENCES Suggestions (Suggestion_ID)
 );
-
 
 INSERT INTO Teams values (
                              1,
@@ -165,7 +166,8 @@ insert INTO Employees values (
                                  'Admin',
                                  'Admin@admin.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
-                                 1
+                                 1,
+                                 0
                              );
 
 insert INTO Employees values (
@@ -173,7 +175,8 @@ insert INTO Employees values (
                                  'Ola Nordmann',
                                  'OlaN@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
-                                 1
+                                 1,
+                                 0
                              );
 
 insert INTO Employees values (
@@ -181,7 +184,8 @@ insert INTO Employees values (
                                  'Kari Nordmann',
                                  'KariN@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
-                                 1
+                                 1,
+                                 0
                              );
 
 insert INTO Employees values (
@@ -189,6 +193,7 @@ insert INTO Employees values (
                                  'John Johnson',
                                  'JonJ@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -197,6 +202,7 @@ insert INTO Employees values (
                                  'Morten Harket',
                                  'MortHa@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -205,6 +211,7 @@ insert INTO Employees values (
                                  'Egil Berntsen',
                                  'EgBer@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -213,6 +220,7 @@ insert INTO Employees values (
                                  'Thor Magne Svendsen',
                                  'THMS@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -221,6 +229,7 @@ insert INTO Employees values (
                                  'Eskil Lie',
                                  'EskLi@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -229,6 +238,7 @@ insert INTO Employees values (
                                  'Katrine Amundsen',
                                  'KatAm@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -237,6 +247,7 @@ insert INTO Employees values (
                                  'Susanne Tyri',
                                  'susT@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 
@@ -245,6 +256,7 @@ insert INTO Employees values (
                                  'Maria Andersen',
                                  'MarA@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 insert INTO Employees values (
@@ -252,6 +264,7 @@ insert INTO Employees values (
                                  'Mia Ås',
                                  'MiaAA@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
 insert INTO Employees values (
@@ -259,10 +272,17 @@ insert INTO Employees values (
                                  'Espen Tømmerstigen',
                                  'Espentom@nordicdoors.no',
                                  'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
                                  0
                              );
-
-
+insert INTO Employees values (
+                                 14,
+                                 'Stig Brenner',
+                                 'Stigbrenner@nordicdoors.no',
+                                 'AMA8L1hXYPGoNsmWBMNAD4rH/cyx+C+0PrmUw2Ly6UbtCrrgkXUp52rRYRYGY3feQA==',
+                                 0,
+                                 1
+                             );
 
 insert into UserTeams values (
                                  1,
@@ -336,11 +356,11 @@ insert into UserTeams values (
                              );
 
 insert into Suggestions values ( default,
-                                 1,
+                                 2,
                                  2,
                                  1,
                                  'Bedre mikrofoner på Support',
-                                 current_timestamp,
+                                 '2018-01-03 14:50:50',
                                  2,
                                  current_timestamp,
                                  current_timestamp,
@@ -349,11 +369,11 @@ insert into Suggestions values ( default,
                                  'Tilbakemedling fra kunder. ');
 
 insert into Suggestions values ( default,
-                                 2,
+                                 1,
                                  1,
                                  2,
                                  'Fellesrom: Nytt kjøleskap',
-                                 current_timestamp,
+                                 '2016-01-03 14:50:50',
                                  1,
                                  current_timestamp,
                                  current_timestamp,
@@ -362,12 +382,12 @@ insert into Suggestions values ( default,
                                  'Installere nytt kjøleskap på fellesrom. ');
 
 insert into Suggestions values ( default,
-                                 3,
-                                 2,
+                                 4,
+                                 4,
                                  3,
                                  'Bestille Flere spikere av lengde 2cm',
-                                 current_timestamp,
-                                 2,
+                                 '2014-01-03 14:50:50',
+                                 4,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
@@ -375,12 +395,12 @@ insert into Suggestions values ( default,
                                  'Trenger for å fullføre dør. ');
 
 insert into Suggestions values ( default,
-                                 4,
-                                 4,
+                                 3,
+                                 3,
                                  4,
                                  'Bestille nytt Trelim',
-                                 current_timestamp,
-                                 4,
+                                 '2013-01-03 14:50:50',
+                                 3,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
@@ -388,12 +408,12 @@ insert into Suggestions values ( default,
                                  'Tomme for trelim. ');
 
 insert into Suggestions values ( default,
-                                 5,
-                                 5,
+                                 6,
+                                 6,
                                  5,
                                  'Bytte karm',
-                                 current_timestamp,
-                                 5,
+                                 '2012-01-03 14:50:50',
+                                 6,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
@@ -401,24 +421,35 @@ insert into Suggestions values ( default,
                                  'Splint i dørkarm, må gjøres på nytt. ');
 
 insert into Suggestions values ( default,
-                                 6,
-                                 6,
+                                 5,
+                                 5,
                                  6,
                                  'Kaste søppel',
-                                 current_timestamp,
-                                 6,
+                                 '2011-01-03 14:50:50',
+                                 5,
                                  current_timestamp,
                                  current_timestamp,
                                  'Åpen',
                                  'Do',
                                  'Kaste søpla på fellesrom. ');
-
 insert into Suggestions values ( default,
                                  8,
-                                 10,
+                                 8,
+                                 7,
+                                 'Lage jule arrangement for avdelingen!',
+                                 current_timestamp,
+                                 8,
+                                 current_timestamp,
+                                 '2015-11-03',
+                                 'Åpen',
+                                 'Do',
+                                 'Husk å holde secret santa hemmelig!');
+insert into Suggestions values ( default,
+                                 9,
+                                 9,
                                  8,
                                  'Glassdør til kontor 15 er knust. ',
-                                 current_timestamp,
+                                 '2017-01-03 14:50:50',
                                  8,
                                  current_timestamp,
                                  current_timestamp,
@@ -427,11 +458,11 @@ insert into Suggestions values ( default,
                                  'Bestille nytt glassmanter, og installere ny dør. ');
 insert into Suggestions values ( default,
                                  9,
-                                 10,
                                  9,
+                                 10,
                                  'Bestille nye skruer av slag "lengde:1.5cm"',
                                  current_timestamp,
-                                 9,
+                                 10,
                                  current_timestamp,
                                  '2017-01-03 14:50:50',
                                  'Lukket',
@@ -439,8 +470,8 @@ insert into Suggestions values ( default,
                                  'Trenger skruer til dørkarm. ');
 
 insert into Suggestions values ( default,
-                                 10,
-                                 10,
+                                 9,
+                                 9,
                                  10,
                                  'Fiks dør til kontor',
                                  current_timestamp,
@@ -521,5 +552,80 @@ INSERT INTO SuggestionComments values
         1,
         1,
         'Jeg syntes dette var en veldig god ide!',
+        current_timestamp
+    );
+
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        2,
+        2,
+        'Fint Forslag!',
+        current_timestamp
+    );
+
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        3,
+        3,
+        'Jeg syntes vi skal ha fokus på dette til neste uke!',
+        current_timestamp
+    );
+
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        4,
+        4,
+        'Jeg skal gjøre dette nå!',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        5,
+        5,
+        'Kan du starte med det idag?',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        6,
+        6,
+        'Ville vært interessant!',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        7,
+        7,
+        'Jeg kan sette igang!',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        8,
+        8,
+        'Kan du be Ola se på dette imorgen?',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        9,
+        9,
+        'Kan du be Kari se på dette til imorgen?',
+        current_timestamp
+    );
+INSERT INTO SuggestionComments values
+    (
+        DEFAULT,
+        10,
+        10,
+        'Flott!',
         current_timestamp
     );

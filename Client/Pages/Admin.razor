@@ -2,8 +2,11 @@
 @using Nordic_Door.Client.Models;
 @using Nordic_Door.Shared.Models.API;
 @using Nordic_Door.Shared.Models.Database;
+@using Nordic_Door.Shared.Models.Common;
+
 @inject ISnackbar Snackbar
 @inject HttpClient httpClient;
+@inject NavigationManager Navigation
 
 <style>
 	/*Styling for form1*/
@@ -88,6 +91,7 @@
 	}
 </style>
 
+@if(user.EmployeeIsAdmin == 1){
 
 @if (loading) {
 		<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
@@ -147,6 +151,9 @@
 	<input type="submit" value="Endre team-leder" />
 </EditForm>
 
+}
+else{
+	<MudText>Du har ikke tilgang til denne siden</MudText>
 
 <!--Form for endring av teamtilhørighet-->
 <EditForm class="change_Team" Model="@changeTeamModel" OnValidSubmit="@OnValidTeamSubmit">
@@ -167,6 +174,8 @@
 
 
 @code {
+	[CascadingParameter]
+        private UserRelation user { get; set; }
 
 	public CreateUserModel userModel = new CreateUserModel();
 	public CreateTeamModel teamModel = new CreateTeamModel();
