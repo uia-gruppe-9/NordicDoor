@@ -30,7 +30,7 @@ namespace NordicDoor.Server.Controllers
 
 
         [HttpGet]     
-        [Route("/byId/{id:int}")]
+        [Route("byId/{id:int}")]
         public async Task<IActionResult> GetEmployeeStatistics([FromRoute] int id)
         {
             var responsibleEmployeeSuggestions = await dbContext.Suggestions.Where(r => r.ResponsibleEmployee == id).ToListAsync();

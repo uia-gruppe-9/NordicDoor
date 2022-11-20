@@ -7,29 +7,28 @@
 
 
 <style>
-    /Legg all styling her inne/
+    /*Legg all styling her inne */
 
-    .container{
-
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 1rem;
+        height: 100%;
     }
 
-    h1 {
-        display: flex;
-        justify-content: center;
-
+    .paper {
+        width: 100%;
+        text-align: center;
     }
 
     .row {
-
-    }
-
-    .displaybox{
-      text-align:center;
-
-    }
-
-    .chart{
-
+        width: 100%;
+        gap: 1rem;
+        height: 100%;
+        display: flex;
     }
 
     select {
@@ -42,78 +41,95 @@
         Lag tilbakemeldingserror dersom teamet eller den ansatte ikke har en forbedringsforslag
     -->
 
-<h1>Statistikk</h1>
 
 
- <MudContainer Style="width:80%;">
+
+<MudContainer>
+    <div class="container">
+
+        <h1>Statistikk</h1>
 
 
-    <div class="row"> 
+        <div class="row">
 
-        <div class="displaybox">
-            <MudPaper Class="pa-16 ma-2" Elevation="3">
+            <MudPaper Class="paper" Elevation="3">
 
-                    <h2>Ansatt Forbedringsforslags </h2>
-                <select name="Ansatt" id="Ansatt" placeholder="ansatte">
-                    <option value="Ansatt 1">Ansatt 1</option>
-                </select>
-            <div class="chart">
-                <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart> 
-                </div>
-            </MudPaper>
-        </div>
+                <h2>Ansatt Forbedringsforslags </h2>
+                <EditForm Model="@employeeModel" OnValidSubmit="OnValidEmployeeSubmit">
 
-        <div class="displaybox">
-            
-           <!-- <MudPaper Class="pa-16 ma-2" Elevation="3">
-               <EditForm class="checkTeamStatistics" Model "" OnValidSubmit="OnValidSubmit">
-               <h2>Forbedringer utført av Teams</h2>
-                <label for="team"> <h3>Velg ønsket Team</h3></label>
-                <InputText typeof="text" id="team" name ="team"> 
+                    <MudAutocomplete T="Employee" Label="Søk etter ansatt"
+                    @bind-Value="@employeeModel.Employee" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" />
+                                    <MudButton ButtonType="ButtonType.Submit">Hent statistikk</MudButton>
 
-                </InputText>
                 </EditForm>
+                <h3>@totalSuggestion</h3>
             </MudPaper>
-             -->
+
+
+
+            <MudPaper Class="paper" Elevation="3">
+                <!-- <EditForm class="checkTeamStatistics" Model "" OnValidSubmit="OnValidSubmit">
+                 <h2>Forbedringer utført av Teams</h2>
+                  <label for="team"> <h3>Velg ønsket Team</h3></label>
+                  <InputText typeof="text" id="team" name ="team">
+
+                  </InputText>
+                        </EditForm> -->
+            </MudPaper>
+
+        </div>
+        <div class="row">
+
+            <MudPaper Class="paper" Elevation="3">
+                <h2>Forbedringer utført pr team som snitt av antall ansatte pr. team</h2>
+
+                <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
+
+            </MudPaper>
+
+
+
+            <MudPaper Class="paper" Elevation="3">
+                <h2>Utførte forbedringer totalt for bedriften </h2>
+                <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
+            </MudPaper>
+
         </div>
     </div>
-    <div class="row">
-            <div class="displaybox">
-                    <MudPaper Class="pa-16 ma-2" Elevation="3">
-                     <h2>Forbedringer utført pr team som snitt av antall ansatte pr. team</h2>
 
-                    <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
+</MudContainer>
+@code {
 
-                </MudPaper>
-            </div>
+    private int totalSuggestion { get; set; }
+    private GetEmployeeStatisticsModel employeeModel = new GetEmployeeStatisticsModel();
 
-            <div class="displaybox">
-                <MudPaper Class="pa-16 ma-2" Elevation="3">
-                    <h2>Utførte forbedringer totalt for bedriften </h2>
-                    <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
-                </MudPaper>
-            </div>
-    </div>
-    </MudContainer>
-    @code {
+    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
 
-         private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
-
-        public List<ChartSeries> Series = new List<ChartSeries>()
-        {
+    public List<ChartSeries> Series = new List<ChartSeries>()
+        {   
             new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
             new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
             new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
         };
-        public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
 
-
-
-        public GetTeamStatistics teamStatistics = new GetTeamStatistics();
-
-
-
-
-
-
+    protected async Task OnValidEmployeeSubmit() {
+       totalSuggestion = await httpClient.GetFromJsonAsync<int>("api/Statistic/byId/" + employeeModel.Employee.Id);
     }
+
+    protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
+    {
+        // Henter ut en liste av ansatte og lagrer den i denne funksjonen i employees variabelen.
+        // Returnerer en ansatt dersom den blir funnet i listen, hvis ikke returner en tom liste.
+        var employees = await httpClient.GetFromJsonAsync<List<Employee>>("api/Users");
+        if (employees != null)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return employees;
+            }
+            return employees.Where(emp => emp.Name.Contains(name));
+        }
+        return Array.Empty<Employee>();
+    }
+}

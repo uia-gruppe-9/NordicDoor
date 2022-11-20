@@ -3,7 +3,7 @@ using Nordic_Door.Shared.Models.Database;
 
 namespace Nordic_Door.Client.Models {
 
-    public class GetTeamStatistics {
+    public class GetTeamStatisticsModel {
 
         [Required]
         public int Id { get; set; }
