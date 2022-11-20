@@ -88,7 +88,7 @@ namespace Nordic_Door.Server.Controllers
             return NotFound();
         }
 
-        [HttpPut] // må se på
+        [HttpPut]
         [Route("/UpdateTeamLeder")]
         // vil først hente ut teamleder i nevnt team
         // gjøre teamleder til medarbeider
@@ -98,8 +98,8 @@ namespace Nordic_Door.Server.Controllers
             if (updateTeamLeaderRequest.employeeName != null && updateTeamLeaderRequest.teamName != null)
             {
 
-                var team = await dbContext.Teams.FirstAsync(e => e.Name == updateTeamLeaderRequest.teamName);
-                var userTeamOldTL = await dbContext.UserTeams.Where(tL => tL.TeamId == team.Id).ToListAsync();
+                var OLteam = await dbContext.Teams.FirstAsync(t => t.Name == updateTeamLeaderRequest.teamName);
+                var userTeamOldTL = await dbContext.UserTeams.Where(tL => tL.TeamId == OLteam.Id).ToListAsync();
                 var oldTeamLeader = await dbContext.UserTeams.FirstAsync(l => l.Role == "Teamleder");
                 if (oldTeamLeader != null)
                 {
