@@ -90,9 +90,6 @@ namespace Nordic_Door.Server.Controllers
 
         [HttpPut]
         [Route("/UpdateTeamLeder")]
-        // vil først hente ut teamleder i nevnt team
-        // gjøre teamleder til medarbeider
-        // gjøre innput employee til leder av innput team
         public async Task<IActionResult> UpdateTeamLeaderInTeam(UpdateTeamLeaderRequest updateTeamLeaderRequest)
         {
             if (updateTeamLeaderRequest.employeeName != null && updateTeamLeaderRequest.teamName != null)
@@ -143,13 +140,12 @@ namespace Nordic_Door.Server.Controllers
         [HttpPost]
         [Route("/Add/Team")]
         public async Task<IActionResult> AddTeam(AddTeamRequest addTeamRequest)
-        {
-            // prøver å error handle
-            //var teamexist = await dbContext.Teams.FirstAsync(e => e.Name == addTeamRequest.teamName);
-            //if (teamexist == null)
-            //{
-            //    return StatusCode(409);
-            //}
+        {         
+            var teamexist = await dbContext.Teams.FirstOrDefaultAsync(e => e.Name == addTeamRequest.teamName);
+            if (teamexist != null)
+            {
+                return StatusCode(409);
+            }
 
             var team = new Team()
                 {
