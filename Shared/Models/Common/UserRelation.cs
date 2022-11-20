@@ -11,6 +11,8 @@ namespace Nordic_Door.Shared.Models.Common
 
         public int EmployeeIsAdmin { get; set; }
 
+        public int EmployeeIsDisabled { get; set; }
+
         public List<UserTeamRelation> userTeamRelations { get; set; }
     }
 }
