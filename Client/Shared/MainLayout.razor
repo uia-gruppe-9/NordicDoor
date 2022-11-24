@@ -17,57 +17,95 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
+    <!-- Cascading value betyr at alle komponenter som ligger innenfor CascadingValue har tilgang til user variabel -->
     <CascadingValue Value="user">
-        <AppHeader OnSignOut="SignOut"/>
-    <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem; margin-top: 1rem; padding-bottom: 2rem;">
-        @if(loggedIn) {
-             @Body
-        } else {
+        <AppHeader OnSignOut="SignOut" />
+        <MudMainContent Style="margin-left: 1.5rem; height: 100%; margin-right: 1.5rem; margin-top: 1rem; padding-bottom: 2rem;">
+            @if (loggedIn)
+            {
+                @Body
+            }
+            else
+            {
                 <Login OnUserLoginSuccess="EventCallback.Factory.Create(this, (UserRelation _user) => OnLoginSuccess(_user))" />
-        }
-    </MudMainContent>
+            }
+        </MudMainContent>
     </CascadingValue>
 </MudLayout>
 
 
 
-@code{
+@code {
 
     private UserRelation? user { get; set; }
     private bool loggedIn;
 
-    protected override async Task OnInitializedAsync(){
+    // Denne funksjonen blir kjørt når siden lastes for første gang
+    protected override async Task OnInitializedAsync()
+    {
+
+        // https://www.cloudflare.com/learning/privacy/what-are-cookies/
+        // Her sjekker vi om vi har en login cookie fra før. _cookieUtil er fra et bibliotek som lar oss jobbe med Cookies i browser
         var id = await _cookieUtil.GetValueAsync("nd_login");
 
-
-        if(id == null) {
+        // Hvis ikke, så er ikke brukeren logget inn
+        if (id == null)
+        {
             loggedIn = false;
             user = null;
             return;
         }
+        // Hvis vi har en cookie, så har brukeren logget inn fra før av og vi kan hente informasjon som er lagret i cookie for å logge inn
+        // Det som er lagret i en cookie ser slik ut:
+
+        /*
+         {
+      "EmployeeName": "Admin",
+      "EmployeeId": 1,
+      "EmployeeEmail": "Admin@admin.no",
+      "EmployeeIsAdmin": 1,
+      "EmployeeIsDisabled": 0,
+      "userTeamRelations": [
+    {
+      "Team": {
+        "Id": 1,
+        "Name": "Salg og Marked"
+      },
+      "UserRole": "Medarbeider"
+    }
+      ]
+    }
+         */
         user = JsonConvert.DeserializeObject<UserRelation>(id);
+        // Si at bruker er logget inn og refresh side
         loggedIn = true;
         StateHasChanged();
     }
-
-    protected async void SignOut() {
+    // Logg ut funksjon
+    protected async void SignOut()
+    {
+        // Nullstill alle variabler
         user = null;
         loggedIn = false;
+        // Fjern login cookie
         await _cookieUtil.RemoveAsync("nd_login");
         Snackbar.Add("Du har blitt logget ut", Severity.Success);
+        // Naviger til hovedside (loginside vil vises)
         Navigation.NavigateTo("/");
         StateHasChanged();
     }
-
-    protected async Task OnLoginSuccess(UserRelation _user) {
+    // Når bruker har skrevet inn riktig logindetaljer vil denne kjøres
+    protected async Task OnLoginSuccess(UserRelation _user)
+    {
         user = _user;
         loggedIn = true;
+        // Setter login cookie 
         await _cookieUtil.SetValueAsync("nd_login", JsonConvert.SerializeObject(_user));
         Snackbar.Add("Du har blitt innlogget", Severity.Success);
 
         StateHasChanged();
     }
-    
+    // Custom theme for MudBlazor så vi har andre farger
     MudTheme MyCustomTheme = new MudTheme()
         {
             Palette = new Palette()
@@ -75,9 +113,9 @@
                 Primary = Colors.Blue.Accent4,
                 Secondary = Colors.Red.Accent3,
                 Tertiary = Colors.Blue.Accent2,
-               
+
             },
-          
-           
+
+
         };
 }

@@ -319,8 +319,10 @@
     </MudGrid>  
     </EditForm>
 
-
+    
 @code {
+
+    // -- Mye av koden her er noe likt ViewSuggestion
     [CascadingParameter]
     private UserRelation user { get; set; }
 
@@ -397,19 +399,20 @@
 
         DialogService.Show<NordicDialog>("Vil du forkaste?", parameters, options);
     }
-
+    // Se forklaring i ViewSuggestions under Pages
     protected override async Task OnInitializedAsync()
     {
         var fetchedPhases = await httpClient.GetFromJsonAsync<string[]>("api/SuggestionPhase");
         var fetchedStatuses = await httpClient.GetFromJsonAsync<string[]>("api/SuggestionStatus");
         statuses.AddRange(fetchedStatuses);
         phases.AddRange(fetchedPhases);
+        // Om ansatte er bare medlem av ett team så setter vi teamet 
         if(user.userTeamRelations.Count == 1) {
             model.AssociatedTeam = user.userTeamRelations.First().Team;
         }
 
     }
-
+    // Se forklaring i ViewSuggestions under Pages
     protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
     {
 
@@ -427,6 +430,7 @@
     }
     protected async Task<IEnumerable<Team>> SearchTeams(string name, bool useMemberTeams)
     {
+        // Om brukeren er medlem av fere teams, er det bare de vi kan søke etter.
         if(useMemberTeams) {
             if(string.IsNullOrEmpty(name)) {
                 return user.userTeamRelations.Select(t => t.Team);
@@ -446,7 +450,7 @@
         return Array.Empty<Team>();
     }
 
-
+    // Se forklaring i ViewSuggestions under Pages
     private async Task UploadFile(InputFileChangeEventArgs e)
     {
         var image = await e.File.RequestImageFileAsync("image/png", 1000, 1000);

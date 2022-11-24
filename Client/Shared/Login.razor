@@ -63,17 +63,21 @@
 	[Parameter] public EventCallback<UserRelation> OnUserLoginSuccess { get; set; }
 	private LoginModel model = new LoginModel();
 
+	// Denne blir kjørt når bruker trykker "Login" og alle felt er godkjent - se EditForm
 	private async Task OnValidSubmit(){
+		// Send en post request til AuthController med epost of passord som bruker skrev inn i log in felt
 		var res = await httpClient.PostAsJsonAsync<LoginRequest>("api/Auth/Login", new LoginRequest()
 			{
 				Email = model.EmailAddress,
 				Password = model.Password,
 			});
-
+			// Om Statuskode fra backend ikke var 200, har vi en login feil
 			if(!res.IsSuccessStatusCode) {
 				Snackbar.Add("Feil innloggingsdetaljer, vennligst prøv igjen", Severity.Error);
 			} else {
+				// Her henter vi login info fra backend siden login var godkjent
 				var _user = await res.Content.ReadFromJsonAsync<UserRelation>();
+				// Her kaller vi funksjonen OnUserLoginSuccess (se MainLayout under Shared)
 				await OnUserLoginSuccess.InvokeAsync(_user);
 			}
 	}

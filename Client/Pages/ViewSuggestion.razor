@@ -452,7 +452,10 @@ else
                     <MudTimeline>
                         @foreach (var _event in events)
                         {
-                            <MudTimelineItem>
+                            <!-- Her sjekker vi om elementer vi er på er det første elementet (siste hendelse som har skjedd)
+                                Om den er den siste, får den en annen farge
+                            -->
+                            <MudTimelineItem Color="@(events.FindIndex(x => _event == x) == 0 ? Color.Primary : Color.Default )">
                                 <div class="d-flex flex-column ">
 
                                     <MudText Style="font-size: 1rem; font-weight: 600;">@_event.Description</MudText>
@@ -504,14 +507,14 @@ else
     private MudForm? form;
     IList<string> images = new List<string>(); // base64 for display
 
-
+    // Denne blir kjørt når brukeren trykker "OK" i popup boks
     private async Task EnsureSaveDialogOk()
 
     {
         await UpdateSuggestion();
         editEnabled = false;
     }
-
+    // Denne blir kjørt når brukeren trykker "Forkast" i popup boks
     protected async Task EnsureCancelDialogOk()
     {
         updatedSuggestion = new GetSuggestionRequest(suggestion);
@@ -519,19 +522,25 @@ else
     }
 
     // Denne funksjonen sjekker om brukeren har rettigheter til å lukke en sak
+    // Om ikke, så vil ikke "Lukk sak" knappen vises
     protected bool UserCanClose() {
-        Console.WriteLine(suggestion.Status);
 
-    if(suggestion.Status.Equals("Lukket") || suggestion.Status.Equals("Avslått")) {
+        // Hvis status er Lukket eller Avslått skal ikke knappen vises
+        if(suggestion.Status.Equals("Lukket") || suggestion.Status.Equals("Avslått")) {
             return false;
         } 
+        // Om brukeren som er innlogget er den som opprettet saken så skal Lukk sak knappen vises
         if(user.EmployeeId == suggestion.CreatedBy.Id) {
             return true;
         }
+        // Om brukeren som innlogget er den som er satt ansvarlig for saken
+        if(user.EmployeeId == suggestion?.ResponsibleEmployee?.Id)
+        // Om brukeren er teamleder og teamet brukeren er leder i er teamet som er ansvarlig for saken
         if(user.userTeamRelations.Any(x => x.UserRole.Equals("Teamleder") 
             && x.Team.Id == suggestion.Team.Id)) {
             return true;
         }
+        // Om brukeren er admin
         if(user.EmployeeIsAdmin == 1) {
             return true;
         }
@@ -539,8 +548,10 @@ else
         return false;
     }
 
+    // Denne blir kjørt når brukeren trykker "Kommenter"
     protected async void OnCommentClick()
     {
+        // Først lager vi et kommentarobject med det brukeren skrev, datoen det ble skrevet og hvem som skrev
         var comment = new AddSuggestionCommentRequest()
             {
                 EmployeeId = user.EmployeeId,
@@ -549,30 +560,42 @@ else
                 Timestamp = DateTime.Now
             };
 
+        // Her resetter vi kommentarfeltet til en tom tekststreng
         currentComment = "";
+        // Her sender vi kommentaren til backend slik at den lagres i databasen gjennen en POST request
+        // Inni < > så spesifiserer vi datatypen som vi skal sende til backend. Her sier vi at vi bare har lov til å sende AddSuggestionCommentRequest
+        // Dette gjøres for å passe på at vi ikke kan sende feil datatyper til backend som kan skape crash eller andre feil
         var res = await httpClient.PostAsJsonAsync<AddSuggestionCommentRequest>("api/SuggestionComments", comment);
+
+        // Her kjører vi GetComments metoden som henter alle kommentarer fra backend på nytt slik at den nye kommentaren vises 
         await GetComments();
     }
-
+    // Denne funksjonen henter alle kommentarer fra backend
     protected async Task GetComments()
     {
         var res = await httpClient.GetFromJsonAsync<List<GetSuggestionCommentRequest>>("api/SuggestionComments/" + suggestion.Id);
-        comments = res;
+        // res inneholder alle kommentarer fra backend. I linjen under så legger vi til alle kommentarer i en liste som brukes i HTML koden
+        comments.AddRange(res);
+        // Denne funksjonen er innebygget i Blazor og kjører en slags "refresh" av siden slik siden viser alt som har blitt oppdatert
         StateHasChanged();
     }
 
 
     protected void OnEditClick()
     {
+        // Skrur på eller av "Edit mode"
         editEnabled = !editEnabled;
     }
 
+    // Denne funksjonen åpner popup boksen når du trykker "Lagre"
     protected void OpenSaveDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
+        // Denne linjen gjør slik at "EnsureSaveDialogOk" blir kjørt når du trykker på OK inne i dialogen
         var parameters = new DialogParameters { ["OnOk"] = EventCallback.Factory.Create(this, EnsureSaveDialogOk) };
+        // Her gir vi inn custom tekst som vises i dialogen
         parameters.Add("Content", "Er du sikker på at du vil lagre endringene dine?");
-
+        // Her åpner vi dialogen. Dialogen er en custom compponent som heter NordicDialog (Se under Shared mappen)
         DialogService.Show<NordicDialog>("Vil du lagre?", parameters, options);
     }
 
@@ -591,7 +614,12 @@ else
         DialogService.Show<NordicDialog>("Vil du forkaste?", parameters, options);
     }
 
+    // Denne blir kjørt når du trykker "Lukk sak"
+    // comment parameteret er kommentaren man må skrive inn når du lukker saken 
     protected async Task CloseSuggestion(string comment) {
+
+        // Her oppdaterer vi saken på backend med status som Lukker og fase som Act
+        // Dette blir sendt som en POST requesyt til Update endepunktet i SuggestionController
         await httpClient.PutAsJsonAsync<UpdateSuggestionRequest>($"api/Suggestions/Update/{id}", new UpdateSuggestionRequest()
             {
                 Title = suggestion.Title,
@@ -603,6 +631,7 @@ else
                 Phase = "Act",
                 Description = suggestion.Description
             });
+            // Her sender vi en ny event til backend om at saken har blitt lukket
         await httpClient.PostAsJsonAsync<AddEventRequest>($"api/Events/Add", new AddEventRequest()
             {
                 EmployeeId = user.EmployeeId,
@@ -610,7 +639,7 @@ else
                 Description = "Saken har bitt lukket: " + comment,
                 Timestamp = DateTime.Now,
             });
-
+            // Her legger vi til en automatisk kommentar som sier at saken har blitt lukker
         var suggComment = new AddSuggestionCommentRequest()
             {
                 EmployeeId = user.EmployeeId,
@@ -620,14 +649,16 @@ else
             };
         await httpClient.PostAsJsonAsync<AddSuggestionCommentRequest>("api/SuggestionComments", suggComment);
 
+        // Her oppdaterer vi suggestionet hos frontend 
         var (newSuggestion, newEvents) = await GetSuggestion();
 
         suggestion = newSuggestion;
         events = newEvents;
+        // "Refresh" siden
         StateHasChanged();
 
     }
-
+    // Denne funksjonen oppdaterer suggestion. Se kommentar under "CloseSuggestion" siden den gjør akkurat det samme
     protected async Task UpdateSuggestion()
     {
 
@@ -667,38 +698,52 @@ else
         StateHasChanged();
 
     }
+
+    // Denne funksjonen blir kjørt når siden lastes
+    // Her henter vi data som skal vises fram med en gang
     protected override async Task OnInitializedAsync()
     {
+        // Her henter vi saken som skal vises og alle events
         var (_suggestion, _events) = await GetSuggestion();
 
         if (_suggestion != null)
         {
+            // Om suggestion ikke er null, setter vi verdier på alle variabler
             suggestion = _suggestion;
+            // UpdatedSuggestion er objektet som blir oppdatert når du er i "Edit mode". suggestion variablet vil aldri bli endret og holder alltid de orginalie verdiene
             updatedSuggestion = new GetSuggestionRequest(_suggestion);
             events = _events;
             loading = false;
+            // Hent alle kommentarer
             await GetComments();
 
 
         }
+        // "Refresh" siden
         StateHasChanged();
     }
 
 
-
+    // Denne søker alle ansatte (Blir brukt i MudAutocomplete)
+    // name parameter er det brukeren skriver i søkefeltet
     protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
     {
+        // Hent alle brukere fra backend
         var employees = await httpClient.GetFromJsonAsync<List<Employee>>("api/Users");
         if (employees != null)
         {
+            // Om brukerinputt er tomt returnerer vi alle ansattte
             if (string.IsNullOrEmpty(name))
             {
                 return employees;
             }
+            // Returner den ansatte hvor navnet til den ansatte inneholder noe av brukerinput (name)
             return employees.Where(emp => emp.Name.Contains(name));
         }
+        // Hvis det oppstå en feil under henting av brukere, returner vi en tom array.
         return Array.Empty<Employee>();
     }
+    // Denne søker alle teams. Den gjør akkurat det samme som SearchEmployees
     protected async Task<IEnumerable<Team>> SearchTeams(string name)
     {
         var teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
@@ -712,35 +757,45 @@ else
         }
         return Array.Empty<Team>();
     }
-
+    // Henter suggestionet vi ser på
     protected async Task<(GetSuggestionRequest?, List<GetEventRequest>?)> GetSuggestion()
     {
-
+        // Henter suggestion fra backend. id variabel kommer fra route, f.eks /suggestion/4 <-- her er id 4 så vi sier at backend skal hente saken hvor ID er 4
         var _suggestion = await httpClient.GetFromJsonAsync<GetSuggestionRequest>("api/Suggestions/" + id);
+        // Hent alle events for saken
         var _events = await httpClient.GetFromJsonAsync<List<GetEventRequest>>("api/Events/" + id);
         if (_suggestion == null)
         {
+            // Si ifra om en feil skjedde under hetning
             Snackbar.Add("Feil under henting av sak. Kontakt din administrator", Severity.Error);
             return (null, null);
         }
+        // Legge til alle bilder slik at de vises
         foreach (var picture in _suggestion.Pictures)
         {
+            // De må base64 enkodes for å vises
             images.Add($"data:image/png;base64,{Convert.ToBase64String(picture.Image)}");
         }
-        var sortedEvents = _events.OrderBy(x => x.Timestamp).ToList();
+        // Sorter alle events slik at nyeste vises først
+        var sortedEvents = (List<GetEventRequest>?) _events.OrderByDescending(x => x.Timestamp).ToList<GetEventRequest>();
         return (_suggestion, sortedEvents);
 
     }
-
+    // Laster opp bilder til backend
     private async Task UploadFile(InputFileChangeEventArgs e)
     {
+        // Gjør om lastet opp fil til en Image fil med bredde/høyde 1000
         var image = await e.File.RequestImageFileAsync("image/png", 1000, 1000);
+        // Lag et buffer hvor bildets binærversjon skal lagres til
         var buffer = new byte[image.Size];
+        // Les binærtall inn i buffer
         await image.OpenReadStream().ReadAsync(buffer);
+        // base64 encode bufferet slik at det kan vises som et HTML bilde
         images.Add($"data:image/png;base64,{Convert.ToBase64String(buffer)}");
+        // Gjør om fil til byte[] så det kan sendet til backend
         var content = new StreamContent(e.File.OpenReadStream());
         var bytes = await content.ReadAsByteArrayAsync();
-
+        // Send bildet til backend
         await httpClient.PostAsJsonAsync<AddPictureRequest>("api/Pictures/Add", new AddPictureRequest()
             {
                 SuggestionId = suggestion.Id,
