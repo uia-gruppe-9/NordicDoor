@@ -56,22 +56,6 @@ namespace Nordic_Door.Server.Controllers
         }
 
 
-        [HttpGet]
-        [Route("/Search/All/User/{name}")]
-        public async Task<IActionResult> GetAllUsersByName([FromRoute] string name)
-        {
-
-            var user = await dbContext.Employees.Where(employee => employee.Name == name).ToListAsync();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
-        }
-
-
         [HttpPut]
         [Route("/Update/User/{id:int}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateUserRequest updateUserRequest)

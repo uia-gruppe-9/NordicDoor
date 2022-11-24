@@ -26,50 +26,6 @@ namespace Nordic_Door.Server.Controllers
             return Ok(team);
         }
 
-        [HttpGet]
-        [Route("/Search/TeamById/{id:int}")]
-        public async Task<IActionResult> GetTeamById([FromRoute] int id)
-        {
-            var team = await dbContext.Teams.FindAsync(id);
-
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(team);
-        }
-
-        [HttpGet]
-        [Route("/Search/First/Team/{name}")]
-        public async Task<IActionResult> GetFirstTeamByName([FromRoute] string name)
-        {
-
-            var team = await dbContext.Teams.FirstAsync(team => team.Name == name);
-
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(team);
-        }
-
-
-        [HttpGet]
-        [Route("/Search/All/Team/teamname{name}")]
-        public async Task<IActionResult> GetAllTeamsByName([FromRoute] string name)
-        {
-
-            var team = await dbContext.Teams.Where(Team => Team.Name == name).ToListAsync();
-
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(team);
-        }
 
         [HttpPut]
         [Route("/Update/Team/{id:int}")]
@@ -88,33 +44,52 @@ namespace Nordic_Door.Server.Controllers
             return NotFound();
         }
 
-        [HttpPut] // må se på
-        [Route("/UpdateTeamLeder")]
-        // vil først hente ut teamleder i nevnt team
-        // gjøre teamleder til medarbeider
-        // gjøre innput employee til leder av innput team
-        public async Task<IActionResult> UpdateTeamLeaderInTeam(string teamName, string employeeName)
+        [HttpPut]
+        [Route("UpdateTeamLeader")]
+        public async Task<IActionResult> UpdateTeamLeaderInTeam(UpdateTeamLeaderRequest updateTeamLeaderRequest)
         {
-            var team = await dbContext.Teams.FirstAsync(e => e.Name == teamName);
-            var userTeamOldTL = await dbContext.UserTeams.FirstAsync(tL => tL.TeamId == team.Id);
 
-            var oldTeamLeader = await dbContext.UserTeams.FirstAsync(l => l.Role == "Leader");
+            if (updateTeamLeaderRequest.EmployeeId != 0 && updateTeamLeaderRequest.TeamNames != null)
+            {
+
+                foreach(var teamName in updateTeamLeaderRequest.TeamNames)
+                {
+                    var OLteam = await dbContext.Teams.FirstAsync(t => t.Name == teamName);
+                    var userTeamOldTL = await dbContext.UserTeams.Where(tL => tL.TeamId == OLteam.Id).ToListAsync();
+                    var oldTeamLeader = await dbContext.UserTeams.FirstAsync(l => l.Role == "Teamleder");
+                    if (oldTeamLeader != null)
+                    {
+                        oldTeamLeader.Role = "Medarbeider";
+                    }
+                    var employee = await dbContext.Employees.FindAsync(updateTeamLeaderRequest.EmployeeId);
+                    var employeeInUserTeam = await dbContext.UserTeams.FirstAsync(e => e.EmployeeId == employee.Id);
+                    if (employeeInUserTeam != null)
+                    {
+                        employeeInUserTeam.Role = "TeamLeder";
+                    }
+
+               
+
+                }
+                await dbContext.SaveChangesAsync();
+                return Ok();
 
 
-            var employee = await dbContext.Employees.FirstAsync(e => e.Name == employeeName);
-            var userTeam = await dbContext.UserTeams.FirstAsync(e => e.EmployeeId == employee.Id);
-            return Ok();
-
+            }
+            // bad request
+            return StatusCode(400);
         }
 
 
-        [HttpPost] // Endre employee sitt team || TOBIAS SE PÅ - her skjer det mye rart
-        [Route("/AddTeamsToUser")]
-        public async Task<IActionResult> AddTeamsToUser(UpdateUserSTeamRequest updateUserSTeamRequest)
-        {        
+
+
+        [HttpPost]
+        [Route("/AddUserToTeams")]
+        public async Task<IActionResult> AddUserToTeams(UpdateUsersTeamRequest updateUserSTeamRequest)
+        {
             foreach (var teamName in updateUserSTeamRequest.teamNames)
             {
-                var tname = dbContext.Teams.FirstAsync(t => t.Name == teamName);
+                var tname = await dbContext.Teams.FirstAsync(t => t.Name == teamName);
                 var updateuserteam = new UserTeam()
                 {
                     EmployeeId = updateUserSTeamRequest.employeeId,
@@ -127,23 +102,20 @@ namespace Nordic_Door.Server.Controllers
             return Ok();
         }
 
-        [HttpPost] // FIKSE DENNE!
-        // skal ved navninput opprette nytt team
-        [Route("/Add/Team")]
+        [HttpPost]
+        [Route("Add")]
         public async Task<IActionResult> AddTeam(AddTeamRequest addTeamRequest)
-        {
-            // prøver å error handle
-            //var teamexist = await dbContext.Teams.FirstAsync(e => e.Name == addTeamRequest.teamName);
-            //if (teamexist == null)
-            //{
-            //    return StatusCode(409);
-            //}
+        {         
+            var teamexist = await dbContext.Teams.FirstOrDefaultAsync(e => e.Name == addTeamRequest.TeamName);
+            if (teamexist != null)
+            {
+                return StatusCode(409);
+            }
 
             var team = new Team()
-            { 
-                Name = addTeamRequest.TeamName,
-
-            };
+                {
+                    Name = addTeamRequest.TeamName,
+                };
 
                 try
                 {

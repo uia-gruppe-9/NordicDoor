@@ -138,7 +138,7 @@
 
 
 <!--Form for endring av teamleder-->
-<EditForm class="change_TeamLeader" Model="@changeTeamLeader" OnValidSubmit="@OnValidTeamSubmit">
+	<EditForm class="change_TeamLeader" Model="@changeTeamLeader" OnValidSubmit="@OnValidChangeTeamLeaderSubmit">
 	<h2>Endre teamleder:</h2>
 	<label for="Team-leder"></label>
 	<MudAutocomplete T="Employee" Label="Søk etter ansatt" @bind-Value="@TeamLeader" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" />
@@ -154,13 +154,13 @@
 }
 else{
 	<MudText>Du har ikke tilgang til denne siden</MudText>
-
+}
 <!--Form for endring av teamtilhørighet-->
 <EditForm class="change_Team" Model="@changeTeamModel" OnValidSubmit="@OnValidTeamSubmit">
 	<h2>Endre teamtilhørighet:</h2>
 	<label for="Team-tilhørighet"></label>
-	<MudAutocomplete T="Employee" Label="Søk etter ansatt" @bind-Value="@employee" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" />
-	<MudSelect CT="string" Label="Velg nytt team" MultiSelection="true" @bind-SelectedValues="@alterEmployeeTeam">
+	<MudAutocomplete T="Employee" Label="Søk etter ansatt" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" ValueChanged="@(async (Employee e) => await OnSelectEmployeeChange(e))" />
+	<MudSelect T="string" Label="Velg nytt team" MultiSelection="true" @bind-SelectedValues="@alterEmployeeTeam">
 		@foreach (var team in teams)
 		{
 			<MudSelectItem T="string" Value="team.Name" />
@@ -175,17 +175,20 @@ else{
 
 @code {
 	[CascadingParameter]
-        private UserRelation user { get; set; }
+	private UserRelation user { get; set; }
 
-	public CreateUserModel userModel = new CreateUserModel();
-	public CreateTeamModel teamModel = new CreateTeamModel();
-	public ChangeTeamModel changeTeamModel = new ChangeTeamModel();
-	public ChangeTeamLeaderModel changeTeamLeader = new ChangeTeamLeaderModel();
+	private CreateUserModel userModel = new CreateUserModel();
+	private CreateTeamModel teamModel = new CreateTeamModel();
+	private ChangeTeamModel changeTeamModel = new ChangeTeamModel();
+	private ChangeTeamLeaderModel changeTeamLeader = new ChangeTeamLeaderModel();
 
-	public Employee TeamLeader { get; set; }
-	public Employee employee { get; set; }
+	private Employee TeamLeader { get; set; }
+	private Employee employee { get; set; }
 
-	public List<Team> teams = new List<Team>();
+	private List<Team> teams = new List<Team>();
+
+	// Denne vil inneholde alle teams som den ansatte duvelger i endre teamtilhørlighet allerede er medlem av
+	public List<string> currentMemberTeams { get; set; }
 
 	private IEnumerable<string> options { get; set; } = new HashSet<string>();
 
@@ -198,12 +201,59 @@ else{
 	public bool loading = true;
 
 	protected async Task OnValidTeamSubmit() {
-		await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Users", new AddTeamRequest()
+		var res = await httpClient.PostAsJsonAsync<AddTeamRequest>("api/Teams/Add", new AddTeamRequest()
 		{
 				TeamName = teamModel.TeamName, 
 
 			});
 
+		if(res.IsSuccessStatusCode) {
+			Snackbar.Add("Team har blitt opprettet", Severity.Success);
+			await FetchTeams();
+			teamModel = new CreateTeamModel();
+		} else {
+			// hvis teamet allerede eksisterer sender backend en 409 kode
+			if(res.StatusCode == System.Net.HttpStatusCode.Conflict) {
+				Snackbar.Add($"Teamet {teamModel.TeamName} eksisterer allerede", Severity.Error);
+			} else {
+				Snackbar.Add($"Feil under opprettelse", Severity.Error);
+
+			}
+		}
+		StateHasChanged();
+	}
+
+	protected async Task OnSelectEmployeeChange(Employee e) {
+		Console.WriteLine(e.Id);
+
+		var res = await httpClient.GetFromJsonAsync<List<GetUserTeamRequest>>("api/UserTeams/" + employee.Id);
+		currentMemberTeams = res.Select(x => x.Team.Name).ToList();
+		// Legger til teams som den asnatte er medlem av i valgte teasm
+		alterEmployeeTeam.Concat(currentMemberTeams);
+		StateHasChanged();
+	}
+
+	protected async Task OnValidChangeTeamLeaderSubmit() {
+
+		var res = await httpClient.PutAsJsonAsync<UpdateTeamLeaderRequest>("api/Teams/UpdateTeamLeader", new UpdateTeamLeaderRequest()
+			{
+				EmployeeId = TeamLeader.Id,
+				TeamNames = alterTeamLeader.ToList()
+			});
+
+		if (res.IsSuccessStatusCode)
+		{
+			Snackbar.Add("Teamleder har blitt endret", Severity.Success);
+			changeTeamLeader = new ChangeTeamLeaderModel();
+		}
+		else
+		{
+		
+		Snackbar.Add($"Feil under endring av teamleder", Severity.Error);
+
+	
+		}
+		StateHasChanged();
 	}
 
 	protected async Task OnValidSubmit() {
@@ -221,18 +271,23 @@ else{
 			Snackbar.Add("Brukeren har blitt opprettet", Severity.Success);
 			userModel = new CreateUserModel();
 
-			} else {
+		} else {
 			Snackbar.Add("Feil under brukeroppretting", Severity.Error);
 
-			}
+		}
 	}
 
 
 	protected override async Task OnInitializedAsync()
 	{
-		var _teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
-		teams.AddRange(_teams);
+		await FetchTeams();
 		loading = false;
+	}
+
+	protected async Task FetchTeams() {
+		var _teams = await httpClient.GetFromJsonAsync<List<Team>>("api/Teams");
+
+		teams = new List<Team>(_teams);
 	}
 	protected async Task<IEnumerable<Employee>> SearchEmployees(string name)
 	{
