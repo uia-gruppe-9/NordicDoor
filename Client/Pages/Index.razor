@@ -202,17 +202,17 @@
         {
 
             switch (selectedFilter.Text) {
-            
+
                 case "mine":
-                // Henter alle saker som brukeren som er innlogget har laget
+                    // Henter alle saker som brukeren som er innlogget har laget
                     FilteredSuggestions = Suggestions.FindAll(x => x.CreatedBy.Id == user.EmployeeId);
                     break;
                 case "myResponsible":
-                // Henter alle saker som brukeren som er innlogger er ansvarlig for
+                    // Henter alle saker som brukeren som er innlogger er ansvarlig for
                     FilteredSuggestions = Suggestions.FindAll(x => x.ResponsibleEmployee?.Id == user.EmployeeId);
                     break;
                 default:
-                // Default er å vise alle saker
+                    // Default er å vise alle saker
                     FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
                     break;
             }
@@ -245,22 +245,26 @@
     // Alle funksjoner under er for søk. Basically så gir du en søkestring og den sjekker alle kolonner i tabellen om det det du søkte finnes som en verdi i en celle
     private bool FilterFunc1(GetSuggestionRequest suggestion) => FilterFunc(suggestion, searchString1);
 
-    private bool FilterFunc(GetSuggestionRequest Suggestions, string searchString)
+    private bool FilterFunc(GetSuggestionRequest Suggestion, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (Suggestions.CreatedBy.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (Suggestion.CreatedBy.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (Suggestions.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (Suggestion.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (Suggestions.Phase.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (Suggestion.Phase.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{Suggestions.Id}".Contains(searchString))
+        if ($"{Suggestion.Id}".Contains(searchString))
             return true;
-        if (Suggestions.ResponsibleEmployee.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (Suggestions.ResponsibleTeam.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+        if (Suggestion.ResponsibleEmployee != null) {
+            return Suggestion.ResponsibleEmployee.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (Suggestion.ResponsibleTeam != null) {
+            return Suggestion.ResponsibleTeam.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+        }
+
         return false;
     }
 

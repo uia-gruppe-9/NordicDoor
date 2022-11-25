@@ -434,9 +434,12 @@ else
                         }
                         else
                         {
+                            if(UserCanEdit()) {
+
                             <MudButton Color="Color.Primary" StartIcon="@Icons.Filled.Edit" Variant="Variant.Filled" OnClick="OnEditClick">Endre sak</MudButton>
                             if(UserCanClose()) {
                                 <MudButton Color="Color.Secondary" StartIcon="@Icons.Filled.Cancel" Variant="Variant.Filled" OnClick="OpenCloseSuggestionDalog"> Lukk sak </MudButton>
+                            }
                             }
 
                         }
@@ -534,7 +537,13 @@ else
             return true;
         }
         // Om brukeren som innlogget er den som er satt ansvarlig for saken
-        if(user.EmployeeId == suggestion?.ResponsibleEmployee?.Id)
+        if(user.EmployeeId == suggestion?.ResponsibleEmployee?.Id) {
+            return true;
+        }
+        if (user.userTeamRelations.Any(x => x.Team.Name == suggestion?.Team.Name))
+        {
+            return true;
+        }
         // Om brukeren er teamleder og teamet brukeren er leder i er teamet som er ansvarlig for saken
         if(user.userTeamRelations.Any(x => x.UserRole.Equals("Teamleder") 
             && x.Team.Id == suggestion.Team.Id)) {
@@ -545,6 +554,32 @@ else
             return true;
         }
 
+        return false;
+    }
+
+    protected bool UserCanEdit() {
+        if (user.EmployeeId == suggestion.CreatedBy.Id)
+        {
+            return true;
+        }
+        if (user.EmployeeId == suggestion?.ResponsibleEmployee?.Id)
+        {
+            return true;
+        }
+        if(user.userTeamRelations.Any(x => x.Team.Name == suggestion?.ResponsibleTeam?.Name)) {
+            return true;
+        }
+        if (user.userTeamRelations.Any(x => x.Team.Name == suggestion?.Team.Name)) {
+            return true;
+        }
+        if(user.userTeamRelations.Any(x => x.UserRole.Equals("Teamleder") 
+           && x.Team.Id == suggestion.Team.Id)) {
+            return true;
+        }
+        // Om brukeren er admin
+        if(user.EmployeeIsAdmin == 1) {
+            return true;
+        }
         return false;
     }
 
@@ -575,7 +610,7 @@ else
     {
         var res = await httpClient.GetFromJsonAsync<List<GetSuggestionCommentRequest>>("api/SuggestionComments/" + suggestion.Id);
         // res inneholder alle kommentarer fra backend. I linjen under så legger vi til alle kommentarer i en liste som brukes i HTML koden
-        comments.AddRange(res);
+        comments = new List<GetSuggestionCommentRequest>(res);
         // Denne funksjonen er innebygget i Blazor og kjører en slags "refresh" av siden slik siden viser alt som har blitt oppdatert
         StateHasChanged();
     }

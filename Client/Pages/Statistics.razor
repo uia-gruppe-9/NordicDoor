@@ -18,10 +18,14 @@
         gap: 1rem;
         height: 100%;
     }
-
+     h3 {
+         font-size: 100px;
+         padding: 3rem;
+     }
     .paper {
         width: 100%;
         text-align: center;
+        padding: 1rem;
     }
 
     .row {
@@ -59,7 +63,9 @@
 
                     <MudAutocomplete T="Employee" Label="Søk etter ansatt"
                     @bind-Value="@employeeModel.Employee" ToStringFunc="@(e => e.Name)" SearchFunc="SearchEmployees" />
-                                    <MudButton ButtonType="ButtonType.Submit">Hent statistikk</MudButton>
+                    <br/>
+
+                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Hent statistikk</MudButton>
 
                 </EditForm>
                 <h3>@totalSuggestion</h3>
@@ -68,20 +74,17 @@
 
 
             <MudPaper Class="paper" Elevation="3">
-                <!-- <EditForm class="checkTeamStatistics" Model "" OnValidSubmit="OnValidSubmit">
-                 <h2>Forbedringer utført av Teams</h2>
-                  <label for="team"> <h3>Velg ønsket Team</h3></label>
-                  <InputText typeof="text" id="team" name ="team">
+  
+                    <h2>Eksempelstatistikk</h2>
 
-                  </InputText>
-                        </EditForm> -->
+                    <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
             </MudPaper>
 
         </div>
         <div class="row">
 
             <MudPaper Class="paper" Elevation="3">
-                <h2>Forbedringer utført pr team som snitt av antall ansatte pr. team</h2>
+                <h2>Eksempelstatistikk</h2>
 
                 <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
 
@@ -90,7 +93,7 @@
 
 
             <MudPaper Class="paper" Elevation="3">
-                <h2>Utførte forbedringer totalt for bedriften </h2>
+                <h2>Eksempelstatistikk </h2>
                 <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="100%"></MudChart>
             </MudPaper>
 
