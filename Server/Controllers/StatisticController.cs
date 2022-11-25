@@ -12,6 +12,7 @@ using static MudBlazor.Colors;
 // Ønsker å se antall forbedringer utført pr.team som snitt av antall ansatte pr.team - grafisk fremstilt med farmer som bytter ved oppnådd måltall pr.mnd
 // Ønsker å se antall forbedringer totalt pr.team hittil i mnd, hittil år, og utvikling år for år
 // Ønsker å se antall utførte forbedringer totalt for bedriften år for år
+// Ønsker å se antall forbedringer pr ansatt, men ikke som visning på hovedskjerm / Admin tilgang
 
 namespace NordicDoor.Server.Controllers
 {
@@ -29,7 +30,7 @@ namespace NordicDoor.Server.Controllers
 
 
         [HttpGet]     
-        [Route("/byId/{id:int}")]
+        [Route("byId/{id:int}")]
         public async Task<IActionResult> GetEmployeeStatistics([FromRoute] int id)
         {
             var responsibleEmployeeSuggestions = await dbContext.Suggestions.Where(r => r.ResponsibleEmployee == id).ToListAsync();
@@ -39,32 +40,43 @@ namespace NordicDoor.Server.Controllers
         [HttpGet]
         [Route("/teamStatisticRange")]
         //Ønsker å se antall forbedringer totalt pr.team hittil i mnd, hittil år, og utvikling år for år
-        public async Task<IActionResult> GetTeamStatisticsByDateRange(int id, string status, DateTime startTime, DateTime endTime)
-        {
+        public async Task<IActionResult> GetTeamStatisticsByDateRange([FromQuery]GetTeamStatisticsByDateRange getTeamStatisticsByDateRange)
+        {            
             var closedSuggestion = await dbContext.Suggestions.Where
-            (s => (s.ResponsibleTeam == id) && (s.Status == status) && (s.CreatedAt > startTime) && (s.LastUpdatedAt < endTime)).ToListAsync();
+            (s => (s.ResponsibleTeam == getTeamStatisticsByDateRange.Id) && (s.Status == getTeamStatisticsByDateRange.Status) && 
+            (s.CreatedAt > getTeamStatisticsByDateRange.startTime) && (s.LastUpdatedAt < getTeamStatisticsByDateRange.endTime)).ToListAsync();
             return Ok(closedSuggestion.Count);
         }
 
         [HttpGet]
         [Route("/statusSuggestion")]
         //Ønsker å se antall utførte forbedringer totalt for bedriften år for år
-        public async Task<IActionResult> GetTotalSuggestionsClosed (string status)
+        public async Task<IActionResult> GetTotalSuggestionsClosed ([FromQuery]GetTotalSuggestions getTotalSuggestions)
         {          
-            var statusSuggestion = await dbContext.Suggestions.Where(s => s.Status == status).ToListAsync();
+            var statusSuggestion = await dbContext.Suggestions.Where(s => s.Status == getTotalSuggestions.status).ToListAsync();
             return Ok(statusSuggestion.Count);
         }
+
         [HttpGet]
-        [Route("/teamStatisticsPrEmployee")]    
+        [Route("/teamStatisticsPrEmployee")]
         //Ønsker å se antall forbedringer utført pr.team som snitt av antall ansatte pr.team - grafisk fremstilt med farmer som bytter ved oppnådd måltall pr.mnd  
-        public async Task<IActionResult> GetTeamSuggestionsStatisticsByAverage(int responsible, int id)
+        public async Task<IActionResult> GetTeamStatisticsByAverage([FromQuery] GetTeamSuggestionsStatisticByAverage getTeamSuggestionsStatistic)
         {
-            var averageResponsibleTeamStatistics = await dbContext.Suggestions.Where(a => a.ResponsibleTeam == responsible).ToListAsync();
-            var averageEmployeeInTeam = await dbContext.UserTeams.Where(a => a.TeamId == id).ToListAsync();
-            return Ok(averageResponsibleTeamStatistics.Count / averageEmployeeInTeam.Count);
+            var teamStatisticByAverage = await dbContext.Suggestions.Where(ts => (ts.ResponsibleTeam == getTeamSuggestionsStatistic.responsible)
+            && (ts.ResponsibleTeam == getTeamSuggestionsStatistic.id)).ToListAsync();
+            return Ok(teamStatisticByAverage.Count);
         }
 
-        
+        [HttpGet]
+        [Route("/testTeamStatistics")]
+        public async Task<IActionResult> TestGetTeamStatisticsByDateRange ([FromQuery]GetTeamStatisticsByDateRange getTeamStatisticsByDateRange)
+        {
+            var testTeamStatistics = await dbContext.Suggestions.Where(t => t.ResponsibleTeam == getTeamStatisticsByDateRange.Id).ToListAsync();
+            return Ok(testTeamStatistics);
+        }
+
+
+
     }
 
 }

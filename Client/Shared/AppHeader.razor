@@ -8,13 +8,15 @@
 
           }
         <MudSpacer />
-        <div class="d-flex justify-center" style="position:relative; left:5%;">
+        <div class="d-flex justify-center" style="position:absolute; left:46%;">
             <MudImage ObjectFit="@ImageFit" Height="20"  Src="images/nordic-door.png" Alt="Nordic door" Elevation="0" Class="squared-lg" />
         </div>
         <MudSpacer/>
         @if(user != null) {
 
         <div class="gap-6 d-flex" Style="align-items: center;">
+
+            <!-- Bare vis admin dersom brukeren faktisk er admin-->
             @if(user.EmployeeIsAdmin == 1)
             {
         <MudLink Href="/admin" Color="Color.Dark">Admin</MudLink>

@@ -40,7 +40,7 @@
                       OnRowClick="NavigateSelectedSuggestion"
                       Filter="new Func<GetSuggestionRequest, bool>(FilterFunc1)">
 
-
+                          <!-- Her vises alle filer knapper-->
                 <ToolBarContent>
 
                     <div class="container p-3">
@@ -148,19 +148,21 @@
 
     [CascadingParameter]
     private UserRelation user { get; set; }
-
+    // Inneholder alle saker
     private List<GetSuggestionRequest> Suggestions = new List<GetSuggestionRequest>();
+    // Denne inneholder alle saker som møter filterkrav
     private List<GetSuggestionRequest> FilteredSuggestions = new List<GetSuggestionRequest>();
     private List<string> Statuses = new List<string>();
     private List<string> Phases = new List<string>();
 
-
+    // Filtered som er valgt
     private MudChip selectedFilter;
     private string filteredTeam;
 
     private bool loading = true;
     protected override async Task OnInitializedAsync()
     {
+        // Henter all suggestions og statuser
         Suggestions = await httpClient.GetFromJsonAsync<List<GetSuggestionRequest>>("api/Suggestions");
         Statuses = await httpClient.GetFromJsonAsync<List<string>>("api/SuggestionStatus");
         Phases = await httpClient.GetFromJsonAsync<List<string>>("api/SuggestionPhase");
@@ -168,6 +170,8 @@
         loading = false;
 
     }
+    // FInner alle saker hvor teamnavnet er lik parameter
+
     private void OnMemberTeamFilter(string teamName)
     {
         if (selectedFilter.Text == "Mitt team")
@@ -178,31 +182,37 @@
         FilteredSuggestions = Suggestions.FindAll(x => x.Team.Name == teamName);
         StateHasChanged();
     }
-
+    // Finner alle saker hvor status er lik parameter
     private void OnStatusFilter(string status)
     {
         FilteredSuggestions = Suggestions.FindAll(x => x.Status == status);
         StateHasChanged();
     }
+    // Finner alle saker hvor fase er lik parameter
     private void OnPhaseFilter(string phase)
     {
         FilteredSuggestions = Suggestions.FindAll(x => x.Phase == phase);
         StateHasChanged();
     }
+
+    // Denne sjekker hvilket filter som har blitt valgt og filtrerer saker utifra valget
     private void OnQuickFilterClick()
     {
         if (selectedFilter != null)
         {
 
-            switch (selectedFilter.Text)
-            {
+            switch (selectedFilter.Text) {
+
                 case "mine":
+                    // Henter alle saker som brukeren som er innlogget har laget
                     FilteredSuggestions = Suggestions.FindAll(x => x.CreatedBy.Id == user.EmployeeId);
                     break;
                 case "myResponsible":
+                    // Henter alle saker som brukeren som er innlogger er ansvarlig for
                     FilteredSuggestions = Suggestions.FindAll(x => x.ResponsibleEmployee?.Id == user.EmployeeId);
                     break;
                 default:
+                    // Default er å vise alle saker
                     FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
                     break;
             }
@@ -212,41 +222,49 @@
             FilteredSuggestions = new List<GetSuggestionRequest>(Suggestions);
 
         }
+        // Refresh side
         StateHasChanged();
 
     }
-
+    // Denne blir kjør når du trykker på en sak i tabellen.
+    // Vi kan få tak i ID'en til saken, dermed kan vi navigere til siden for å se på saken
     private void NavigateSelectedSuggestion(TableRowClickEventArgs<GetSuggestionRequest> clickEvent)
     {
         Navigation.NavigateTo("suggestion/" + clickEvent.Item.Id);
     }
-
+    // Denne blir kjørt når du trykker på "Opprett sak"
     private void OnCreateNewClick()
     {
+        // Naviger til /new
         Navigation.NavigateTo("new");
 
 
     }
     private string searchString1 = "";
 
+    // Alle funksjoner under er for søk. Basically så gir du en søkestring og den sjekker alle kolonner i tabellen om det det du søkte finnes som en verdi i en celle
     private bool FilterFunc1(GetSuggestionRequest suggestion) => FilterFunc(suggestion, searchString1);
 
-    private bool FilterFunc(GetSuggestionRequest Suggestions, string searchString)
+    private bool FilterFunc(GetSuggestionRequest Suggestion, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (Suggestions.CreatedBy.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (Suggestion.CreatedBy.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (Suggestions.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (Suggestion.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (Suggestions.Phase.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (Suggestion.Phase.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{Suggestions.Id}".Contains(searchString))
+        if ($"{Suggestion.Id}".Contains(searchString))
             return true;
-        if (Suggestions.ResponsibleEmployee.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (Suggestions.ResponsibleTeam.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+        if (Suggestion.ResponsibleEmployee != null) {
+            return Suggestion.ResponsibleEmployee.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (Suggestion.ResponsibleTeam != null) {
+            return Suggestion.ResponsibleTeam.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+        }
+
         return false;
     }
 

@@ -26,50 +26,6 @@ namespace Nordic_Door.Server.Controllers
             return Ok(team);
         }
 
-        [HttpGet]
-        [Route("/Search/TeamById/{id:int}")]
-        public async Task<IActionResult> GetTeamById([FromRoute] int id)
-        {
-            var team = await dbContext.Teams.FindAsync(id);
-
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(team);
-        }
-
-        [HttpGet]
-        [Route("/Search/First/Team/{name}")]
-        public async Task<IActionResult> GetFirstTeamByName([FromRoute] string name)
-        {
-
-            var team = await dbContext.Teams.FirstAsync(team => team.Name == name);
-
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(team);
-        }
-
-
-        [HttpGet]
-        [Route("/Search/All/Team/teamname{name}")]
-        public async Task<IActionResult> GetAllTeamsByName([FromRoute] string name)
-        {
-
-            var team = await dbContext.Teams.Where(Team => Team.Name == name).ToListAsync();
-
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(team);
-        }
 
         [HttpPut]
         [Route("/Update/Team/{id:int}")]
@@ -89,27 +45,32 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpPut]
-        [Route("/UpdateTeamLeder")]
+        [Route("UpdateTeamLeader")]
         public async Task<IActionResult> UpdateTeamLeaderInTeam(UpdateTeamLeaderRequest updateTeamLeaderRequest)
         {
-            if (updateTeamLeaderRequest.employeeName != null && updateTeamLeaderRequest.teamName != null)
+
+            if (updateTeamLeaderRequest.EmployeeId != 0 && updateTeamLeaderRequest.TeamNames != null)
             {
 
-                var OLteam = await dbContext.Teams.FirstAsync(t => t.Name == updateTeamLeaderRequest.teamName);
-                var userTeamOldTL = await dbContext.UserTeams.Where(tL => tL.TeamId == OLteam.Id).ToListAsync();
-                var oldTeamLeader = await dbContext.UserTeams.FirstAsync(l => l.Role == "Teamleder");
-                if (oldTeamLeader != null)
+                foreach(var teamName in updateTeamLeaderRequest.TeamNames)
                 {
-                    oldTeamLeader.Role = "Medarbeider";
-                }
+                    var OLteam = await dbContext.Teams.FirstAsync(t => t.Name == teamName);
+                    var userTeamOldTL = await dbContext.UserTeams.Where(tL => tL.TeamId == OLteam.Id).ToListAsync();
+                    var oldTeamLeader = await dbContext.UserTeams.FirstAsync(l => l.Role == "Teamleder");
+                    if (oldTeamLeader != null)
+                    {
+                        oldTeamLeader.Role = "Medarbeider";
+                    }
+                    var employee = await dbContext.Employees.FindAsync(updateTeamLeaderRequest.EmployeeId);
+                    var employeeInUserTeam = await dbContext.UserTeams.FirstAsync(e => e.EmployeeId == employee.Id);
+                    if (employeeInUserTeam != null)
+                    {
+                        employeeInUserTeam.Role = "TeamLeder";
+                    }
 
-                var employee = await dbContext.Employees.FirstAsync(e => e.Name == updateTeamLeaderRequest.employeeName);
-                var employeeInUserTeam = await dbContext.UserTeams.FirstAsync(e => e.EmployeeId == employee.Id);
-                if (employeeInUserTeam != null)
-                {
-                    employeeInUserTeam.Role = "TeamLeder";
-                }
+               
 
+                }
                 await dbContext.SaveChangesAsync();
                 return Ok();
             }
@@ -118,9 +79,10 @@ namespace Nordic_Door.Server.Controllers
         }
 
 
+
         [HttpPost]
         [Route("/AddUserToTeams")]
-        public async Task<IActionResult> AddUserToTeams(UpdateUserSTeamRequest updateUserSTeamRequest)
+        public async Task<IActionResult> AddUserToTeams(UpdateUsersTeamRequest updateUserSTeamRequest)
         {
             foreach (var teamName in updateUserSTeamRequest.teamNames)
             {
@@ -138,10 +100,11 @@ namespace Nordic_Door.Server.Controllers
         }
 
         [HttpPost]
-        [Route("/Add/Team")]
+        [Route("Add")]
         public async Task<IActionResult> AddTeam(AddTeamRequest addTeamRequest)
         {         
-            var teamexist = await dbContext.Teams.FirstOrDefaultAsync(e => e.Name == addTeamRequest.teamName);
+            var teamexist = await dbContext.Teams.FirstOrDefaultAsync(e => e.Name == addTeamRequest.TeamName);
+
             if (teamexist != null)
             {
                 return StatusCode(409);
@@ -149,7 +112,7 @@ namespace Nordic_Door.Server.Controllers
 
             var team = new Team()
                 {
-                    Name = addTeamRequest.teamName,
+                    Name = addTeamRequest.TeamName,
                 };
 
                 try

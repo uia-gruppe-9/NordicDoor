@@ -51,8 +51,37 @@ namespace Nordic_Door.Server.Controllers
             return Ok(updateUserTeams);
         }
 
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetUserTeams(int id)
+        {
+            var userTeams = await dbContext.UserTeams.Where(x => x.EmployeeId == id).ToListAsync();
 
-        
+            var updateUserTeams = new List<GetUserTeamRequest>();
+
+            foreach (var userTeam in userTeams)
+            {
+                var team = await dbContext.Teams.FindAsync(userTeam.TeamId);
+                var employee = await dbContext.Employees.FindAsync(userTeam.EmployeeId);
+                var role = await dbContext.EmployeeRoles.FindAsync(userTeam.Role);
+
+                if (team == null || employee == null || role == null)
+                {
+                    continue;
+                }
+                updateUserTeams.Add(new GetUserTeamRequest()
+                {
+                    Team = team,
+                    Employee = employee,
+                    Role = role,
+                }
+
+                    );
+            }
+            return Ok(updateUserTeams);
+        }
+
+
 
         [HttpPut]
         public async Task<IActionResult> UpdateRole(int eId, int tId, UpdateRoleRequest updateRole)
