@@ -666,7 +666,7 @@ else
                 Phase = "Act",
                 Description = suggestion.Description
             });
-            // Her sender vi en ny event til backend om at saken har blitt lukket
+        // Her sender vi en ny event til backend om at saken har blitt lukket
         await httpClient.PostAsJsonAsync<AddEventRequest>($"api/Events/Add", new AddEventRequest()
             {
                 EmployeeId = user.EmployeeId,
@@ -674,7 +674,7 @@ else
                 Description = "Saken har bitt lukket: " + comment,
                 Timestamp = DateTime.Now,
             });
-            // Her legger vi til en automatisk kommentar som sier at saken har blitt lukker
+        // Her legger vi til en automatisk kommentar som sier at saken har blitt lukker
         var suggComment = new AddSuggestionCommentRequest()
             {
                 EmployeeId = user.EmployeeId,
@@ -686,6 +686,8 @@ else
 
         // Her oppdaterer vi suggestionet hos frontend 
         var (newSuggestion, newEvents) = await GetSuggestion();
+
+        await GetComments();
 
         suggestion = newSuggestion;
         events = newEvents;
