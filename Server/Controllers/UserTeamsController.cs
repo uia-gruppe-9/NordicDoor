@@ -84,7 +84,7 @@ namespace Nordic_Door.Server.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateRole(int eId, int tId, UpdateUserTeamRoleRequest updateRole)
+        public async Task<IActionResult> UpdateRole(int eId, int tId, UpdateRoleRequest updateRole)
         {
             var role = await dbContext.UserTeams.FindAsync(eId, tId);
 

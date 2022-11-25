@@ -73,13 +73,10 @@ namespace Nordic_Door.Server.Controllers
                 }
                 await dbContext.SaveChangesAsync();
                 return Ok();
-
-
             }
             // bad request
             return StatusCode(400);
         }
-
 
 
 
@@ -107,6 +104,7 @@ namespace Nordic_Door.Server.Controllers
         public async Task<IActionResult> AddTeam(AddTeamRequest addTeamRequest)
         {         
             var teamexist = await dbContext.Teams.FirstOrDefaultAsync(e => e.Name == addTeamRequest.TeamName);
+
             if (teamexist != null)
             {
                 return StatusCode(409);

@@ -5,7 +5,7 @@ using Nordic_Door.Shared.Models.Database;
 
 namespace Nordic_Door.Shared.Models.API
 {
-    public class UpdateUserTeamRoleRequest
+    public class UpdateRoleRequest
     {
         public string Role { get; set; }
     }
